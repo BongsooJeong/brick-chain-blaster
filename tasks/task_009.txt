@@ -1,0 +1,20 @@
+# Task ID: 9
+# Title: Firebase 인증 및 사용자 관리 구현
+# Status: deferred
+# Dependencies: 7
+# Priority: medium
+# Description: 사용자 계정 및 인증 시스템 구현
+# Details:
+1. Firebase Authentication 연동 구현
+2. 로그인/회원가입 화면 및 로직 개발
+3. 소셜 로그인 통합 (Google, Facebook 등)
+4. 사용자 프로필 관리 시스템 구현
+5. 인증 상태에 따른 게임 기능 접근 제어
+6. 로컬 데이터와 클라우드 데이터 동기화
+7. 비회원 플레이 및 나중에 계정 연결 기능
+
+# Test Strategy:
+1. 다양한 인증 방식 로그인/회원가입 테스트
+2. 인증 상태 유지 및 토큰 갱신 테스트
+3. 소셜 로그인 연동 확인
+4. 사용자 프로필 데이터 저장 및 불러오기 테스트

@@ -1,0 +1,71 @@
+# Task ID: 4
+# Title: 웨이브 및 그리드 시스템 구현
+# Status: pending
+# Dependencies: 3
+# Priority: high
+# Description: 게임의 핵심 로직인 웨이브 진행 및 패턴 기반 벽돌 생성 시스템 구현
+# Details:
+1. 그리드 기반 벽돌 배치 시스템 구현
+2. 웨이브 진행 및 난이도 상승 로직 개발
+3. 패턴 템플릿 라이브러리 구현 (수평 라인, 계단, 피라미드, 십자, 중앙 요새 등)
+4. 패턴 변형 로직 구현 (미러링, 회전, 확률적 갭 생성)
+5. 웨이브별 특수 패턴 로직 (5웨이브마다 스웜, 요새, 터널 등)
+6. 벽돌 HP 분포 알고리즘 구현 (가장자리 낮음/중앙 높음)
+7. 게임 오버 조건 처리 (벽돌이 하단 라인에 도달)
+
+# Test Strategy:
+1. 다양한 패턴 생성 및 배치 테스트
+2. 웨이브별 난이도 상승 곡선 검증
+3. 특수 패턴의 생성 및 등장 확인
+4. 게임 오버 조건 정확한 작동 확인
+5. 높은 웨이브에서의 성능 및 밸런스 테스트
+
+# Subtasks:
+## 1. Design Core Grid Data Structure [pending]
+### Dependencies: None
+### Description: Define the fundamental data structure for the grid system that will hold bricks and manage their positions.
+### Details:
+Create a flexible grid class that supports variable dimensions, efficient brick lookup by position, and handles boundary conditions. Include methods for adding, removing, and querying bricks. Consider memory optimization for large grids and implement serialization for save states.
+
+## 2. Implement Basic Pattern Generation Algorithm [pending]
+### Dependencies: 4.1
+### Description: Create the foundational algorithm for generating brick patterns on the grid.
+### Details:
+Develop a modular pattern generator that can create basic shapes (lines, blocks, zigzags). Implement randomization parameters to control density and distribution. Ensure the algorithm is extensible for more complex patterns later. Include unit tests to verify pattern integrity and distribution properties.
+
+## 3. Develop Wave Progression System [pending]
+### Dependencies: 4.1
+### Description: Create the core wave management system that controls level progression and difficulty scaling.
+### Details:
+Implement a wave controller that tracks current wave number, manages wave transitions, and signals game events. Design the interface between wave system and grid system. Create hooks for difficulty parameter adjustments between waves.
+
+## 4. Create Difficulty Scaling Formulas [pending]
+### Dependencies: 4.3
+### Description: Develop mathematical models for scaling game difficulty across waves.
+### Details:
+Design formulas for brick HP progression, pattern complexity increase, and special brick frequency. Implement curve adjustments (linear, exponential, logarithmic) for different difficulty parameters. Create a difficulty manager class that calculates and applies these formulas based on wave number and player performance metrics.
+
+## 5. Implement Advanced Pattern Transformations [pending]
+### Dependencies: 4.2
+### Description: Extend the pattern generator with transformations and variations for more diverse gameplay.
+### Details:
+Add rotation, mirroring, and scaling operations to basic patterns. Implement pattern composition to combine multiple simple patterns. Create special formations for boss waves or challenge levels. Develop a pattern library system to store and retrieve predefined patterns.
+
+## 6. Develop Special Wave Mechanics [pending]
+### Dependencies: 4.3, 4.4
+### Description: Implement unique wave types that provide gameplay variation.
+### Details:
+Create boss wave mechanics with special brick formations and behaviors. Implement challenge waves with time limits or special objectives. Design recovery waves with easier patterns after difficult sections. Develop a wave type selection algorithm based on player performance and game progression.
+
+## 7. Optimize Grid Performance [pending]
+### Dependencies: 4.1, 4.2
+### Description: Improve the efficiency of grid operations for large numbers of bricks.
+### Details:
+Implement spatial partitioning for collision detection optimization. Add brick batching for rendering performance. Create a brick pool system to reduce garbage collection. Develop a grid update strategy that minimizes unnecessary calculations each frame.
+
+## 8. Integrate Wave and Grid Systems [pending]
+### Dependencies: 4.3, 4.5, 4.6, 4.7
+### Description: Connect the wave progression and grid systems into a cohesive gameplay loop.
+### Details:
+Implement the complete wave-to-grid pipeline that generates appropriate patterns based on current wave and difficulty. Create transition effects between waves. Add wave completion detection and scoring. Develop a testing framework to validate the integrated systems across multiple playthroughs.
+

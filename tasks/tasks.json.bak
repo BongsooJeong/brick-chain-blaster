@@ -1,0 +1,435 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "title": "프로젝트 구조 설정 및 개발 환경 구성",
+      "description": "Flutter 웹 프로젝트 기본 구조 설정 및 Firebase 연동을 위한 환경 구성",
+      "status": "in-progress",
+      "dependencies": [],
+      "priority": "high",
+      "details": "1. Flutter 웹 프로젝트 생성 및 기본 구조 설정\n2. Firebase 프로젝트 생성 및 웹 앱 등록\n3. 필요한 Firebase 서비스 활성화 (Authentication, Firestore, Functions, Storage, Hosting)\n4. Flutter 프로젝트에 Firebase SDK 통합\n5. 기본 폴더 구조 설정 (models, views, controllers, services, utils, assets)\n6. 개발 및 배포 환경 구성 (dev, staging, prod)\n7. GitHub Actions CI/CD 파이프라인 설정",
+      "testStrategy": "1. Firebase 서비스 연결 확인 (인증, Firestore 연결 테스트)\n2. 각 환경 (dev, staging, prod) 전환 및 정상 작동 확인\n3. CI/CD 파이프라인을 통한 자동 배포 테스트"
+    },
+    {
+      "id": 2,
+      "title": "물리 및 입력 엔진 구현",
+      "description": "게임의 기본이 되는 볼 물리 시뮬레이션 및 사용자 입력 처리 시스템 구현",
+      "status": "pending",
+      "dependencies": [
+        1
+      ],
+      "priority": "high",
+      "details": "1. 볼 충돌 물리 시스템 구현 (탄성 충돌, 속도, 반발력 등)\n2. 마우스/터치 입력 처리 시스템 개발\n3. 조준선 및 각도 계산 로직 구현\n4. 물리 시뮬레이션 타이머 및 프레임 독립적 업데이트 로직 구현\n5. 물리 상수 및 게임 변수 설정 (볼 속도, 중력, 충돌 감지 등)\n6. 내부 프레임 레이트 관리 및 고프레임(120fps) 보간 설정\n7. 경계(화면 가장자리) 충돌 처리 로직",
+      "testStrategy": "1. 볼 충돌 정확도 테스트 (다양한 각도에서 벽과 벽돌 충돌 확인)\n2. 조준선과 실제 볼 경로 일치 여부 검증\n3. 다양한 디바이스에서 입력 반응성 테스트\n4. 다양한 프레임 레이트에서 일관된 물리 동작 확인",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Design physics engine architecture",
+          "description": "Create the overall architecture for the physics engine, defining core components, data structures, and interfaces",
+          "dependencies": [],
+          "details": "Define the physics engine class hierarchy, component relationships, and integration points with the game loop. Establish the mathematical representation of physical objects (position, velocity, acceleration vectors). Design the broad phase and narrow phase collision detection pipeline. Document the API for game objects to interact with the physics system.",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "Implement frame-independent physics calculations",
+          "description": "Develop a time-step management system that ensures physics calculations remain consistent regardless of frame rate",
+          "dependencies": [
+            1
+          ],
+          "details": "Implement fixed time step physics updates with interpolation for rendering. Create a time accumulator to handle variable frame rates. Implement Verlet integration for position updates. Add configurable substeps for complex physics scenarios. Test physics behavior at different frame rates (30, 60, 120+ FPS) to ensure consistency.",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "Develop broad-phase collision detection",
+          "description": "Implement efficient broad-phase collision detection to identify potential collision pairs",
+          "dependencies": [
+            1
+          ],
+          "details": "Implement spatial partitioning using either quad trees or spatial hashing. Optimize object insertion and removal operations. Create bounding volume hierarchy for complex objects. Implement dynamic AABB trees for moving objects. Benchmark performance with various object counts and distributions.",
+          "status": "pending"
+        },
+        {
+          "id": 4,
+          "title": "Implement narrow-phase collision detection",
+          "description": "Create precise collision detection algorithms for different geometry types",
+          "dependencies": [
+            3
+          ],
+          "details": "Implement GJK (Gilbert-Johnson-Keerthi) algorithm for convex shapes. Add SAT (Separating Axis Theorem) for polygon collision detection. Create specialized algorithms for sphere-sphere, AABB-AABB, and sphere-AABB collisions. Implement continuous collision detection for fast-moving objects. Add collision manifold generation for contact points.",
+          "status": "pending"
+        },
+        {
+          "id": 5,
+          "title": "Develop collision response system",
+          "description": "Create a physics solver that handles collision responses with accurate impulse resolution",
+          "dependencies": [
+            4
+          ],
+          "details": "Implement impulse-based collision response with linear and angular components. Add friction and restitution coefficients for material simulation. Create a constraint solver for stable stacking and resting contacts. Implement sequential impulse solver for multiple contact points. Add configurable material properties (bounce, friction, density).",
+          "status": "pending"
+        },
+        {
+          "id": 6,
+          "title": "Design cross-platform input abstraction layer",
+          "description": "Create a platform-agnostic input system architecture that can handle multiple input devices",
+          "dependencies": [],
+          "details": "Design an input manager class hierarchy with device abstraction. Create input mapping configuration system. Implement event-based and polling-based input detection. Design input contexts for different game states. Create a serialization format for input bindings.",
+          "status": "pending"
+        },
+        {
+          "id": 7,
+          "title": "Implement platform-specific input handlers",
+          "description": "Develop concrete implementations of input handlers for each target platform",
+          "dependencies": [
+            6
+          ],
+          "details": "Create keyboard/mouse input handlers for Windows (DirectInput/XInput), macOS, and Linux. Implement gamepad support with consistent button mapping across platforms. Add touch input support for mobile platforms. Implement motion controls where applicable. Create fallback mechanisms when specific inputs aren't available.",
+          "status": "pending"
+        },
+        {
+          "id": 8,
+          "title": "Integrate and optimize physics and input systems",
+          "description": "Connect the physics and input systems together and optimize performance",
+          "dependencies": [
+            2,
+            5,
+            7
+          ],
+          "details": "Create physics response to input events with appropriate force application. Implement SIMD optimizations for vector operations. Add multithreading for physics calculations on supported platforms. Create debug visualization tools for physics objects and collisions. Implement profiling tools to identify performance bottlenecks. Add physics and input configuration options for different hardware capabilities.",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "기본 볼-벽돌 상호작용 구현",
+      "description": "볼과 벽돌 간의 충돌 및 데미지 처리 시스템 개발",
+      "status": "pending",
+      "dependencies": [
+        2
+      ],
+      "priority": "high",
+      "details": "1. 벽돌 HP 시스템 구현 (웨이브 기반 HP 증가 로직)\n2. 볼-벽돌 충돌 감지 및 데미지 처리\n3. 벽돌 파괴 애니메이션 및 효과 구현\n4. HP 감소 시각적 표현 (숫자 및 색상 변화)\n5. 벽돌 종류별 특성 구현 (기본 벽돌 3종)\n6. 데미지 및 충돌 이벤트 시스템 구축\n7. 볼 수 증가 메커니즘 구현 (파괴된 벽돌 카운터 및 임계치)",
+      "testStrategy": "1. 다양한 웨이브에서 벽돌 HP 계산 검증\n2. 충돌 감지 정확도 및 지연시간 테스트\n3. 다수 볼이 동시에 벽돌과 충돌할 때 성능 테스트\n4. 파괴 효과 및 시각적 피드백 확인\n5. 볼 수 증가 메커니즘 작동 확인"
+    },
+    {
+      "id": 4,
+      "title": "웨이브 및 그리드 시스템 구현",
+      "description": "게임의 핵심 로직인 웨이브 진행 및 패턴 기반 벽돌 생성 시스템 구현",
+      "status": "pending",
+      "dependencies": [
+        3
+      ],
+      "priority": "high",
+      "details": "1. 그리드 기반 벽돌 배치 시스템 구현\n2. 웨이브 진행 및 난이도 상승 로직 개발\n3. 패턴 템플릿 라이브러리 구현 (수평 라인, 계단, 피라미드, 십자, 중앙 요새 등)\n4. 패턴 변형 로직 구현 (미러링, 회전, 확률적 갭 생성)\n5. 웨이브별 특수 패턴 로직 (5웨이브마다 스웜, 요새, 터널 등)\n6. 벽돌 HP 분포 알고리즘 구현 (가장자리 낮음/중앙 높음)\n7. 게임 오버 조건 처리 (벽돌이 하단 라인에 도달)",
+      "testStrategy": "1. 다양한 패턴 생성 및 배치 테스트\n2. 웨이브별 난이도 상승 곡선 검증\n3. 특수 패턴의 생성 및 등장 확인\n4. 게임 오버 조건 정확한 작동 확인\n5. 높은 웨이브에서의 성능 및 밸런스 테스트",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Design Core Grid Data Structure",
+          "description": "Define the fundamental data structure for the grid system that will hold bricks and manage their positions.",
+          "dependencies": [],
+          "details": "Create a flexible grid class that supports variable dimensions, efficient brick lookup by position, and handles boundary conditions. Include methods for adding, removing, and querying bricks. Consider memory optimization for large grids and implement serialization for save states.",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "Implement Basic Pattern Generation Algorithm",
+          "description": "Create the foundational algorithm for generating brick patterns on the grid.",
+          "dependencies": [
+            1
+          ],
+          "details": "Develop a modular pattern generator that can create basic shapes (lines, blocks, zigzags). Implement randomization parameters to control density and distribution. Ensure the algorithm is extensible for more complex patterns later. Include unit tests to verify pattern integrity and distribution properties.",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "Develop Wave Progression System",
+          "description": "Create the core wave management system that controls level progression and difficulty scaling.",
+          "dependencies": [
+            1
+          ],
+          "details": "Implement a wave controller that tracks current wave number, manages wave transitions, and signals game events. Design the interface between wave system and grid system. Create hooks for difficulty parameter adjustments between waves.",
+          "status": "pending"
+        },
+        {
+          "id": 4,
+          "title": "Create Difficulty Scaling Formulas",
+          "description": "Develop mathematical models for scaling game difficulty across waves.",
+          "dependencies": [
+            3
+          ],
+          "details": "Design formulas for brick HP progression, pattern complexity increase, and special brick frequency. Implement curve adjustments (linear, exponential, logarithmic) for different difficulty parameters. Create a difficulty manager class that calculates and applies these formulas based on wave number and player performance metrics.",
+          "status": "pending"
+        },
+        {
+          "id": 5,
+          "title": "Implement Advanced Pattern Transformations",
+          "description": "Extend the pattern generator with transformations and variations for more diverse gameplay.",
+          "dependencies": [
+            2
+          ],
+          "details": "Add rotation, mirroring, and scaling operations to basic patterns. Implement pattern composition to combine multiple simple patterns. Create special formations for boss waves or challenge levels. Develop a pattern library system to store and retrieve predefined patterns.",
+          "status": "pending"
+        },
+        {
+          "id": 6,
+          "title": "Develop Special Wave Mechanics",
+          "description": "Implement unique wave types that provide gameplay variation.",
+          "dependencies": [
+            3,
+            4
+          ],
+          "details": "Create boss wave mechanics with special brick formations and behaviors. Implement challenge waves with time limits or special objectives. Design recovery waves with easier patterns after difficult sections. Develop a wave type selection algorithm based on player performance and game progression.",
+          "status": "pending"
+        },
+        {
+          "id": 7,
+          "title": "Optimize Grid Performance",
+          "description": "Improve the efficiency of grid operations for large numbers of bricks.",
+          "dependencies": [
+            1,
+            2
+          ],
+          "details": "Implement spatial partitioning for collision detection optimization. Add brick batching for rendering performance. Create a brick pool system to reduce garbage collection. Develop a grid update strategy that minimizes unnecessary calculations each frame.",
+          "status": "pending"
+        },
+        {
+          "id": 8,
+          "title": "Integrate Wave and Grid Systems",
+          "description": "Connect the wave progression and grid systems into a cohesive gameplay loop.",
+          "dependencies": [
+            3,
+            5,
+            6,
+            7
+          ],
+          "details": "Implement the complete wave-to-grid pipeline that generates appropriate patterns based on current wave and difficulty. Create transition effects between waves. Add wave completion detection and scoring. Develop a testing framework to validate the integrated systems across multiple playthroughs.",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "UI HUD 및 기본 사용자 인터페이스 구현",
+      "description": "게임 플레이에 필요한 기본 UI 요소 및 사용자 인터랙션 구현",
+      "status": "pending",
+      "dependencies": [
+        4
+      ],
+      "priority": "medium",
+      "details": "1. 게임 HUD 디자인 및 구현 (웨이브, 점수, 볼 카운터 등)\n2. 조준선 및 발사 버튼 UI 구현\n3. Fast-Forward 버튼 및 진행 막대 구현\n4. 기본 화면 전환 및 게임 상태 관리 (메인 메뉴, 게임 플레이, 게임 오버 등)\n5. 기본 애니메이션 및 트랜지션 효과 구현\n6. 각종 UI 피드백 요소 (파티클, 사운드, 데미지 팝업 등)\n7. 게임 옵션 및 설정 메뉴",
+      "testStrategy": "1. 다양한 화면 크기 및 해상도에서 UI 레이아웃 테스트\n2. 사용자 인터랙션 반응성 테스트\n3. UI 애니메이션 및 피드백 효과 확인\n4. 화면 전환 및 게임 상태 변경 테스트"
+    },
+    {
+      "id": 6,
+      "title": "아이템 시스템 구현",
+      "description": "MVP 단계에서의 단순화된 기본적인 아이템 시스템 구현",
+      "status": "pending",
+      "dependencies": [
+        3,
+        5
+      ],
+      "priority": "medium",
+      "details": "1. 간단한 아이템 기본 클래스 및 인터페이스 설계\n2. 기본 아이템 드롭 시스템 구현\n3. 아이템 수집 메커니즘 구현\n4. MVP용 기본 아이템 3종 구현:\n   - 추가 공 (다중 볼)\n   - 일시적 공 확대\n   - 일시적 발사대 확장\n5. 아이템 효과 및 기본적인 시각적 피드백 구현\n6. 간단한 아이템 사용 인터랙션 개발\n7. 추후 확장을 고려한 기본 구조 설계 (복잡한 아이템 시스템은 향후 확장)",
+      "testStrategy": "1. 아이템 생성 및 드롭 시스템 테스트\n2. 아이템 수집 정확도 테스트\n3. 세 가지 기본 아이템(추가 공, 일시적 공 확대, 일시적 발사대 확장) 효과 검증\n4. 아이템 효과의 기본적인 시각적 피드백 확인\n5. 게임 플레이에 미치는 영향 및 밸런스 테스트"
+    },
+    {
+      "id": 7,
+      "title": "로컬 상태 관리 및 저장 시스템 구현",
+      "description": "사용자 진행 상태 및 게임 데이터 로컬 저장 시스템 구현 (MVP 단계: localStorage 활용)",
+      "status": "pending",
+      "dependencies": [
+        4,
+        5
+      ],
+      "priority": "medium",
+      "details": "1. 로컬 데이터 모델 설계 (PlayerProfile, UpgradeState, RunState)\n2. localStorage를 활용한 로컬 저장소 구현\n3. 게임 진행 상태(레벨, 스테이지) 저장 및 불러오기 기능 개발\n4. 획득한 코인 데이터 저장 및 로드 기능 구현\n5. 업그레이드 상태 저장 및 로드 기능 구현\n6. 자동 저장 메커니즘 구현 (주요 게임 이벤트 발생 시)\n7. 게임 시작 시 저장된 데이터 복구 로직 개발\n8. 로컬 저장소 용량 한계 관리 및 오류 처리\n9. Firebase 연동은 MVP 이후 단계로 미루기",
+      "testStrategy": "1. 데이터 저장 및 불러오기 정확성 테스트\n2. 브라우저 세션 종료 후 데이터 유지 확인\n3. 다양한 브라우저에서 localStorage 호환성 확인\n4. 저장 데이터 구조 검증 테스트\n5. 로컬 저장소 용량 초과 시나리오 테스트\n6. 게임 진행 상태(레벨, 스테이지) 저장/로드 테스트\n7. 코인 데이터 저장/로드 테스트\n8. 업그레이드 상태 저장/로드 테스트"
+    },
+    {
+      "id": 8,
+      "title": "코인 및 업그레이드 시스템 구현",
+      "description": "게임 내 진행감과 성장을 제공하는 코인 및 업그레이드 시스템 개발 - MVP 단계에서는 기본적인 코인 수집 및 단순화된 업그레이드만 구현",
+      "status": "pending",
+      "dependencies": [
+        5,
+        7
+      ],
+      "priority": "medium",
+      "details": "MVP 단계 구현:\n1. 기본적인 코인 획득 및 소비 시스템 설계\n2. 단순화된 업그레이드 구현:\n   - 발사 가능한 볼 개수 증가\n   - 기본 공 크기 증가\n3. 간단한 업그레이드 UI 및 상점 화면 개발\n4. 업그레이드 효과 적용 및 게임 플레이 연동\n5. 로컬 스토리지를 활용한 업그레이드 진행 상태 저장 및 불러오기\n6. 기본적인 코인 관련 시각적 피드백\n\nMVP 이후 확장 계획:\n1. 복잡한 업그레이드 트리 구현\n2. 다양한 업그레이드 타입 추가 (파워업 확률 등)\n3. 스킬 시스템 개발\n4. 영구적 업그레이드 시스템 개발\n5. 고급 코인 애니메이션 및 피드백\n6. 심화된 코인 경제 설계 및 밸런싱",
+      "testStrategy": "MVP 테스트:\n1. 코인 획득 기본 기능 테스트\n2. 발사 가능한 볼 개수 증가 업그레이드 효과 검증\n3. 기본 공 크기 증가 업그레이드 효과 검증\n4. 로컬 스토리지 저장 및 불러오기 테스트\n5. 기본 업그레이드 UI 및 사용자 경험 검증\n\n향후 확장 시 테스트 계획:\n1. 다양한 업그레이드 타입 간 상호작용 테스트\n2. 복잡한 업그레이드 트리 진행 검증\n3. 스킬 시스템 기능 검증\n4. 전체 코인 경제 밸런스 테스트"
+    },
+    {
+      "id": 9,
+      "title": "Firebase 인증 및 사용자 관리 구현",
+      "description": "사용자 계정 및 인증 시스템 구현",
+      "status": "deferred",
+      "dependencies": [
+        7
+      ],
+      "priority": "medium",
+      "details": "1. Firebase Authentication 연동 구현\n2. 로그인/회원가입 화면 및 로직 개발\n3. 소셜 로그인 통합 (Google, Facebook 등)\n4. 사용자 프로필 관리 시스템 구현\n5. 인증 상태에 따른 게임 기능 접근 제어\n6. 로컬 데이터와 클라우드 데이터 동기화\n7. 비회원 플레이 및 나중에 계정 연결 기능",
+      "testStrategy": "1. 다양한 인증 방식 로그인/회원가입 테스트\n2. 인증 상태 유지 및 토큰 갱신 테스트\n3. 소셜 로그인 연동 확인\n4. 사용자 프로필 데이터 저장 및 불러오기 테스트"
+    },
+    {
+      "id": 10,
+      "title": "Firestore 데이터 동기화 구현",
+      "description": "클라우드 데이터 저장 및 동기화 시스템 구현",
+      "status": "deferred",
+      "dependencies": [
+        7,
+        9
+      ],
+      "priority": "medium",
+      "details": "1. Firestore 데이터 모델 및 컬렉션 구조 설계\n2. 사용자 데이터 클라우드 저장 및 불러오기 구현\n3. 실시간 리스너를 활용한 데이터 동기화\n4. 오프라인 지원 및 동기화 충돌 해결 로직\n5. 배치 쓰기 및 트랜잭션 처리\n6. 데이터 마이그레이션 및 버전 관리\n7. 보안 규칙 설정 및 데이터 접근 제어",
+      "testStrategy": "1. 데이터 저장 및 불러오기 정확성 테스트\n2. 오프라인 상태에서 동작 후 동기화 테스트\n3. 여러 기기에서 동시 접속 시 동기화 확인\n4. 대용량 데이터 처리 성능 테스트\n5. 보안 규칙 작동 확인"
+    },
+    {
+      "id": 11,
+      "title": "리더보드 및 소셜 기능 구현",
+      "description": "사용자 간 경쟁 및 소셜 기능 제공을 위한 시스템 구현",
+      "status": "deferred",
+      "dependencies": [
+        10
+      ],
+      "priority": "low",
+      "details": "1. 글로벌 및 친구 리더보드 시스템 설계\n2. 리더보드 UI 및 사용자 순위 표시 구현\n3. 점수 제출 및 검증 시스템 개발\n4. 친구 추가 및 관리 기능 구현\n5. 점수 공유 기능 (소셜 미디어 통합)\n6. 리더보드 카테고리 및 필터 (최고 웨이브, 최대 점수 등)\n7. 성취 및 배지 시스템 통합",
+      "testStrategy": "1. 리더보드 데이터 표시 및 정렬 테스트\n2. 점수 제출 및 검증 시스템 테스트\n3. 소셜 공유 기능 작동 확인\n4. 다양한 기기에서 리더보드 UI 테스트"
+    },
+    {
+      "id": 12,
+      "title": "Firebase Cloud Functions 구현",
+      "description": "서버 측 로직 및 API 엔드포인트 구현",
+      "status": "deferred",
+      "dependencies": [
+        10
+      ],
+      "priority": "low",
+      "details": "1. Cloud Functions 프로젝트 설정 및 배포 파이프라인 구성\n2. submitScore 및 claimReward 함수 구현\n3. 사용자 데이터 검증 및 처리 로직\n4. 리더보드 데이터 관리 및 정리 기능\n5. 정기적인 이벤트 및 데이터 처리 스케줄링\n6. 보안 및 속도 제한 설정\n7. 로깅 및 모니터링 시스템 구성",
+      "testStrategy": "1. 함수 호출 및 응답 정확성 테스트\n2. 부하 테스트 및 성능 확인\n3. 오류 처리 및 복구 메커니즘 검증\n4. 보안 및 인증 검증"
+    },
+    {
+      "id": 13,
+      "title": "광고 및 결제 시스템 통합",
+      "description": "수익화를 위한 광고 및 인앱 결제 시스템 구현",
+      "status": "deferred",
+      "dependencies": [
+        5,
+        9
+      ],
+      "priority": "low",
+      "details": "1. 광고 SDK 통합 (보상형 광고, 배너 광고 등)\n2. 광고 표시 로직 및 UI 구현\n3. 보상형 광고 시청 후 보상 지급 시스템\n4. Stripe 결제 시스템 통합\n5. 인앱 상품 및 패키지 설계\n6. 구매 검증 및 상품 지급 로직\n7. 구독 및 시즌 패스 시스템 구현",
+      "testStrategy": "1. 광고 표시 및 로딩 성능 테스트\n2. 광고 시청 후 보상 지급 정확성 확인\n3. 결제 프로세스 및 완료 검증\n4. 구매한 상품 지급 및 활성화 테스트\n5. 구독 갱신 및 만료 처리 확인",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Research and select ad network SDKs",
+          "description": "Evaluate and select appropriate advertising network SDKs based on platform requirements, revenue potential, and integration complexity.",
+          "dependencies": [],
+          "details": "Compare major ad networks (AdMob, Unity Ads, ironSource, etc.). Document SDK versions, platform compatibility, ad format support (interstitial, rewarded, banner), and revenue models. Create a comparison matrix with pros/cons of each option. Consider factors like fill rates, eCPM, and customer support.",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "Implement core ad SDK integration",
+          "description": "Integrate the selected advertising SDK(s) into the application codebase with proper initialization and configuration.",
+          "dependencies": [
+            1
+          ],
+          "details": "Add SDK dependencies to project. Implement initialization code at appropriate application lifecycle point. Configure app IDs and test mode settings. Set up error handling and logging. Create abstraction layer to facilitate potential future SDK changes. Test basic SDK initialization and verify connection to ad networks.",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "Design and implement ad placement strategy",
+          "description": "Create a comprehensive strategy for ad placement throughout the application, optimizing for user experience and revenue.",
+          "dependencies": [
+            2
+          ],
+          "details": "Map user journey to identify optimal ad placement opportunities. Implement different ad formats (banners, interstitials, rewarded) at appropriate points. Create frequency capping logic to prevent ad fatigue. Implement A/B testing framework to compare different strategies. Design graceful fallbacks when ads fail to load.",
+          "status": "pending"
+        },
+        {
+          "id": 4,
+          "title": "Develop rewarded ad validation system",
+          "description": "Create a robust system to validate that users have properly viewed rewarded ads before granting in-app rewards.",
+          "dependencies": [
+            2,
+            3
+          ],
+          "details": "Implement callbacks for ad completion events. Create server-side validation when possible to prevent client-side manipulation. Design reward distribution system with proper transaction handling. Implement retry mechanisms for network failures. Create analytics to track reward conversion rates.",
+          "status": "pending"
+        },
+        {
+          "id": 5,
+          "title": "Integrate payment processor SDK",
+          "description": "Integrate the selected payment processing SDK (e.g., Stripe, PayPal, platform-specific) into the application.",
+          "dependencies": [],
+          "details": "Add payment SDK dependencies to project. Implement initialization and configuration. Set up secure API keys management. Create sandbox/test environment configuration. Implement basic payment form UI components. Test connectivity with payment processor in sandbox mode.",
+          "status": "pending"
+        },
+        {
+          "id": 6,
+          "title": "Implement purchase flow and UI",
+          "description": "Design and implement the complete purchase flow including product selection, checkout process, and payment confirmation.",
+          "dependencies": [
+            5
+          ],
+          "details": "Create product catalog management system. Design intuitive checkout UI with clear pricing. Implement cart functionality if needed. Create payment method selection interface. Design confirmation and receipt screens. Implement proper error handling with user-friendly messages. Support multiple currencies if required.",
+          "status": "pending"
+        },
+        {
+          "id": 7,
+          "title": "Develop purchase verification system",
+          "description": "Create a secure system to verify purchases and prevent fraud, including handling interrupted transactions.",
+          "dependencies": [
+            5,
+            6
+          ],
+          "details": "Implement server-side receipt verification with payment processor APIs. Create transaction database to track purchase states. Design idempotent purchase handling to prevent duplicate charges. Implement retry logic for interrupted purchases. Create admin dashboard for manual verification if needed. Test various failure scenarios including network interruptions.",
+          "status": "pending"
+        },
+        {
+          "id": 8,
+          "title": "Implement subscription management",
+          "description": "Develop a complete subscription management system including recurring billing, cancellation, and upgrade/downgrade paths.",
+          "dependencies": [
+            5,
+            6,
+            7
+          ],
+          "details": "Implement subscription creation and management APIs. Create user interfaces for subscription management. Design upgrade/downgrade flows with prorated billing. Implement cancellation workflows with confirmation. Create renewal notification system. Design grace periods for failed payments. Implement subscription analytics dashboard.",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "title": "추가 아이템 및 파워업 구현",
+      "description": "게임성을 강화하기 위한 추가 아이템 및 파워업 개발",
+      "status": "deferred",
+      "dependencies": [
+        6
+      ],
+      "priority": "low",
+      "details": "1. 추가 아이템 4종 구현 (중력 우물, 바텀 실드, 멀티샷, 스티키 볼)\n2. 고급 파워업 효과 및 비주얼 구현\n3. 아이템 조합 및 상호작용 시스템\n4. 특수 이벤트 아이템 및 제한적 파워업\n5. 아이템 희귀도 및 등장 확률 시스템\n6. 아이템 컬렉션 및 잠금 해제 메커니즘\n7. 파워업 밸런싱 및 게임 플레이 통합",
+      "testStrategy": "1. 각 추가 아이템 기능 및 효과 테스트\n2. 아이템 간 상호작용 및 조합 테스트\n3. 희귀 아이템 생성 및 등장 확률 확인\n4. 파워업 밸런스 및, 게임 플레이 영향 평가"
+    },
+    {
+      "id": 15,
+      "title": "테마 및 시각적 스킨 시스템 구현",
+      "description": "게임의 시각적 다양성을 제공하는 테마 및 스킨 시스템 개발",
+      "status": "deferred",
+      "dependencies": [
+        5,
+        8
+      ],
+      "priority": "low",
+      "details": "1. 테마 시스템 아키텍처 설계 (볼, 벽돌, 배경, UI 등의 스킨)\n2. 기본 Modern Cool 테마 완성 구현\n3. 추가 테마 및 스킨 디자인 (레트로, 네온, 미니멀 등)\n4. 테마 전환 및 적용 시스템 개발\n5. 테마 잠금 해제 및 구매 메커니즘 연동\n6. 색약 모드 및 접근성 테마 구현\n7. 커스텀 테마 요소 및 믹스-매치 기능",
+      "testStrategy": "1. 테마 전환 및 적용 정확성 테스트\n2. 다양한 화면 크기와 해상도에서 테마 표시 확인\n3. 테마 요소 및 게임 오브젝트 호환성 테스트\n4. 접근성 테마의 가시성 및 사용성 평가"
+    }
+  ]
+}

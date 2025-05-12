@@ -1,0 +1,193 @@
+# Task ID: 2
+# Title: 물리 및 입력 엔진 구현
+# Status: in-progress
+# Dependencies: 1
+# Priority: high
+# Description: 게임의 기본이 되는 볼 물리 시뮬레이션 및 사용자 입력 처리 시스템 구현
+# Details:
+1. 볼 충돌 물리 시스템 구현 (탄성 충돌, 속도, 반발력 등)
+2. 마우스/터치 입력 처리 시스템 개발
+3. 조준선 및 각도 계산 로직 구현
+4. 물리 시뮬레이션 타이머 및 프레임 독립적 업데이트 로직 구현
+5. 물리 상수 및 게임 변수 설정 (볼 속도, 중력, 충돌 감지 등)
+6. 내부 프레임 레이트 관리 및 고프레임(120fps) 보간 설정
+7. 경계(화면 가장자리) 충돌 처리 로직
+
+# Test Strategy:
+1. 볼 충돌 정확도 테스트 (다양한 각도에서 벽과 벽돌 충돌 확인)
+2. 조준선과 실제 볼 경로 일치 여부 검증
+3. 다양한 디바이스에서 입력 반응성 테스트
+4. 다양한 프레임 레이트에서 일관된 물리 동작 확인
+
+# Subtasks:
+## 1. Design physics engine architecture [done]
+### Dependencies: None
+### Description: Create the overall architecture for the physics engine, defining core components, data structures, and interfaces
+### Details:
+Define the physics engine class hierarchy, component relationships, and integration points with the game loop. Establish the mathematical representation of physical objects (position, velocity, acceleration vectors). Design the broad phase and narrow phase collision detection pipeline. Document the API for game objects to interact with the physics system.
+<info added on 2025-05-12T10:07:05.631Z>
+Define the physics engine class hierarchy, component relationships, and integration points with the game loop. Establish the mathematical representation of physical objects (position, velocity, acceleration vectors). Design the broad phase and narrow phase collision detection pipeline. Document the API for game objects to interact with the physics system.
+
+Based on code analysis, the physics engine architecture has the following core components:
+
+1. Vector2D class (lib/physics/vector2d.dart):
+   - Implements 2D vector mathematics (addition, subtraction, scalar multiplication)
+   - Provides normalization, rotation, distance calculation, dot/cross products
+   - Includes utility functions for linear interpolation
+
+2. Shape hierarchy (lib/models/game/shape.dart):
+   - Abstract Shape class as the base interface for all colliders
+   - AABB (Axis-Aligned Bounding Box) implementation
+   - Circle collider implementation
+   - Polygon collider with SAT algorithm support
+   - Rectangle as a specialized Polygon case
+
+3. PhysicsEngine (lib/physics/physics_engine.dart):
+   - Collision information class
+   - PhysicsBody class for physical object representation
+   - CollisionLayer constants for filtering
+   - BodyType enumeration (static, kinematic, dynamic)
+   - Spatial partitioning grid system (GridCell)
+
+Implementation plan:
+1. Complete the collision detection pipeline:
+   - Optimize broad phase using spatial grid partitioning
+   - Finalize narrow phase collision algorithms
+   - Implement continuous collision detection for fast-moving objects
+
+2. Develop collision resolution system:
+   - Implement impulse-based collision resolution
+   - Add friction and restitution calculations
+   - Create physical material property system
+
+3. Add optimization and debugging tools:
+   - Performance monitoring system
+   - Debug rendering utilities
+   - Physics state serialization/deserialization
+
+This architecture will support the next subtask of implementing frame-independent physics calculations, which will require fixed timestep logic, accumulated time handling, and interpolation optimization.
+</info added on 2025-05-12T10:07:05.631Z>
+
+## 2. Implement frame-independent physics calculations [done]
+### Dependencies: 2.1
+### Description: Develop a time-step management system that ensures physics calculations remain consistent regardless of frame rate
+### Details:
+Implement fixed time step physics updates with interpolation for rendering. Create a time accumulator to handle variable frame rates. Implement Verlet integration for position updates. Add configurable substeps for complex physics scenarios. Test physics behavior at different frame rates (30, 60, 120+ FPS) to ensure consistency.
+
+## 3. Develop broad-phase collision detection [done]
+### Dependencies: 2.1
+### Description: Implement efficient broad-phase collision detection to identify potential collision pairs
+### Details:
+Implement spatial partitioning using either quad trees or spatial hashing. Optimize object insertion and removal operations. Create bounding volume hierarchy for complex objects. Implement dynamic AABB trees for moving objects. Benchmark performance with various object counts and distributions.
+<info added on 2025-05-12T10:52:42.198Z>
+Implement spatial partitioning using either quad trees or spatial hashing. Optimize object insertion and removal operations. Create bounding volume hierarchy for complex objects. Implement dynamic AABB trees for moving objects. Benchmark performance with various object counts and distributions.
+
+코드 분석 결과, 현재 PhysicsEngine 클래스에 간단한 공간 격자 기반의 광범위 충돌 검출 시스템이 이미 구현되어 있습니다. 이 시스템은 _grid 맵을 사용하여 공간을 격자 셀로 분할하고, _cellSize(64.0)로 격자 크기를 고정하며, _addBodyToGrid(), _updateGrid(), _broadphase() 함수를 통해 충돌 검출을 수행합니다.
+
+현재 구현의 주요 한계점은 매 프레임마다 전체 격자를 재구성하는 비효율성, 정적 오브젝트의 불필요한 재계산, 고정된 격자 크기로 인한 최적화 부족, 그리고 셀에 많은 오브젝트가 있을 경우 O(n²) 시간 복잡도 발생 가능성입니다.
+
+개선 계획:
+1. 쿼드트리(QuadTree) 구현으로 오브젝트 밀도에 따라 공간을 동적으로 분할하고, 정적/동적 오브젝트를 분리 관리하며, 선택적 업데이트를 적용합니다.
+2. 동적 AABB 트리를 구현하여 오브젝트 크기와 위치에 따른 효율적인 트리 구조를 유지하고, 트리 작업을 최적화하며, 밸런싱 알고리즘을 적용합니다.
+3. 쿼드트리와 공간 해싱을 결합한 하이브리드 접근법으로 광범위 충돌 검출 알고리즘을 개선하고, 정밀 충돌 검출로 전달되는 쌍의 수를 최소화하며, O(n log n) 이하의 시간 복잡도를 목표로 합니다.
+4. 다양한 오브젝트 수와 분포에 따른 성능 측정, 공간 분할 방식별 비교 분석, 메모리 및 CPU 시간 최적화를 위한 성능 테스트를 수행합니다.
+5. 광범위 충돌 검출 단계 시각화 및 성능 병목 현상 식별을 위한 디버깅 도구를 추가합니다.
+
+다음 단계로 lib/physics/quad_tree.dart 파일을 새로 생성하여 광범위 충돌 검출의 핵심 구조인 쿼드트리를 구현할 예정입니다.
+</info added on 2025-05-12T10:52:42.198Z>
+
+## 4. Implement narrow-phase collision detection [pending]
+### Dependencies: 2.3
+### Description: Create precise collision detection algorithms for different geometry types
+### Details:
+Implement GJK (Gilbert-Johnson-Keerthi) algorithm for convex shapes. Add SAT (Separating Axis Theorem) for polygon collision detection. Create specialized algorithms for sphere-sphere, AABB-AABB, and sphere-AABB collisions. Implement continuous collision detection for fast-moving objects. Add collision manifold generation for contact points.
+
+## 5. Develop collision response system [pending]
+### Dependencies: 2.4
+### Description: Create a physics solver that handles collision responses with accurate impulse resolution
+### Details:
+Implement impulse-based collision response with linear and angular components. Add friction and restitution coefficients for material simulation. Create a constraint solver for stable stacking and resting contacts. Implement sequential impulse solver for multiple contact points. Add configurable material properties (bounce, friction, density).
+
+## 6. Design cross-platform input abstraction layer [done]
+### Dependencies: None
+### Description: Create a platform-agnostic input system architecture that can handle multiple input devices
+### Details:
+Design an input manager class hierarchy with device abstraction. Create input mapping configuration system. Implement event-based and polling-based input detection. Design input contexts for different game states. Create a serialization format for input bindings.
+<info added on 2025-05-12T10:17:13.002Z>
+Design an input manager class hierarchy with device abstraction. Create input mapping configuration system. Implement event-based and polling-based input detection. Design input contexts for different game states. Create a serialization format for input bindings.
+
+코드베이스 탐색 결과, lib/input 디렉토리에 이미 강력한 크로스 플랫폼 입력 추상화 레이어가 구현되어 있음을 확인했습니다:
+
+1. `input_handler.dart`: 다양한 입력 핸들러 인터페이스와 CompositeInputHandler 클래스 구현
+   - InputHandler - 기본 입력 핸들러 인터페이스
+   - PositionalInputHandler - 위치 기반 입력용 확장 인터페이스
+   - ButtonInputHandler - 버튼 기반 입력용 확장 인터페이스
+   - GamepadInputHandler - 게임패드 입력용 확장 인터페이스
+   - CompositeInputHandler - 여러 핸들러를 통합하는 구현체
+
+2. `input_event.dart`: 통합된 입력 이벤트 구조
+   - InputEvent - 기본 입력 이벤트 클래스
+   - PositionalInputEvent - 위치 기반 이벤트
+   - KeyboardInputEvent - 키보드 이벤트
+   - GamepadInputEvent - 게임패드 이벤트
+
+3. `input_mapping.dart`: 물리적 입력과 게임 액션 간의 매핑 시스템
+   - InputMapping - 개별 입력-액션 매핑
+   - InputContext - 상황별 매핑 세트
+   - InputMappingManager - 매핑 및 콘텍스트 관리
+
+4. `input_manager.dart`: 전체 입력 시스템 관리
+   - 입력 처리 및 액션 이벤트 발생
+   - 핸들러 등록/해제
+   - 입력 매핑 관리
+
+5. lib/input/platform 디렉토리에 플랫폼별 구현:
+   - `web_input_handler.dart`: 웹 브라우저 입력 구현
+
+현재 크로스 플랫폼 입력 추상화 레이어의 설계와 기본 구현은 완료되었습니다. 웹 플랫폼에 대한 구현만 존재하므로, 다음 서브태스크 "Implement platform-specific input handlers"에서 모바일 터치, 데스크톱 등 추가 플랫폼에 대한 핸들러를 구현할 예정입니다. 이 설계는 물리 엔진과의 통합을 위한 기반을 제공하며, 다양한 입력 장치를 일관된 방식으로 처리할 수 있는 구조를 갖추고 있습니다.
+</info added on 2025-05-12T10:17:13.002Z>
+
+## 7. Implement platform-specific input handlers [in-progress]
+### Dependencies: 2.6
+### Description: Develop concrete implementations of input handlers for each target platform
+### Details:
+Create keyboard/mouse input handlers for Windows (DirectInput/XInput), macOS, and Linux. Implement gamepad support with consistent button mapping across platforms. Add touch input support for mobile platforms. Implement motion controls where applicable. Create fallback mechanisms when specific inputs aren't available.
+<info added on 2025-05-12T10:18:20.583Z>
+Create keyboard/mouse input handlers for Windows (DirectInput/XInput), macOS, and Linux. Implement gamepad support with consistent button mapping across platforms. Add touch input support for mobile platforms. Implement motion controls where applicable. Create fallback mechanisms when specific inputs aren't available.
+
+Based on code analysis, WebInputHandler is already implemented and the cross-platform input interface is complete. The implementation plan for additional platform-specific handlers is as follows:
+
+1. Mobile Touch Handler (MobileInputHandler):
+   - Utilize Flutter's native touch interface
+   - Support multi-touch gestures
+   - Normalize input coordinates based on screen size
+
+2. Desktop Handler (DesktopInputHandler):
+   - Process keyboard and mouse inputs
+   - Support keyboard shortcut combinations
+   - Manage input focus
+
+3. Gamepad Handler (GamepadInputHandler):
+   - Support standard gamepad layouts
+   - Map buttons and axes consistently
+   - Implement vibration feedback where possible
+
+Implementation steps:
+1. Create handler files in the lib/input/platform directory
+2. Ensure each handler implements the InputHandler interface
+3. Set up platform-specific event listeners
+4. Convert platform-specific input events to unified input events
+5. Configure handlers to integrate with CompositeInputHandler
+
+Additional considerations:
+- Implement platform detection (web, mobile, desktop)
+- Create a factory to load appropriate handlers at runtime
+- Design unit test structure to maintain consistent behavior across handlers
+</info added on 2025-05-12T10:18:20.583Z>
+
+## 8. Integrate and optimize physics and input systems [pending]
+### Dependencies: 2.2, 2.5, 2.7
+### Description: Connect the physics and input systems together and optimize performance
+### Details:
+Create physics response to input events with appropriate force application. Implement SIMD optimizations for vector operations. Add multithreading for physics calculations on supported platforms. Create debug visualization tools for physics objects and collisions. Implement profiling tools to identify performance bottlenecks. Add physics and input configuration options for different hardware capabilities.
+

@@ -1,0 +1,131 @@
+{
+  "meta": {
+    "generatedAt": "2025-05-12T08:32:14.052Z",
+    "tasksAnalyzed": 15,
+    "thresholdScore": 5,
+    "projectName": "Taskmaster",
+    "usedResearch": false
+  },
+  "complexityAnalysis": [
+    {
+      "taskId": 1,
+      "taskTitle": "프로젝트 구조 설정 및 개발 환경 구성",
+      "complexityScore": 7,
+      "recommendedSubtasks": 7,
+      "expansionPrompt": "Break down the Flutter web project setup and Firebase integration task into detailed implementation steps, including specific configuration files, dependency management, and environment-specific settings for each subtask.",
+      "reasoning": "This task involves multiple technologies (Flutter, Firebase) with several services to configure. It requires careful planning of project architecture and CI/CD setup, which adds complexity. The task already has a good initial breakdown but needs more detailed implementation steps."
+    },
+    {
+      "taskId": 2,
+      "taskTitle": "물리 및 입력 엔진 구현",
+      "complexityScore": 8,
+      "recommendedSubtasks": 8,
+      "expansionPrompt": "Expand the physics and input engine implementation into detailed subtasks, including mathematical models for collision detection, frame-independent physics calculations, and cross-platform input handling with specific implementation approaches for each component.",
+      "reasoning": "This task involves complex physics simulation with collision detection, frame-rate independence, and precise input handling. These are computationally intensive operations requiring mathematical modeling and optimization. The physics engine is a core component that will affect the entire game experience."
+    },
+    {
+      "taskId": 3,
+      "taskTitle": "기본 볼-벽돌 상호작용 구현",
+      "complexityScore": 7,
+      "recommendedSubtasks": 7,
+      "expansionPrompt": "Detail the implementation steps for the ball-brick interaction system, including the data structures for HP tracking, collision response algorithms, visual feedback systems, and the event propagation architecture for handling multiple simultaneous collisions.",
+      "reasoning": "This task builds on the physics engine but adds game-specific logic like HP systems, visual feedback, and specialized collision handling. It requires careful integration with the physics system while adding game mechanics that affect core gameplay."
+    },
+    {
+      "taskId": 4,
+      "taskTitle": "웨이브 및 그리드 시스템 구현",
+      "complexityScore": 8,
+      "recommendedSubtasks": 8,
+      "expansionPrompt": "Break down the wave and grid system implementation into detailed subtasks covering pattern generation algorithms, difficulty scaling formulas, special wave mechanics, and the technical approach for efficient grid management and brick placement.",
+      "reasoning": "This task involves complex procedural generation of game levels with increasing difficulty curves. It requires algorithms for pattern creation, transformation, and HP distribution. The wave system is a core gameplay mechanic that directly impacts game balance and progression."
+    },
+    {
+      "taskId": 5,
+      "taskTitle": "UI HUD 및 기본 사용자 인터페이스 구현",
+      "complexityScore": 6,
+      "recommendedSubtasks": 7,
+      "expansionPrompt": "Expand the UI implementation task into detailed subtasks covering each UI component's design, state management, animation system, responsive layout considerations, and integration with game state events.",
+      "reasoning": "This task involves creating multiple UI components with animations and transitions. While not as algorithmically complex as physics, it requires careful design for responsiveness across devices and integration with game systems. The UI directly impacts user experience and needs to be intuitive."
+    },
+    {
+      "taskId": 6,
+      "taskTitle": "아이템 시스템 구현",
+      "complexityScore": 7,
+      "recommendedSubtasks": 7,
+      "expansionPrompt": "Detail the implementation steps for the item system, including the class hierarchy design, item effect implementation details, visual feedback systems, and the technical approach for item spawning algorithms and inventory management.",
+      "reasoning": "This task requires designing an extensible system for different item types with varied effects. It involves integration with multiple game systems (physics, UI, game state) and needs careful balancing. The implementation must be flexible enough to easily add new items later."
+    },
+    {
+      "taskId": 7,
+      "taskTitle": "로컬 상태 관리 및 저장 시스템 구현",
+      "complexityScore": 6,
+      "recommendedSubtasks": 7,
+      "expansionPrompt": "Break down the local state management system implementation into detailed subtasks covering data model design, IndexedDB schema, serialization/deserialization approaches, auto-save mechanisms, and offline functionality implementation.",
+      "reasoning": "This task involves designing persistent storage with proper data modeling and handling edge cases like data corruption or version migrations. It requires working with browser storage APIs and implementing reliable save/load mechanisms, but follows established patterns."
+    },
+    {
+      "taskId": 8,
+      "taskTitle": "코인 및 업그레이드 시스템 구현",
+      "complexityScore": 6,
+      "recommendedSubtasks": 7,
+      "expansionPrompt": "Detail the implementation steps for the coin and upgrade system, including the upgrade progression formulas, UI component design, persistence strategy, and integration with gameplay systems to apply upgrade effects.",
+      "reasoning": "This task involves designing a progression system with balanced economy and meaningful upgrades. It requires integration with multiple game systems and careful balancing to ensure proper progression pacing. The implementation needs to handle state persistence and UI interactions."
+    },
+    {
+      "taskId": 9,
+      "taskTitle": "Firebase 인증 및 사용자 관리 구현",
+      "complexityScore": 6,
+      "recommendedSubtasks": 7,
+      "expansionPrompt": "Break down the Firebase authentication implementation into detailed subtasks covering each auth provider integration, UI flows, token management, profile data structure, and synchronization between local and cloud user data.",
+      "reasoning": "This task involves integrating with external authentication services and handling various auth flows. It requires careful security consideration and error handling for different auth scenarios. The implementation must handle edge cases like token expiration and account linking."
+    },
+    {
+      "taskId": 10,
+      "taskTitle": "Firestore 데이터 동기화 구현",
+      "complexityScore": 7,
+      "recommendedSubtasks": 7,
+      "expansionPrompt": "Detail the implementation steps for Firestore data synchronization, including database schema design, conflict resolution strategies, offline support mechanisms, security rule definitions, and approaches for handling large data sets efficiently.",
+      "reasoning": "This task involves complex cloud data synchronization with conflict resolution and offline support. It requires designing a robust database schema with proper security rules and handling edge cases like network interruptions. The implementation must be efficient with large datasets."
+    },
+    {
+      "taskId": 11,
+      "taskTitle": "리더보드 및 소셜 기능 구현",
+      "complexityScore": 6,
+      "recommendedSubtasks": 7,
+      "expansionPrompt": "Break down the leaderboard and social features implementation into detailed subtasks covering data structures for rankings, friend relationship management, score submission and validation algorithms, and social sharing integration specifics.",
+      "reasoning": "This task involves implementing social features with proper data modeling for leaderboards and friend relationships. It requires integration with external social platforms and designing systems to prevent cheating. The implementation must handle efficient querying of leaderboard data."
+    },
+    {
+      "taskId": 12,
+      "taskTitle": "Firebase Cloud Functions 구현",
+      "complexityScore": 7,
+      "recommendedSubtasks": 7,
+      "expansionPrompt": "Detail the implementation steps for Firebase Cloud Functions, including function architecture design, security validation approaches, rate limiting implementation, error handling strategies, and monitoring setup for each serverless function.",
+      "reasoning": "This task involves server-side programming with security considerations and potential scaling issues. It requires implementing robust validation, error handling, and monitoring for cloud functions. The implementation must handle asynchronous processing and potential retries."
+    },
+    {
+      "taskId": 13,
+      "taskTitle": "광고 및 결제 시스템 통합",
+      "complexityScore": 8,
+      "recommendedSubtasks": 8,
+      "expansionPrompt": "Break down the advertising and payment system integration into detailed subtasks covering SDK integration specifics, ad placement strategies, reward validation, payment flow implementation, purchase verification, and subscription management.",
+      "reasoning": "This task involves integrating multiple third-party services (ad networks, payment processors) with complex validation requirements. It requires handling sensitive payment information and implementing robust verification. The implementation must comply with platform policies and handle edge cases like interrupted purchases."
+    },
+    {
+      "taskId": 14,
+      "taskTitle": "추가 아이템 및 파워업 구현",
+      "complexityScore": 6,
+      "recommendedSubtasks": 7,
+      "expansionPrompt": "Detail the implementation steps for additional items and power-ups, including specific effect mechanics, visual feedback systems, item interaction rules, and balancing approaches for each new power-up type.",
+      "reasoning": "This task builds on the existing item system but adds more complex items with unique effects. It requires careful balancing and integration with existing game systems. The implementation must ensure new items work well with existing ones and don't break game balance."
+    },
+    {
+      "taskId": 15,
+      "taskTitle": "테마 및 시각적 스킨 시스템 구현",
+      "complexityScore": 6,
+      "recommendedSubtasks": 7,
+      "expansionPrompt": "Break down the theme and visual skin system implementation into detailed subtasks covering the theming architecture, asset management approach, theme switching mechanism, accessibility considerations, and integration with the unlock/purchase system.",
+      "reasoning": "This task involves designing a flexible theming system that can be applied across all game elements. It requires careful asset management and consideration for visual consistency. The implementation must handle theme switching without performance impact and support accessibility options."
+    }
+  ]
+}

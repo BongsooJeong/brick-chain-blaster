@@ -1,0 +1,71 @@
+# Task ID: 13
+# Title: 광고 및 결제 시스템 통합
+# Status: deferred
+# Dependencies: 5, 9
+# Priority: low
+# Description: 수익화를 위한 광고 및 인앱 결제 시스템 구현
+# Details:
+1. 광고 SDK 통합 (보상형 광고, 배너 광고 등)
+2. 광고 표시 로직 및 UI 구현
+3. 보상형 광고 시청 후 보상 지급 시스템
+4. Stripe 결제 시스템 통합
+5. 인앱 상품 및 패키지 설계
+6. 구매 검증 및 상품 지급 로직
+7. 구독 및 시즌 패스 시스템 구현
+
+# Test Strategy:
+1. 광고 표시 및 로딩 성능 테스트
+2. 광고 시청 후 보상 지급 정확성 확인
+3. 결제 프로세스 및 완료 검증
+4. 구매한 상품 지급 및 활성화 테스트
+5. 구독 갱신 및 만료 처리 확인
+
+# Subtasks:
+## 1. Research and select ad network SDKs [pending]
+### Dependencies: None
+### Description: Evaluate and select appropriate advertising network SDKs based on platform requirements, revenue potential, and integration complexity.
+### Details:
+Compare major ad networks (AdMob, Unity Ads, ironSource, etc.). Document SDK versions, platform compatibility, ad format support (interstitial, rewarded, banner), and revenue models. Create a comparison matrix with pros/cons of each option. Consider factors like fill rates, eCPM, and customer support.
+
+## 2. Implement core ad SDK integration [pending]
+### Dependencies: 13.1
+### Description: Integrate the selected advertising SDK(s) into the application codebase with proper initialization and configuration.
+### Details:
+Add SDK dependencies to project. Implement initialization code at appropriate application lifecycle point. Configure app IDs and test mode settings. Set up error handling and logging. Create abstraction layer to facilitate potential future SDK changes. Test basic SDK initialization and verify connection to ad networks.
+
+## 3. Design and implement ad placement strategy [pending]
+### Dependencies: 13.2
+### Description: Create a comprehensive strategy for ad placement throughout the application, optimizing for user experience and revenue.
+### Details:
+Map user journey to identify optimal ad placement opportunities. Implement different ad formats (banners, interstitials, rewarded) at appropriate points. Create frequency capping logic to prevent ad fatigue. Implement A/B testing framework to compare different strategies. Design graceful fallbacks when ads fail to load.
+
+## 4. Develop rewarded ad validation system [pending]
+### Dependencies: 13.2, 13.3
+### Description: Create a robust system to validate that users have properly viewed rewarded ads before granting in-app rewards.
+### Details:
+Implement callbacks for ad completion events. Create server-side validation when possible to prevent client-side manipulation. Design reward distribution system with proper transaction handling. Implement retry mechanisms for network failures. Create analytics to track reward conversion rates.
+
+## 5. Integrate payment processor SDK [pending]
+### Dependencies: None
+### Description: Integrate the selected payment processing SDK (e.g., Stripe, PayPal, platform-specific) into the application.
+### Details:
+Add payment SDK dependencies to project. Implement initialization and configuration. Set up secure API keys management. Create sandbox/test environment configuration. Implement basic payment form UI components. Test connectivity with payment processor in sandbox mode.
+
+## 6. Implement purchase flow and UI [pending]
+### Dependencies: 13.5
+### Description: Design and implement the complete purchase flow including product selection, checkout process, and payment confirmation.
+### Details:
+Create product catalog management system. Design intuitive checkout UI with clear pricing. Implement cart functionality if needed. Create payment method selection interface. Design confirmation and receipt screens. Implement proper error handling with user-friendly messages. Support multiple currencies if required.
+
+## 7. Develop purchase verification system [pending]
+### Dependencies: 13.5, 13.6
+### Description: Create a secure system to verify purchases and prevent fraud, including handling interrupted transactions.
+### Details:
+Implement server-side receipt verification with payment processor APIs. Create transaction database to track purchase states. Design idempotent purchase handling to prevent duplicate charges. Implement retry logic for interrupted purchases. Create admin dashboard for manual verification if needed. Test various failure scenarios including network interruptions.
+
+## 8. Implement subscription management [pending]
+### Dependencies: 13.5, 13.6, 13.7
+### Description: Develop a complete subscription management system including recurring billing, cancellation, and upgrade/downgrade paths.
+### Details:
+Implement subscription creation and management APIs. Create user interfaces for subscription management. Design upgrade/downgrade flows with prorated billing. Implement cancellation workflows with confirmation. Create renewal notification system. Design grace periods for failed payments. Implement subscription analytics dashboard.
+
