@@ -6,6 +6,8 @@ import 'physics_debug.dart';
 import 'physics_body.dart';
 import 'collision.dart';
 import 'collision_detection.dart';
+import 'impulse_solver.dart';
+import 'material_properties.dart';
 import 'dart:async';
 
 /// 광범위 충돌 검출 방식
@@ -100,6 +102,9 @@ class PhysicsEngine {
   /// 현재 프레임 카운터
   int _frameCounter = 0;
 
+  /// 충격량 기반 충돌 해결기
+  final ImpulseSolver _impulseSolver = ImpulseSolver();
+
   PhysicsEngine({
     Vector2D? gravity,
     this.fixedTimeStep = 1 / 60,
@@ -115,6 +120,11 @@ class PhysicsEngine {
     if (gravity != null) {
       this.gravity = gravity;
     }
+
+    // 충격량 해결기 초기화
+    _impulseSolver.iterations = velocityIterations;
+    _impulseSolver.positionalCorrectionFactor = 0.8;
+    _impulseSolver.allowedPenetration = 0.01;
   }
 
   /// 보간 계수 가져오기 (렌더링용)
@@ -143,9 +153,7 @@ class PhysicsEngine {
           angularVelocity: body.angularVelocity,
           mass: body.mass,
           inertia: body.inertia,
-          restitution: body.restitution,
-          staticFriction: body.staticFriction,
-          dynamicFriction: body.dynamicFriction,
+          material: body.material,
           linearDamping: body.linearDamping,
           angularDamping: body.angularDamping,
           collisionLayer: body.collisionLayer,
@@ -584,161 +592,13 @@ class PhysicsEngine {
 
   /// 충돌 해결 - 침투 및 속도 처리
   void _solveCollisions(List<Collision> collisions) {
-    // 위치 보정
-    for (int i = 0; i < positionIterations; i++) {
+    // ImpulseSolver를 사용하여 충돌 해결
+    _impulseSolver.solve(collisions, fixedTimeStep / substeps);
+
+    // 충돌 이벤트 발생
+    if (onCollision != null) {
       for (final collision in collisions) {
-        final bodyA = collision.bodyA;
-        final bodyB = collision.bodyB;
-
-        // 질량에 기반한 침투 보정 비율
-        double totalInverseMass = bodyA.inverseMass + bodyB.inverseMass;
-        if (totalInverseMass <= 0) continue;
-
-        double ratio = bodyA.inverseMass / totalInverseMass;
-        Vector2D correction =
-            collision.normal * collision.penetration * 0.8; // 0.8은 보정 계수
-
-        // 바디 A는 충돌 방향의 반대로 이동
-        if (bodyA.type != BodyType.static && bodyA.type != BodyType.kinematic) {
-          bodyA.position = bodyA.position - correction * ratio;
-        }
-
-        // 바디 B는 충돌 방향으로 이동
-        if (bodyB.type != BodyType.static && bodyB.type != BodyType.kinematic) {
-          bodyB.position = bodyB.position + correction * (1 - ratio);
-        }
-      }
-    }
-
-    // 속도 해결
-    for (int i = 0; i < velocityIterations; i++) {
-      for (final collision in collisions) {
-        final bodyA = collision.bodyA;
-        final bodyB = collision.bodyB;
-        final normal = collision.normal;
-
-        // 정적/키네마틱 바디 조합은 처리 최적화
-        if ((bodyA.type == BodyType.static ||
-                bodyA.type == BodyType.kinematic) &&
-            (bodyB.type == BodyType.static ||
-                bodyB.type == BodyType.kinematic)) {
-          continue;
-        }
-
-        // 접촉점에서의 상대 속도 계산
-        final contactPoint = collision.contactPoints[0];
-
-        // 각 바디에 대한 접촉점의 상대 위치
-        final rA = contactPoint - bodyA.position;
-        final rB = contactPoint - bodyB.position;
-
-        // 각 바디의 접촉점에서의 선속도
-        final vA =
-            bodyA.velocity +
-            Vector2D(
-              -bodyA.angularVelocity * rA.y,
-              bodyA.angularVelocity * rA.x,
-            );
-        final vB =
-            bodyB.velocity +
-            Vector2D(
-              -bodyB.angularVelocity * rB.y,
-              bodyB.angularVelocity * rB.x,
-            );
-
-        // 상대 속도
-        final relativeVelocity = vB - vA;
-
-        // 접근 속도 (음수면 서로 접근 중)
-        final normalVelocity = relativeVelocity.dot(normal);
-
-        // 이미 분리 중이면 처리 불필요
-        if (normalVelocity > 0) continue;
-
-        // 반발계수 (두 물체의 반발계수 평균)
-        final restitution = (bodyA.restitution + bodyB.restitution) * 0.5;
-
-        // 마찰 계수 (두 물체의 마찰계수 평균)
-        final staticFriction = math.sqrt(
-          bodyA.staticFriction * bodyB.staticFriction,
-        );
-        final dynamicFriction = math.sqrt(
-          bodyA.dynamicFriction * bodyB.dynamicFriction,
-        );
-
-        // 충격량 계산을 위한 분모
-        double denominator = bodyA.inverseMass + bodyB.inverseMass;
-
-        // 접촉점에서의 회전 영향 추가
-        denominator +=
-            bodyA.inverseInertia *
-            (rA.dot(rA) - math.pow(rA.dot(normal), 2).toDouble());
-        denominator +=
-            bodyB.inverseInertia *
-            (rB.dot(rB) - math.pow(rB.dot(normal), 2).toDouble());
-
-        if (denominator <= 0) continue;
-
-        // 충격량 크기 계산
-        // 노멀 방향으로는 반발 적용, 마찰 방향은 에너지 소실
-        double impulse = -(1 + restitution) * normalVelocity / denominator;
-
-        // 충격량 벡터
-        final impulseVector = normal * impulse;
-
-        // 바디 A에 충격량 적용
-        if (bodyA.type == BodyType.dynamic) {
-          bodyA.velocity = bodyA.velocity - impulseVector * bodyA.inverseMass;
-          bodyA.angularVelocity -=
-              rA.cross(impulseVector) * bodyA.inverseInertia;
-        }
-
-        // 바디 B에 충격량 적용
-        if (bodyB.type == BodyType.dynamic) {
-          bodyB.velocity = bodyB.velocity + impulseVector * bodyB.inverseMass;
-          bodyB.angularVelocity +=
-              rB.cross(impulseVector) * bodyB.inverseInertia;
-        }
-
-        // 마찰력 적용
-        final tangent =
-            relativeVelocity - normal * relativeVelocity.dot(normal);
-        Vector2D tangentNormal = Vector2D.zero();
-
-        if (tangent.magnitudeSquared > 0) {
-          tangentNormal = tangent.normalized;
-        }
-
-        // 마찰력의 크기
-        final frictionImpulse =
-            -relativeVelocity.dot(tangentNormal) / denominator;
-
-        // 정적 마찰력과 운동 마찰력 중 적용할 것 결정
-        Vector2D frictionVector;
-        if (frictionImpulse.abs() < impulse * staticFriction) {
-          frictionVector = tangentNormal * frictionImpulse;
-        } else {
-          frictionVector = tangentNormal * -impulse * dynamicFriction;
-        }
-
-        // 바디 A에 마찰력 적용
-        if (bodyA.type == BodyType.dynamic) {
-          bodyA.velocity = bodyA.velocity - frictionVector * bodyA.inverseMass;
-          bodyA.angularVelocity -=
-              rA.cross(frictionVector) * bodyA.inverseInertia;
-        }
-
-        // 바디 B에 마찰력 적용
-        if (bodyB.type == BodyType.dynamic) {
-          bodyB.velocity = bodyB.velocity + frictionVector * bodyB.inverseMass;
-          bodyB.angularVelocity +=
-              rB.cross(frictionVector) * bodyB.inverseInertia;
-        }
-
-        // 충돌 이벤트 발생
-        if (onCollision != null) {
-          onCollision!(collision);
-        }
+        onCollision!(collision);
       }
     }
   }
@@ -959,5 +819,45 @@ class PhysicsEngine {
     if (debugMode) {
       debugInfo.clear();
     }
+  }
+
+  /// 물리 바디의 재질 설정
+  void setBodyMaterial(int bodyId, MaterialProperties material) {
+    final body = _bodies[bodyId];
+    if (body != null) {
+      body.setMaterial(material);
+    }
+  }
+
+  /// 사전 정의된 재질로 물리 바디의 재질 설정
+  void setBodyPredefinedMaterial(int bodyId, String materialName) {
+    MaterialProperties? material;
+
+    switch (materialName.toLowerCase()) {
+      case 'rubber':
+        material = MaterialProperties.rubber;
+        break;
+      case 'glass':
+        material = MaterialProperties.glass;
+        break;
+      case 'metal':
+        material = MaterialProperties.metal;
+        break;
+      case 'wood':
+        material = MaterialProperties.wood;
+        break;
+      case 'ice':
+        material = MaterialProperties.ice;
+        break;
+      case 'bouncyball':
+      case 'bouncy':
+        material = MaterialProperties.bouncyBall;
+        break;
+      default:
+        // 기본 재질 사용
+        material = MaterialProperties();
+    }
+
+    setBodyMaterial(bodyId, material);
   }
 }

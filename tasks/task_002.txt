@@ -96,17 +96,69 @@ Implement spatial partitioning using either quad trees or spatial hashing. Optim
 다음 단계로 lib/physics/quad_tree.dart 파일을 새로 생성하여 광범위 충돌 검출의 핵심 구조인 쿼드트리를 구현할 예정입니다.
 </info added on 2025-05-12T10:52:42.198Z>
 
-## 4. Implement narrow-phase collision detection [in-progress]
+## 4. Implement narrow-phase collision detection [done]
 ### Dependencies: 2.3
 ### Description: Create precise collision detection algorithms for different geometry types
 ### Details:
 Implement GJK (Gilbert-Johnson-Keerthi) algorithm for convex shapes. Add SAT (Separating Axis Theorem) for polygon collision detection. Create specialized algorithms for sphere-sphere, AABB-AABB, and sphere-AABB collisions. Implement continuous collision detection for fast-moving objects. Add collision manifold generation for contact points.
 
-## 5. Develop collision response system [pending]
+## 5. Develop collision response system [done]
 ### Dependencies: 2.4
 ### Description: Create a physics solver that handles collision responses with accurate impulse resolution
 ### Details:
 Implement impulse-based collision response with linear and angular components. Add friction and restitution coefficients for material simulation. Create a constraint solver for stable stacking and resting contacts. Implement sequential impulse solver for multiple contact points. Add configurable material properties (bounce, friction, density).
+<info added on 2025-05-12T11:37:48.092Z>
+Implement impulse-based collision response with linear and angular components. Add friction and restitution coefficients for material simulation. Create a constraint solver for stable stacking and resting contacts. Implement sequential impulse solver for multiple contact points. Add configurable material properties (bounce, friction, density).
+
+The collision response system implementation has begun with the creation of two core files:
+
+1. `impulse_solver.dart` - The solver class responsible for the main collision response logic:
+   - Implementation of impulse-based collision response system
+   - Application of linear and angular momentum conservation
+   - Position correction algorithm to resolve penetration
+   - Calculation of static/dynamic friction forces
+   - Stabilization through velocity thresholds
+
+2. `contact_manifold.dart` - Stores detailed information about collision contact points:
+   - Storage of contact points, normal vectors, and penetration depth
+   - Management of physical quantities needed for collision calculations (mass, moment of inertia)
+   - Storage of material properties such as friction and restitution coefficients
+   - Support for impulse accumulation for continuous collision resolution
+
+These two files work together to handle the actual movement of objects after collision detection in the physics engine. The ImpulseSolver class converts collisions into ContactManifolds, then uses them to perform position correction and velocity resolution. This approach enables stable physics simulation and handling of complex situations with multiple contact points.
+
+Next steps include integrating this collision response system with the main physics engine class and creating an interface for configuring material properties.
+</info added on 2025-05-12T11:37:48.092Z>
+<info added on 2025-05-12T11:42:06.793Z>
+The collision response system has been successfully completed with the following components:
+
+1. `impulse_solver.dart` - Core implementation of the impulse-based collision response system:
+   - Physics-based impulse resolver that handles linear and angular momentum transfer during collisions
+   - Position correction algorithm based on penetration depth
+   - Static and dynamic friction handling mechanisms
+   - Physics simulation stabilization through velocity thresholds
+
+2. `contact_manifold.dart` - Manages collision contact point information:
+   - Stores collision data including contact points, normal vectors, and penetration depth
+   - Supports calculation of physical quantities needed for contact resolution (mass, moment of inertia)
+   - Implements impulse accumulation tracking for continuous collision resolution
+
+3. `PhysicsBody` class extension:
+   - Added `getVelocityAtPoint` method to calculate velocity at specific points
+   - Works in conjunction with angular momentum calculations to support accurate collision resolution
+
+4. `material_properties.dart` - Manages physical material properties of objects:
+   - Handles restitution coefficients, static/dynamic friction coefficients, and density
+   - Provides various predefined materials such as rubber, metal, wood, glass, etc.
+   - Supports combination of physical properties between two interacting materials
+
+5. Integration with `PhysicsEngine` class:
+   - Implemented collision resolution process using the `ImpulseSolver`
+   - Provided interface for material configuration and management
+   - Optimized performance and improved stability
+
+This collision response system serves as a core component of the physics engine, enabling realistic simulation of collisions between objects and implementation of various physical characteristics (e.g., rubber balls, metal blocks). The physics engine now provides a complete system with both collision detection and collision response capabilities.
+</info added on 2025-05-12T11:42:06.793Z>
 
 ## 6. Design cross-platform input abstraction layer [done]
 ### Dependencies: None
@@ -147,7 +199,7 @@ Design an input manager class hierarchy with device abstraction. Create input ma
 현재 크로스 플랫폼 입력 추상화 레이어의 설계와 기본 구현은 완료되었습니다. 웹 플랫폼에 대한 구현만 존재하므로, 다음 서브태스크 "Implement platform-specific input handlers"에서 모바일 터치, 데스크톱 등 추가 플랫폼에 대한 핸들러를 구현할 예정입니다. 이 설계는 물리 엔진과의 통합을 위한 기반을 제공하며, 다양한 입력 장치를 일관된 방식으로 처리할 수 있는 구조를 갖추고 있습니다.
 </info added on 2025-05-12T10:17:13.002Z>
 
-## 7. Implement platform-specific input handlers [in-progress]
+## 7. Implement platform-specific input handlers [done]
 ### Dependencies: 2.6
 ### Description: Develop concrete implementations of input handlers for each target platform
 ### Details:
@@ -184,6 +236,67 @@ Additional considerations:
 - Create a factory to load appropriate handlers at runtime
 - Design unit test structure to maintain consistent behavior across handlers
 </info added on 2025-05-12T10:18:20.583Z>
+<info added on 2025-05-12T11:46:35.521Z>
+Create keyboard/mouse input handlers for Windows (DirectInput/XInput), macOS, and Linux. Implement gamepad support with consistent button mapping across platforms. Add touch input support for mobile platforms. Implement motion controls where applicable. Create fallback mechanisms when specific inputs aren't available.
+
+<info added on 2025-05-12T10:18:20.583Z>
+Create keyboard/mouse input handlers for Windows (DirectInput/XInput), macOS, and Linux. Implement gamepad support with consistent button mapping across platforms. Add touch input support for mobile platforms. Implement motion controls where applicable. Create fallback mechanisms when specific inputs aren't available.
+
+Based on code analysis, WebInputHandler is already implemented and the cross-platform input interface is complete. The implementation plan for additional platform-specific handlers is as follows:
+
+1. Mobile Touch Handler (MobileInputHandler):
+   - Utilize Flutter's native touch interface
+   - Support multi-touch gestures
+   - Normalize input coordinates based on screen size
+
+2. Desktop Handler (DesktopInputHandler):
+   - Process keyboard and mouse inputs
+   - Support keyboard shortcut combinations
+   - Manage input focus
+
+3. Gamepad Handler (GamepadInputHandler):
+   - Support standard gamepad layouts
+   - Map buttons and axes consistently
+   - Implement vibration feedback where possible
+
+Implementation steps:
+1. Create handler files in the lib/input/platform directory
+2. Ensure each handler implements the InputHandler interface
+3. Set up platform-specific event listeners
+4. Convert platform-specific input events to unified input events
+5. Configure handlers to integrate with CompositeInputHandler
+
+Additional considerations:
+- Implement platform detection (web, mobile, desktop)
+- Create a factory to load appropriate handlers at runtime
+- Design unit test structure to maintain consistent behavior across handlers
+</info added on 2025-05-12T10:18:20.583Z>
+
+Platform-specific input handlers have been successfully implemented across all target platforms. The implementation includes:
+
+1. Platform-specific input handlers:
+   - WebInputHandler: DOM-based input processing for web browsers
+   - DesktopInputHandler: Keyboard/mouse input processing for desktop environments
+   - MobileInputHandler: Touch input processing for mobile platforms
+   - GamepadInputHandler: Gamepad input processing across supported platforms
+
+2. Platform detection utility:
+   - PlatformDetector class for automatic environment detection
+   - Capability to identify web, mobile, and desktop environments
+   - Functions to check for supported input device types on current platform
+
+3. Input handler factory:
+   - InputHandlerFactory class that automatically selects appropriate handlers
+   - Support for various handler configurations
+   - Ability to create handlers for specific input device types
+
+4. Input manager integration:
+   - InputManager now incorporates platform detection and handler factory
+   - Automatic handler selection based on runtime environment
+   - Adaptive input processing across different platforms
+
+This implementation enables the game to automatically utilize appropriate input methods across various platforms (web, mobile, desktop) with platform-specific optimizations. The architecture is highly extensible, allowing for easy integration of new input methods or platforms in the future.
+</info added on 2025-05-12T11:46:35.521Z>
 
 ## 8. Integrate and optimize physics and input systems [pending]
 ### Dependencies: 2.2, 2.5, 2.7

@@ -244,4 +244,9 @@ class CompositeInputHandler implements InputHandler {
     }
     return null;
   }
+
+  /// 내부 핸들러 목록 반환
+  List<InputHandler> getHandlers() {
+    return List.unmodifiable(_handlers);
+  }
 }

@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/material.dart';
 
 import 'input_event.dart';
 import 'input_handler.dart';
 import 'input_mapping.dart';
+import 'input_handler_factory.dart';
+import 'platform_detector.dart';
 
 /// 액션 이벤트 - 게임 액션과 관련된 입력 이벤트
 class ActionEvent {
@@ -77,6 +80,12 @@ class InputManager {
   /// 관리자가 초기화되었는지 여부
   bool _isInitialized = false;
 
+  /// 입력 핸들러 팩토리
+  final InputHandlerFactory _handlerFactory = InputHandlerFactory();
+
+  /// 플랫폼 감지기
+  final PlatformDetector _platformDetector = PlatformDetector();
+
   InputManager({required String defaultContextId})
     : _mappingManager = InputMappingManager(defaultContextId: defaultContextId),
       _actionEvents = StreamController<ActionEvent>.broadcast(),
@@ -126,13 +135,46 @@ class InputManager {
   }
 
   /// 입력 관리자 초기화
-  Future<void> initialize() async {
+  Future<void> initialize({
+    Map<String, dynamic>? options,
+    GlobalKey? mobileTargetKey,
+    Set<String>? handlerTypes,
+  }) async {
     if (_isInitialized) {
       return;
     }
 
+    // 핸들러 자동 감지 및 생성
+    if (_handlers.isEmpty) {
+      if (handlerTypes != null && handlerTypes.isNotEmpty) {
+        // 특정 핸들러 유형만 추가
+        for (final type in handlerTypes) {
+          try {
+            final handler = _handlerFactory.createHandler(
+              type,
+              options: options,
+            );
+            addHandler(handler);
+          } catch (e) {
+            print('Failed to create handler for type: $type, error: $e');
+          }
+        }
+      } else {
+        // 현재 플랫폼에 맞는 기본 핸들러 자동 생성
+        final compositeHandler = await _handlerFactory.createDefaultHandlers(
+          options: options,
+          mobileTargetKey: mobileTargetKey,
+        );
+
+        // 복합 핸들러 대신 개별 핸들러를 직접 추가
+        for (final handler in compositeHandler.getHandlers()) {
+          addHandler(handler);
+        }
+      }
+    }
+
     // 종합 핸들러 초기화
-    await _compositeHandler.initialize();
+    await _compositeHandler.initialize(options);
 
     // 이벤트 구독
     _compositeHandler.events.listen(_handleRawEvent);
@@ -445,5 +487,20 @@ class InputManager {
     // 새 시간 기록
     _throttleTimes[key] = now;
     return false; // 이벤트 허용
+  }
+
+  /// 현재 플랫폼에서 지원되는 입력 장치 유형 얻기
+  Set<InputDeviceType> getSupportedDeviceTypes() {
+    return _handlerFactory.getSupportedDeviceTypes();
+  }
+
+  /// 현재 실행 중인 플랫폼 유형 얻기
+  PlatformType getPlatformType() {
+    return _platformDetector.platformType;
+  }
+
+  /// 특정 입력 장치 지원 여부 확인
+  bool supportsDeviceType(InputDeviceType deviceType) {
+    return getSupportedDeviceTypes().contains(deviceType);
   }
 }

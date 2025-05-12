@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import '../models/game/shape.dart';
 import 'vector2d.dart';
 import 'frame_state.dart';
+import 'material_properties.dart';
 
 /// 물리 바디의 타입 (물리적 동작 방식)
 enum BodyType {
@@ -66,14 +67,17 @@ class PhysicsBody {
   /// 모양
   Shape shape;
 
+  /// 재질 속성
+  MaterialProperties material;
+
   /// 반발계수 (0~1) - 충돌 시 에너지 보존 정도
-  double restitution;
+  double get restitution => material.restitution;
 
   /// 정지 마찰 계수
-  double staticFriction;
+  double get staticFriction => material.staticFriction;
 
   /// 운동 마찰 계수
-  double dynamicFriction;
+  double get dynamicFriction => material.dynamicFriction;
 
   /// 선형 감쇠 (속도 감소)
   double linearDamping;
@@ -112,9 +116,10 @@ class PhysicsBody {
     this.angularVelocity = 0.0,
     this.mass = 1.0,
     double? inertia,
-    this.restitution = 0.2,
-    this.staticFriction = 0.5,
-    this.dynamicFriction = 0.3,
+    MaterialProperties? material,
+    double restitution = 0.2,
+    double staticFriction = 0.5,
+    double dynamicFriction = 0.3,
     this.linearDamping = 0.01,
     this.angularDamping = 0.01,
     this.collisionLayer = CollisionLayer.DEFAULT,
@@ -126,7 +131,14 @@ class PhysicsBody {
        torque = 0.0,
        inverseMass = mass > 0 ? 1.0 / mass : 0.0,
        inertia = inertia ?? 0.0,
-       inverseInertia = inertia != null && inertia > 0 ? 1.0 / inertia : 0.0 {
+       inverseInertia = inertia != null && inertia > 0 ? 1.0 / inertia : 0.0,
+       material =
+           material ??
+           MaterialProperties(
+             restitution: restitution,
+             staticFriction: staticFriction,
+             dynamicFriction: dynamicFriction,
+           ) {
     if (type == BodyType.static) {
       inverseMass = 0;
       inverseInertia = 0;
@@ -205,6 +217,16 @@ class PhysicsBody {
     }
   }
 
+  /// 특정 지점에서의 속도 계산
+  ///
+  /// [r]는 물체의 중심에서 특정 지점까지의 상대적인 벡터입니다.
+  /// 결과는 해당 지점에서의 총 선형 속도입니다 (선형 속도 + 회전에 의한 선형 속도).
+  Vector2D getVelocityAtPoint(Vector2D r) {
+    // v = 물체의 선형 속도 + 회전 속도에 의한 접선 속도
+    // 접선 속도 = ω × r = (0, 0, ω) × (r.x, r.y, 0) = (-ω * r.y, ω * r.x, 0)
+    return velocity + Vector2D(-angularVelocity * r.y, angularVelocity * r.x);
+  }
+
   /// 충격량 적용 (즉각적인 속도 변화)
   void applyImpulse(Vector2D impulse) {
     velocity = velocity + impulse * inverseMass;
@@ -226,6 +248,11 @@ class PhysicsBody {
     if (isSleeping) {
       isSleeping = false;
     }
+  }
+
+  /// 재질 속성 변경
+  void setMaterial(MaterialProperties newMaterial) {
+    material = newMaterial;
   }
 }
 
