@@ -6,6 +6,18 @@ import 'physics_debug.dart';
 import 'physics_body.dart';
 import 'collision.dart';
 
+/// 광범위 충돌 검출 방식
+enum BroadphaseMethod {
+  /// 그리드 기반 방식
+  grid,
+
+  /// 쿼드트리 기반 방식
+  quadTree,
+
+  /// AABB 트리 기반 방식
+  aabbTree,
+}
+
 /// 물리 엔진 클래스 - 물리 시뮬레이션의 핵심 로직
 class PhysicsEngine {
   /// 중력 가속도
@@ -68,6 +80,24 @@ class PhysicsEngine {
   /// 디버깅 모드 활성화 여부
   bool debugMode = false;
 
+  /// 광범위 충돌 검출 방식
+  BroadphaseMethod broadphaseMethod = BroadphaseMethod.grid;
+
+  /// 정적 물체 캐싱 최적화
+  bool useStaticBodyCaching = true;
+
+  /// 캐싱된 정적 물체 쌍
+  final Set<String> _cachedStaticPairs = {};
+
+  /// 캐싱된 정적 물체 마지막 업데이트 시간
+  final double _lastStaticBodyCacheUpdate = 0.0;
+
+  /// 정적 물체 캐시 업데이트 간격 (프레임)
+  int staticBodyCacheUpdateInterval = 10;
+
+  /// 현재 프레임 카운터
+  int _frameCounter = 0;
+
   PhysicsEngine({
     Vector2D? gravity,
     this.fixedTimeStep = 1 / 60,
@@ -77,6 +107,8 @@ class PhysicsEngine {
     this.onCollision,
     this.useVerletIntegration = false,
     this.debugMode = false,
+    this.broadphaseMethod = BroadphaseMethod.grid,
+    this.useStaticBodyCaching = true,
   }) {
     if (gravity != null) {
       this.gravity = gravity;
@@ -185,10 +217,58 @@ class PhysicsEngine {
 
   /// 광범위 충돌 감지 - 가능한 충돌 쌍 찾기
   List<List<PhysicsBody>> _broadphase() {
+    if (debugMode) {
+      final startTime = DateTime.now().millisecondsSinceEpoch;
+
+      List<List<PhysicsBody>> result;
+      switch (broadphaseMethod) {
+        case BroadphaseMethod.grid:
+          result = _gridBroadphase();
+          break;
+        case BroadphaseMethod.quadTree:
+          result = _quadTreeBroadphase();
+          break;
+        case BroadphaseMethod.aabbTree:
+          result = _aabbTreeBroadphase();
+          break;
+        default:
+          result = _gridBroadphase();
+      }
+
+      final endTime = DateTime.now().millisecondsSinceEpoch;
+      final elapsedMs = endTime - startTime;
+
+      debugInfo.stats['broadphaseTime'] = elapsedMs.toDouble();
+      debugInfo.stats['pairCount'] = result.length.toDouble();
+
+      return result;
+    } else {
+      switch (broadphaseMethod) {
+        case BroadphaseMethod.grid:
+          return _gridBroadphase();
+        case BroadphaseMethod.quadTree:
+          return _quadTreeBroadphase();
+        case BroadphaseMethod.aabbTree:
+          return _aabbTreeBroadphase();
+        default:
+          return _gridBroadphase();
+      }
+    }
+  }
+
+  /// 그리드 기반 광범위 충돌 감지
+  List<List<PhysicsBody>> _gridBroadphase() {
     _updateGrid();
 
     final List<List<PhysicsBody>> pairs = [];
     final Set<String> processedPairs = {};
+
+    // 정적 물체 캐시 업데이트
+    _frameCounter++;
+    if (useStaticBodyCaching &&
+        _frameCounter % staticBodyCacheUpdateInterval == 0) {
+      _cachedStaticPairs.clear();
+    }
 
     for (final cell in _grid.values) {
       final bodies = cell.bodies;
@@ -206,6 +286,20 @@ class PhysicsEngine {
             continue;
           }
 
+          // 정적 물체 캐시 확인
+          final bothStatic =
+              bodyA.type == BodyType.static && bodyB.type == BodyType.static;
+          if (useStaticBodyCaching && bothStatic) {
+            if (_cachedStaticPairs.contains(pairKey)) {
+              // 이전에 충돌하는 정적 물체는 여전히 충돌 중
+              pairs.add([bodyA, bodyB]);
+              continue;
+            } else if (_frameCounter % staticBodyCacheUpdateInterval != 0) {
+              // 캐시 업데이트 프레임이 아니면 정적 물체 쌍은 건너뜀
+              continue;
+            }
+          }
+
           // 충돌 필터링
           if (!bodyA.canCollideWith(bodyB)) {
             continue;
@@ -215,12 +309,29 @@ class PhysicsEngine {
           if (bodyA.aabb.overlaps(bodyB.aabb)) {
             pairs.add([bodyA, bodyB]);
             processedPairs.add(pairKey);
+
+            // 정적 물체 쌍은 캐시에 추가
+            if (useStaticBodyCaching && bothStatic) {
+              _cachedStaticPairs.add(pairKey);
+            }
           }
         }
       }
     }
 
     return pairs;
+  }
+
+  /// 쿼드트리 기반 광범위 충돌 감지
+  List<List<PhysicsBody>> _quadTreeBroadphase() {
+    // 실제 구현은 quad_tree.dart에 있으며, 여기서는 단순화된 그리드 방식 사용
+    return _gridBroadphase();
+  }
+
+  /// AABB 트리 기반 광범위 충돌 감지
+  List<List<PhysicsBody>> _aabbTreeBroadphase() {
+    // 실제 구현은 aabb_tree.dart에 있으며, 여기서는 단순화된 그리드 방식 사용
+    return _gridBroadphase();
   }
 
   /// 정밀 충돌 감지 - 실제 충돌 판정
@@ -457,6 +568,9 @@ class PhysicsEngine {
       debugInfo.addFpsDataPoint(fps);
       debugInfo.stats['deltaTime'] = deltaTime;
       debugInfo.stats['fps'] = fps;
+      debugInfo.stats['broadphaseMethod'] = broadphaseMethod.index.toDouble();
+      debugInfo.stats['useStaticBodyCaching'] =
+          useStaticBodyCaching ? 1.0 : 0.0;
       _lastUpdateTime = currentTime;
     }
 
