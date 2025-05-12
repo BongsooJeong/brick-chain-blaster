@@ -111,7 +111,7 @@
             3
           ],
           "details": "Implement GJK (Gilbert-Johnson-Keerthi) algorithm for convex shapes. Add SAT (Separating Axis Theorem) for polygon collision detection. Create specialized algorithms for sphere-sphere, AABB-AABB, and sphere-AABB collisions. Implement continuous collision detection for fast-moving objects. Add collision manifold generation for contact points.",
-          "status": "pending"
+          "status": "in-progress"
         },
         {
           "id": 5,

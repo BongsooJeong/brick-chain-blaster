@@ -96,7 +96,7 @@ Implement spatial partitioning using either quad trees or spatial hashing. Optim
 다음 단계로 lib/physics/quad_tree.dart 파일을 새로 생성하여 광범위 충돌 검출의 핵심 구조인 쿼드트리를 구현할 예정입니다.
 </info added on 2025-05-12T10:52:42.198Z>
 
-## 4. Implement narrow-phase collision detection [pending]
+## 4. Implement narrow-phase collision detection [in-progress]
 ### Dependencies: 2.3
 ### Description: Create precise collision detection algorithms for different geometry types
 ### Details:

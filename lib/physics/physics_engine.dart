@@ -5,6 +5,8 @@ import 'verlet_integrator.dart';
 import 'physics_debug.dart';
 import 'physics_body.dart';
 import 'collision.dart';
+import 'collision_detection.dart';
+import 'dart:async';
 
 /// 광범위 충돌 검출 방식
 enum BroadphaseMethod {
@@ -337,6 +339,7 @@ class PhysicsEngine {
   /// 정밀 충돌 감지 - 실제 충돌 판정
   List<Collision> _narrowphase(List<List<PhysicsBody>> pairs) {
     final List<Collision> collisions = [];
+    final Stopwatch timer = Stopwatch()..start();
 
     for (final pair in pairs) {
       final bodyA = pair[0];
@@ -347,51 +350,233 @@ class PhysicsEngine {
         continue;
       }
 
+      bool collision = false;
+      Vector2D normal = Vector2D.zero();
+      double penetration = 0;
+      List<Vector2D> contactPoints = [];
+
       // Circle vs Circle 충돌 처리
       if (bodyA.shape is Circle && bodyB.shape is Circle) {
         final circleA = bodyA.shape as Circle;
         final circleB = bodyB.shape as Circle;
 
-        // 원 사이의 거리 계산
-        final distance = Vector2D.distance(circleA.center, circleB.center);
-        final radiusSum = circleA.radius + circleB.radius;
+        // 향상된 충돌 검출 알고리즘 사용
+        final result = CollisionDetection.circleVsCircle(circleA, circleB);
+
+        if (result.collides) {
+          collision = true;
+          normal = result.normal;
+          penetration = result.depth;
+          contactPoints = [result.contactPoint];
+        }
+      }
+      // Circle vs AABB(Rectangle) 충돌 처리
+      else if (bodyA.shape is Circle && bodyB.shape is Rectangle) {
+        final circle = bodyA.shape as Circle;
+        final rect = bodyB.shape as Rectangle;
+        final aabb = rect.boundingBox;
+
+        final result = CollisionDetection.circleVsAabb(circle, aabb);
+
+        if (result.collides) {
+          collision = true;
+          normal = result.normal;
+          penetration = result.depth;
+          contactPoints = [result.contactPoint];
+        }
+      }
+      // AABB(Rectangle) vs Circle 충돌 처리 (순서 반대)
+      else if (bodyA.shape is Rectangle && bodyB.shape is Circle) {
+        final rect = bodyA.shape as Rectangle;
+        final circle = bodyB.shape as Circle;
+        final aabb = rect.boundingBox;
+
+        final result = CollisionDetection.circleVsAabb(circle, aabb);
+
+        if (result.collides) {
+          collision = true;
+          normal = result.normal * -1; // 방향 반전 (B에서 A로)
+          penetration = result.depth;
+          contactPoints = [result.contactPoint];
+        }
+      }
+      // Rectangle vs Rectangle 충돌 처리 (AABB로 간단화)
+      else if (bodyA.shape is Rectangle && bodyB.shape is Rectangle) {
+        final rectA = bodyA.shape as Rectangle;
+        final rectB = bodyB.shape as Rectangle;
+        final aabbA = rectA.boundingBox;
+        final aabbB = rectB.boundingBox;
+
+        final result = CollisionDetection.aabbVsAabb(aabbA, aabbB);
+
+        if (result.collides) {
+          collision = true;
+          normal = result.normal;
+          penetration = result.depth;
+
+          // 접촉점은 두 AABB의 겹치는 영역의 중심점
+          final minX = math.max(aabbA.min.x, aabbB.min.x);
+          final minY = math.max(aabbA.min.y, aabbB.min.y);
+          final maxX = math.min(aabbA.max.x, aabbB.max.x);
+          final maxY = math.min(aabbA.max.y, aabbB.max.y);
+          final contactX = (minX + maxX) / 2;
+          final contactY = (minY + maxY) / 2;
+
+          contactPoints = [Vector2D(contactX, contactY)];
+        }
+      }
+      // Polygon vs Polygon 충돌 처리 (SAT 알고리즘)
+      else if (bodyA.shape is Polygon && bodyB.shape is Polygon) {
+        final polyA = bodyA.shape as Polygon;
+        final polyB = bodyB.shape as Polygon;
+
+        final result = CollisionDetection.satPolygons(polyA, polyB);
+
+        if (result.collides) {
+          collision = true;
+          normal = result.normal;
+          penetration = result.depth;
+
+          // 간단한 접촉점 계산 (침투 방향으로 이동한 가장 가까운 변)
+          // 실제 구현에서는 더 정교한 방법을 사용해야 함
+          Vector2D contact = Vector2D.zero();
+          double minDist = double.infinity;
+
+          // polyA의 각 정점에 대해 normal 방향으로 접촉점 검색
+          for (final vertex in polyA.vertices) {
+            // polyB의 각 변에 대해 거리 계산
+            for (int i = 0; i < polyB.vertices.length; i++) {
+              final start = polyB.vertices[i];
+              final end = polyB.vertices[(i + 1) % polyB.vertices.length];
+
+              // 정점에서 선분까지의 거리 계산
+              final edge = end - start;
+              final edgeLength = edge.magnitude;
+
+              // 선분에 투영
+              double t = (vertex - start).dot(edge) / (edgeLength * edgeLength);
+              t = math.max(0, math.min(1, t)); // 0과 1 사이로 제한
+
+              final closestPoint = start + edge * t;
+              final dist = Vector2D.distance(vertex, closestPoint);
+
+              if (dist < minDist) {
+                minDist = dist;
+                contact = closestPoint;
+              }
+            }
+          }
+
+          contactPoints = [contact];
+        }
+      }
+      // Circle vs Polygon 충돌 처리
+      else if (bodyA.shape is Circle && bodyB.shape is Polygon) {
+        final circle = bodyA.shape as Circle;
+        final poly = bodyB.shape as Polygon;
+
+        // 원의 중심에서 가장 가까운 다각형 변 찾기
+        Vector2D closestPoint = Vector2D.zero();
+        double minDist = double.infinity;
+
+        for (int i = 0; i < poly.vertices.length; i++) {
+          final start = poly.vertices[i];
+          final end = poly.vertices[(i + 1) % poly.vertices.length];
+
+          // 정점에서 선분까지의 거리 계산
+          final edge = end - start;
+          final edgeLength = edge.magnitude;
+
+          // 선분에 투영
+          double t =
+              (circle.center - start).dot(edge) / (edgeLength * edgeLength);
+          t = math.max(0, math.min(1, t)); // 0과 1 사이로 제한
+
+          final point = start + edge * t;
+          final dist = Vector2D.distance(circle.center, point);
+
+          if (dist < minDist) {
+            minDist = dist;
+            closestPoint = point;
+          }
+        }
 
         // 충돌 검사
-        if (distance < radiusSum) {
-          // 충돌 방향 벡터 (A에서 B로)
-          Vector2D normal = Vector2D.zero();
-          if (distance > 0) {
-            normal = (circleB.center - circleA.center) / distance;
-          } else {
-            // 중심이 같은 경우 임의 방향
-            normal = Vector2D(1, 0);
+        if (minDist <= circle.radius) {
+          collision = true;
+
+          // 중심에서 가장 가까운 점까지의 벡터
+          normal = (circle.center - closestPoint).normalized;
+          penetration = circle.radius - minDist;
+          contactPoints = [closestPoint];
+        }
+      }
+      // Polygon vs Circle 충돌 처리 (순서 반대)
+      else if (bodyA.shape is Polygon && bodyB.shape is Circle) {
+        final poly = bodyA.shape as Polygon;
+        final circle = bodyB.shape as Circle;
+
+        // 원의 중심에서 가장 가까운 다각형 변 찾기
+        Vector2D closestPoint = Vector2D.zero();
+        double minDist = double.infinity;
+
+        for (int i = 0; i < poly.vertices.length; i++) {
+          final start = poly.vertices[i];
+          final end = poly.vertices[(i + 1) % poly.vertices.length];
+
+          // 정점에서 선분까지의 거리 계산
+          final edge = end - start;
+          final edgeLength = edge.magnitude;
+
+          // 선분에 투영
+          double t =
+              (circle.center - start).dot(edge) / (edgeLength * edgeLength);
+          t = math.max(0, math.min(1, t)); // 0과 1 사이로 제한
+
+          final point = start + edge * t;
+          final dist = Vector2D.distance(circle.center, point);
+
+          if (dist < minDist) {
+            minDist = dist;
+            closestPoint = point;
           }
+        }
 
-          // 침투 깊이
-          final penetration = radiusSum - distance;
+        // 충돌 검사
+        if (minDist <= circle.radius) {
+          collision = true;
 
-          // 접촉점 계산
-          final contactPoint = circleA.center + normal * circleA.radius;
-
-          final collision = Collision(
-            bodyA: bodyA,
-            bodyB: bodyB,
-            normal: normal,
-            penetration: penetration,
-            contactPoints: [contactPoint],
-          );
-
-          collisions.add(collision);
-
-          // 디버깅 모드에서 충돌 정보 저장
-          if (debugMode) {
-            debugInfo.addCollision(collision);
-          }
+          // 중심에서 가장 가까운 점까지의 벡터 (방향 반전)
+          normal = (closestPoint - circle.center).normalized;
+          penetration = circle.radius - minDist;
+          contactPoints = [closestPoint];
         }
       }
 
-      // 추가 형태 조합에 대한 충돌 검사는 여기에 추가...
-      // Rectangle vs Rectangle, Circle vs Rectangle 등
+      // 충돌이 감지되면 충돌 정보 생성 및 추가
+      if (collision) {
+        final collisionData = Collision(
+          bodyA: bodyA,
+          bodyB: bodyB,
+          normal: normal,
+          penetration: penetration,
+          contactPoints: contactPoints,
+        );
+
+        collisions.add(collisionData);
+
+        // 디버깅 모드에서 충돌 정보 저장
+        if (debugMode) {
+          debugInfo.addCollision(collisionData);
+        }
+      }
+    }
+
+    // 디버깅 모드에서 성능 측정
+    if (debugMode) {
+      final elapsedMilliseconds = timer.elapsedMicroseconds / 1000.0;
+      debugInfo.stats['narrowphaseTime'] = elapsedMilliseconds;
+      debugInfo.stats['collisionCount'] = collisions.length.toDouble();
     }
 
     return collisions;
