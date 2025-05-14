@@ -1,6 +1,6 @@
 # Task ID: 1
 # Title: Setup Flutter Web Project with Flame Engine
-# Status: pending
+# Status: done
 # Dependencies: None
 # Priority: high
 # Description: Initialize the project with Flutter Web and integrate Flame game engine with CanvasKit renderer for optimal performance.
