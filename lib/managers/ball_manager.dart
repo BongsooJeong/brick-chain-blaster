@@ -6,16 +6,59 @@ import 'package:flutter/material.dart';
 import 'package:brick_chain_blaster/components/ball.dart';
 import 'package:brick_chain_blaster/game/brick_chain_game.dart';
 
+/// 공 상태 열거형
+enum BallStatus {
+  /// 대기 상태 (발사 준비 전)
+  waiting,
+
+  /// 준비 상태 (발사 대기)
+  ready,
+
+  /// 장전 상태 (발사 핀에 장착)
+  loaded,
+
+  /// 발사됨
+  fired,
+
+  /// 멈춤 (최종 위치에 도달)
+  stopped,
+}
+
+/// 공 상태 관리 클래스
+class _BallState {
+  /// 현재 공 상태
+  BallStatus status;
+
+  /// 공 인스턴스 (발사 전에는 null)
+  Ball? ball;
+
+  /// 체인 내 인덱스
+  final int index;
+
+  /// 생성자
+  _BallState({
+    this.status = BallStatus.waiting,
+    this.ball,
+    required this.index,
+  });
+}
+
 /// 공 체인 발사 메커니즘 관리 클래스
 class BallManager extends Component with HasGameRef<BrickChainGame> {
   /// 현재 게임에 있는 공들의 목록
   final List<Ball> balls = [];
 
+  /// 공 상태 추적 목록
+  final List<_BallState> _ballStates = [];
+
   /// 발사할 공의 총 개수
-  int ballCount = 1;
+  int ballCount = 5;
 
   /// 발사 중인지 상태
   bool isFiring = false;
+
+  /// 발사 준비 중인지 상태 (트리거가 당겨졌지만 아직 발사 전)
+  bool isPrimed = false;
 
   /// 발사 시작 위치
   Vector2 firingPosition = Vector2(4.5, 14.0);
@@ -35,21 +78,118 @@ class BallManager extends Component with HasGameRef<BrickChainGame> {
   /// 공 발사 속도
   double ballSpeed = 10.0;
 
+  /// 발사 핀 에너지 (0.0 ~ 1.0)
+  double firingPinEnergy = 0.0;
+
+  /// 최대 발사 핀 에너지 충전 속도
+  double maxChargingRate = 3.0; // 초당 충전량
+
+  /// 최소 발사 에너지 (이 값 이상에서만 발사 가능)
+  double minFiringEnergy = 0.3;
+
+  /// 충전 중인지 상태
+  bool isCharging = false;
+
+  /// 발사 진동 애니메이션 타이머
+  double _firingAnimationTimer = 0.0;
+
+  /// 진동 강도 (발사 애니메이션용)
+  double _vibrationIntensity = 0.0;
+
   /// 마지막에 반환된 공 위치 (모든 공이 멈췄을 때)
   Vector2? _lastReturnPosition;
+
+  /// 발사 시 약간의 무작위성을 적용하기 위한 난수 생성기
+  final _random = math.Random();
+
+  @override
+  Future<void> onLoad() async {
+    await super.onLoad();
+
+    // 초기 공 상태 설정
+    _initializeBallStates();
+  }
+
+  /// 공 상태 초기화
+  void _initializeBallStates() {
+    _ballStates.clear();
+
+    // 공 상태 생성
+    for (int i = 0; i < ballCount; i++) {
+      _ballStates.add(_BallState(status: BallStatus.waiting, index: i));
+    }
+
+    // 첫 번째 공은 준비 상태로 설정
+    if (_ballStates.isNotEmpty) {
+      _ballStates[0].status = BallStatus.ready;
+    }
+  }
+
+  /// 발사 준비 시작 (충전 시작)
+  void startCharging() {
+    if (isFiring || isCharging) return;
+
+    isCharging = true;
+    firingPinEnergy = 0.0;
+    print('발사 핀 충전 시작');
+  }
+
+  /// 발사 취소
+  void cancelCharging() {
+    if (!isCharging) return;
+
+    isCharging = false;
+    isPrimed = false;
+    firingPinEnergy = 0.0;
+    _vibrationIntensity = 0.0;
+    print('발사 준비 취소');
+  }
+
+  /// 충전 완료 및 발사 준비
+  void primeForFiring() {
+    if (!isCharging || isFiring) return;
+
+    if (firingPinEnergy < minFiringEnergy) {
+      // 최소 에너지에 도달하지 못했으면 취소
+      cancelCharging();
+      return;
+    }
+
+    isCharging = false;
+    isPrimed = true;
+    _vibrationIntensity = firingPinEnergy * 0.1; // 에너지에 비례한 진동 강도
+    print('발사 준비 완료, 에너지: ${firingPinEnergy.toStringAsFixed(2)}');
+  }
 
   /// 메인 Thread가 블로킹되지 않도록 비동기 메서드로 구현
   Future<void> startFiring(Vector2 direction) async {
     if (isFiring) return;
 
-    print('공 발사 시작: 방향 = $direction');
-    isFiring = true;
+    // 발사 방향 정규화
     aimDirection = direction.normalized();
+
+    // 발사 준비 중이 아니라면 먼저 준비
+    if (!isPrimed) {
+      // 기본 에너지로 즉시 발사 (탭 발사용)
+      firingPinEnergy = 0.7;
+      isPrimed = true;
+    }
+
+    print(
+      '공 발사 시작: 방향 = $direction, 에너지 = ${firingPinEnergy.toStringAsFixed(2)}',
+    );
+    isFiring = true;
+    isPrimed = false;
+    _vibrationIntensity = 0.0;
 
     try {
       // 모든 공을 발사
       for (int i = 0; i < ballCount; i++) {
-        await _fireBall(aimDirection);
+        if (i < _ballStates.length) {
+          _ballStates[i].status = BallStatus.loaded;
+        }
+
+        await _fireBall(aimDirection, firingPinEnergy);
 
         // 발사 간격 대기
         if (i < ballCount - 1) {
@@ -64,19 +204,37 @@ class BallManager extends Component with HasGameRef<BrickChainGame> {
   }
 
   /// 단일 공 발사 메서드
-  Future<void> _fireBall(Vector2 direction) async {
+  Future<void> _fireBall(Vector2 direction, double energy) async {
     if (!gameRef.children.contains(this)) {
       print('BallManager가 게임에 추가되지 않음');
       return;
     }
 
     try {
-      // 가속 방향 계산 (정규화된 방향 * 속도)
-      final velocity = direction.clone()..scale(ballSpeed);
+      // 작은 무작위 변동 추가하여 자연스러운 발사 구현
+      final randomAngle = (_random.nextDouble() - 0.5) * 0.05; // ±0.025 rad 변동
+      final randomDirection = Vector2(
+        direction.x * math.cos(randomAngle) -
+            direction.y * math.sin(randomAngle),
+        direction.x * math.sin(randomAngle) +
+            direction.y * math.cos(randomAngle),
+      );
+
+      // 에너지에 기반한 속도 계산 (0.5~1.5 배율)
+      final speedMultiplier = 0.5 + energy;
+
+      // 가속 방향 계산 (정규화된 방향 * 속도 * 에너지 배율)
+      final velocity =
+          randomDirection.clone()..scale(ballSpeed * speedMultiplier);
+
+      // 미세한 위치 변동으로 더 자연스러운 발사
+      final startPosition = firingPosition.clone();
+      startPosition.x += (_random.nextDouble() - 0.5) * 0.02;
+      startPosition.y += (_random.nextDouble() - 0.5) * 0.02;
 
       // 새 공 생성
       final ball = Ball(
-        position: firingPosition.clone(),
+        position: startPosition,
         radius: ballRadius,
         color: ballColor,
         velocity: velocity,
@@ -87,6 +245,15 @@ class BallManager extends Component with HasGameRef<BrickChainGame> {
 
       // 공 목록에 추가
       balls.add(ball);
+
+      // 공 상태 업데이트 - 빈 슬롯 찾기
+      for (final state in _ballStates) {
+        if (state.status == BallStatus.loaded) {
+          state.ball = ball;
+          state.status = BallStatus.fired;
+          break;
+        }
+      }
 
       print('공 발사됨: 위치 = ${ball.position}, 속도 = $velocity');
     } catch (e) {
@@ -101,7 +268,14 @@ class BallManager extends Component with HasGameRef<BrickChainGame> {
       ball.removeFromParent();
     }
     balls.clear();
+
+    // 상태 초기화
+    _initializeBallStates();
     isFiring = false;
+    isPrimed = false;
+    isCharging = false;
+    firingPinEnergy = 0.0;
+    _vibrationIntensity = 0.0;
   }
 
   /// 모든 공이 멈췄는지 확인
@@ -126,6 +300,13 @@ class BallManager extends Component with HasGameRef<BrickChainGame> {
       // 모든 공이 멈춤 (마지막 공의 위치 저장)
       if (balls.isNotEmpty) {
         _lastReturnPosition = balls.last.position.clone();
+
+        // 상태 업데이트
+        for (final state in _ballStates) {
+          if (state.status == BallStatus.fired) {
+            state.status = BallStatus.stopped;
+          }
+        }
       }
 
       return true;
@@ -135,9 +316,45 @@ class BallManager extends Component with HasGameRef<BrickChainGame> {
     }
   }
 
+  /// 체인의 모든 공 위치를 계산하여 반환 (시각화용)
+  List<Vector2> getChainedBallPositions() {
+    final positions = <Vector2>[];
+
+    // 체인 내 모든 공 위치 계산
+    for (int i = 0; i < ballCount; i++) {
+      // 첫 번째 공은 발사 위치에 표시
+      if (i == 0) {
+        positions.add(firingPosition.clone());
+      } else {
+        // 나머지 공들은 첫 번째 공 뒤에 일정 간격으로 배치
+        final offset = Vector2(0, ballRadius * 2.2 * i);
+        positions.add(firingPosition + offset);
+      }
+    }
+
+    return positions;
+  }
+
   @override
   void update(double dt) {
     super.update(dt);
+
+    // 충전 중이면 에너지 증가
+    if (isCharging) {
+      firingPinEnergy = math.min(firingPinEnergy + maxChargingRate * dt, 1.0);
+
+      // 최대 충전 도달 시 자동으로 프라이밍
+      if (firingPinEnergy >= 1.0) {
+        primeForFiring();
+      }
+    }
+
+    // 발사 준비 상태에서 진동 애니메이션 처리
+    if (isPrimed) {
+      _firingAnimationTimer += dt * 15.0; // 진동 속도
+    } else {
+      _firingAnimationTimer = 0.0;
+    }
 
     // 발사 중이고 모든 공이 멈췄으면 발사 완료
     if (isFiring && areAllBallsStopped()) {
@@ -148,6 +365,20 @@ class BallManager extends Component with HasGameRef<BrickChainGame> {
     // 화면 밖으로 나간 공들 제거 (필요시 구현)
   }
 
+  /// 발사 위치 진동 오프셋 계산 (발사 준비 애니메이션용)
+  Vector2 getVibrationOffset() {
+    if (!isPrimed || _vibrationIntensity <= 0) {
+      return Vector2.zero();
+    }
+
+    // 사인 파동으로 진동 표현
+    final xOffset = math.sin(_firingAnimationTimer) * _vibrationIntensity;
+    final yOffset =
+        math.cos(_firingAnimationTimer * 0.8) * _vibrationIntensity * 0.7;
+
+    return Vector2(xOffset, yOffset);
+  }
+
   /// 발사 완료 후 처리
   void _onFiringComplete() {
     // 새로운 발사 위치 (마지막 공의 위치 또는 원래 위치)
@@ -155,5 +386,8 @@ class BallManager extends Component with HasGameRef<BrickChainGame> {
 
     // 게임 로직에 따라 다음 라운드 준비 (추가 구현 필요)
     print('모든 공 발사 완료. 새 발사 위치: $firingPosition');
+
+    // 상태 초기화
+    _initializeBallStates();
   }
 }

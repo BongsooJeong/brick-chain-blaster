@@ -17,6 +17,21 @@ class InputHandler extends Component
   /// 드래그 중인지 상태
   bool isDragging = false;
 
+  /// 드래그 시작 위치
+  Vector2? dragStartPosition;
+
+  /// 길게 눌렀는지 추적 (빠른 발사 취소용)
+  bool isLongPress = false;
+
+  /// 드래그 시작 시간
+  double dragStartTime = 0;
+
+  /// 애니메이션 타이머
+  double _animationTimer = 0.0;
+
+  /// 롱 프레스 감지 딜레이 (초)
+  static const longPressDelay = 0.5;
+
   /// 초기화 생성자
   InputHandler({required this.ballManager});
 
@@ -28,10 +43,32 @@ class InputHandler extends Component
     aimVisualizer = AimVisualizer(
       startPosition: ballManager.firingPosition,
       shootCallback: _shoot,
+      cancelCallback: _cancelFiring,
+      ballManager: ballManager,
     );
     await add(aimVisualizer);
 
     print('InputHandler 초기화 완료');
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+
+    // 애니메이션 타이머 업데이트
+    _animationTimer += dt;
+
+    // 드래그 중이면 롱 프레스 감지
+    if (isDragging && !isLongPress) {
+      final currentTime = _animationTimer;
+      final elapsedTime = currentTime - dragStartTime;
+
+      // 롱 프레스 감지
+      if (elapsedTime > longPressDelay) {
+        isLongPress = true;
+        print('롱 프레스 감지, 발사 취소 가능');
+      }
+    }
   }
 
   @override
@@ -47,9 +84,16 @@ class InputHandler extends Component
     final touchPosition = event.localPosition;
     print('Drag 시작: $touchPosition');
 
+    // 드래그 시작 시간 기록
+    dragStartTime = _animationTimer;
+    isLongPress = false;
+
     // 시작 위치가 발사점에 가까운지 확인
     final worldPosition = _convertPositionToWorld(touchPosition);
     final distance = (worldPosition - ballManager.firingPosition).length;
+
+    // 드래그 시작 위치 저장
+    dragStartPosition = worldPosition.clone();
 
     // 발사 위치 근처에서만 드래그 시작 허용 (여유있게 설정)
     if (distance < 2.0) {
@@ -64,6 +108,13 @@ class InputHandler extends Component
 
     final touchPosition = event.localEndPosition;
     final worldPosition = _convertPositionToWorld(touchPosition);
+
+    // 길게 눌렀는지 확인하고 시각적 피드백 제공
+    if (isLongPress) {
+      // 롱 프레스 감지 시 발사 취소 준비 상태로 전환
+      // 필요한 시각적 처리 추가 가능
+    }
+
     aimVisualizer.onDragUpdate(worldPosition);
   }
 
@@ -73,7 +124,25 @@ class InputHandler extends Component
 
     print('Drag 종료, 발사 시작');
     isDragging = false;
+    dragStartPosition = null;
+
+    // 롱 프레스 플래그가 설정되어 있으면 발사하지 않음
+    if (isLongPress) {
+      aimVisualizer.onDragCancel();
+      return;
+    }
+
     aimVisualizer.onDragEnd();
+  }
+
+  @override
+  void onDragCancel(DragCancelEvent event) {
+    if (!isDragging) return;
+
+    print('Drag 취소');
+    isDragging = false;
+    dragStartPosition = null;
+    aimVisualizer.onDragCancel();
   }
 
   @override
@@ -86,7 +155,13 @@ class InputHandler extends Component
 
     print('Tap: $worldPosition');
 
-    // 여기에 탭 기능 추가 가능 (예: 디버그 정보 표시)
+    // 발사 위치 근처에서 탭하면 즉시 위쪽 방향으로 발사
+    final distance = (worldPosition - ballManager.firingPosition).length;
+    if (distance < 2.0) {
+      // 위쪽 방향 벡터 (y가 음수인 이유는 화면 좌표계에서 아래가 양수 방향)
+      final upDirection = Vector2(0, -1);
+      _shoot(upDirection);
+    }
   }
 
   /// 화면 좌표를 월드 좌표로 변환
@@ -115,5 +190,11 @@ class InputHandler extends Component
 
     // 공 발사 시작
     ballManager.startFiring(direction);
+  }
+
+  /// 발사 취소 메서드
+  void _cancelFiring() {
+    print('발사 취소');
+    // 추가 취소 로직 (UI 피드백 등)
   }
 }
