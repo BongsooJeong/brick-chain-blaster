@@ -1,0 +1,56 @@
+# Task ID: 9
+# Title: Implement Ball Count Increase Mechanism
+# Status: pending
+# Dependencies: 5, 6
+# Priority: medium
+# Description: Create the system where destroying a certain number of bricks permanently increases the ball count.
+# Details:
+1. Implement brick destruction counter
+2. Create threshold system for ball count increases
+3. Add visual feedback when ball count increases
+4. Implement persistent ball count storage
+5. Create UI element showing progress to next ball
+6. Balance thresholds for game progression
+
+```dart
+class BallProgressionSystem {
+  int destroyedBricks = 0;
+  int ballCount = 1;
+  int nextThreshold = 10; // Initial threshold
+  
+  void onBrickDestroyed() {
+    destroyedBricks++;
+    checkForBallIncrease();
+  }
+  
+  
+  void checkForBallIncrease() {
+    if (destroyedBricks >= nextThreshold) {
+      increaseBallCount();
+      calculateNextThreshold();
+    }
+  }
+  
+  void increaseBallCount() {
+    ballCount++;
+    showBallIncreaseAnimation();
+  }
+  
+  void calculateNextThreshold() {
+    // Exponential or linear increase in threshold
+    nextThreshold = (nextThreshold * 1.5).round();
+  }
+  
+  double getProgressToNextBall() {
+    return destroyedBricks / nextThreshold;
+  }
+}
+```
+
+# Test Strategy:
+1. Test brick destruction counting
+2. Verify ball count increases at correct thresholds
+3. Test progression through multiple increases
+4. Validate visual feedback
+5. Test persistence between game sessions
+6. Verify progress indicator accuracy

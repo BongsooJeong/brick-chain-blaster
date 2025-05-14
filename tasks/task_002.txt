@@ -1,0 +1,39 @@
+# Task ID: 2
+# Title: Implement Core Game Loop and Physics
+# Status: pending
+# Dependencies: 1
+# Priority: high
+# Description: Create the foundational game loop with Forge2D physics integration for ball movement and collision detection.
+# Details:
+1. Create a main game class extending FlameGame with Forge2D
+2. Implement game world boundaries with collision walls
+3. Setup basic physics parameters (gravity, restitution, friction)
+4. Create a game tick system that handles updates at fixed intervals
+5. Implement a basic camera system
+6. Setup debug rendering for physics bodies during development
+
+```dart
+class BrickChainGame extends Forge2DGame {
+  BrickChainGame() : super(gravity: Vector2(0, 0));
+  
+  @override
+  Future<void> onLoad() async {
+    await super.onLoad();
+    // Setup world boundaries
+    add(WorldBoundaries());
+  }
+  
+  @override
+  void update(double dt) {
+    super.update(dt);
+    // Game state updates
+  }
+}
+```
+
+# Test Strategy:
+1. Test physics simulation with simple objects
+2. Verify collision detection works correctly
+3. Measure frame rate to ensure smooth performance
+4. Test game loop timing consistency
+5. Validate boundary collisions work as expected

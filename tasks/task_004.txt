@@ -1,0 +1,107 @@
+# Task ID: 4
+# Title: Implement Brick Generation System
+# Status: pending
+# Dependencies: 2
+# Priority: high
+# Description: Create the pattern-based brick generation system that places bricks in various formations based on wave index.
+# Details:
+1. Create Brick component with HP system
+2. Implement brick pattern library with predefined formations
+3. Create pattern selection and transformation logic
+4. Implement wave progression system
+5. Add brick movement animation (downward shift)
+6. Create HP visualization on bricks
+
+```dart
+class BrickPattern {
+  final List<List<int>> layout;
+  final double hpMultiplier;
+  
+  BrickPattern(this.layout, {this.hpMultiplier = 1.0});
+  
+  List<Brick> generateBricks(int waveIndex) {
+    final bricks = <Brick>[];
+    final baseHP = calculateBaseHP(waveIndex);
+    
+    for (int y = 0; y < layout.length; y++) {
+      for (int x = 0; x < layout[y].length; x++) {
+        if (layout[y][x] > 0) {
+          final hp = (baseHP * layout[y][x] * hpMultiplier).round();
+          final position = Vector2(x * brickWidth, y * brickHeight);
+          bricks.add(Brick(position: position, hp: hp));
+        }
+      }
+    }
+    
+    return bricks;
+  }
+  
+  int calculateBaseHP(int waveIndex) {
+    return max(1, waveIndex);
+  }
+}
+```
+
+# Test Strategy:
+1. Test brick generation with different patterns
+2. Verify HP scaling with wave progression
+3. Test brick placement and alignment
+4. Verify brick downward movement animation
+5. Test pattern randomization and variation
+6. Validate HP visualization on bricks
+
+# Subtasks:
+## 1. Design Brick Pattern System [pending]
+### Dependencies: None
+### Description: Create a flexible pattern system that defines how bricks are arranged on the game board
+### Details:
+Develop a data structure to represent different brick patterns (grid, zigzag, circular, etc.). Create a pattern library with predefined formations that can be selected randomly or sequentially. Include parameters for pattern density, symmetry options, and special brick placement rules.
+
+## 2. Implement Layout Algorithm [pending]
+### Dependencies: 4.1
+### Description: Develop algorithms to procedurally generate brick layouts based on pattern definitions
+### Details:
+Write functions to translate pattern definitions into actual brick positions. Implement grid-based positioning system with support for offsets. Create methods for random variations within pattern constraints. Ensure proper spacing between bricks using padding parameters.
+
+## 3. Create Wave Progression System [pending]
+### Dependencies: None
+### Description: Design a system that manages level progression through increasingly difficult waves
+### Details:
+Implement a wave counter and difficulty curve. Create rules for transitioning between waves. Design a system to track player progress and performance metrics. Develop logic for determining when to advance to the next wave based on brick clearance.
+
+## 4. Implement HP Scaling Mechanism [pending]
+### Dependencies: 4.3
+### Description: Create a system that scales brick health points based on wave progression
+### Details:
+Develop formulas for calculating brick HP based on current wave number. Create different brick types with base HP values. Implement visual indicators for brick health status. Design special rules for boss or reinforced bricks that appear in later waves.
+
+## 5. Develop Brick Visual Representation [pending]
+### Dependencies: 4.4
+### Description: Create visual assets and rendering system for different brick types and states
+### Details:
+Design sprite sheets for different brick types. Implement color coding based on brick properties. Create visual effects for damaged bricks. Develop a system to handle brick appearance based on current HP and special properties.
+
+## 6. Build Brick Animation System [pending]
+### Dependencies: 4.5
+### Description: Implement animations for brick creation, movement, and destruction
+### Details:
+Create smooth animations for brick appearance when generating a new level. Implement physics-based animations for brick destruction. Design animations for special events like chain reactions. Optimize animation performance for large numbers of bricks.
+
+## 7. Implement Brick Group Management [pending]
+### Dependencies: 4.2
+### Description: Create a system to manage collections of bricks as cohesive units
+### Details:
+Develop a brick container class to manage brick collections. Implement methods for adding, removing, and updating bricks. Create functions to check game state based on remaining bricks. Design efficient data structures for brick lookup and collision detection.
+
+## 8. Create Special Brick Types [pending]
+### Dependencies: 4.4, 4.5
+### Description: Implement various special brick types with unique behaviors and effects
+### Details:
+Design and implement explosive bricks that affect neighboring bricks. Create power-up bricks that drop bonuses when destroyed. Implement indestructible or moving bricks for advanced levels. Develop boss bricks with complex behavior patterns.
+
+## 9. Optimize and Test Brick Generation System [pending]
+### Dependencies: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8
+### Description: Perform optimization and testing to ensure the brick generation system works efficiently
+### Details:
+Conduct performance testing with large numbers of bricks. Implement optimizations for rendering and updating brick states. Test various pattern combinations and difficulty progressions. Debug and fix any issues with brick collision detection or animation.
+

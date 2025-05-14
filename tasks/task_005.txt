@@ -1,0 +1,63 @@
+# Task ID: 5
+# Title: Implement Ball-Brick Collision and HP System
+# Status: pending
+# Dependencies: 3, 4
+# Priority: high
+# Description: Create the collision detection system between balls and bricks, with HP reduction and brick destruction mechanics.
+# Details:
+1. Implement collision detection between balls and bricks
+2. Create HP reduction system for bricks
+3. Add visual feedback for brick hits (flash, shake)
+4. Implement brick destruction animation
+5. Create score calculation based on brick destruction
+6. Add particle effects for enhanced visual feedback
+
+```dart
+class Brick extends BodyComponent with ContactCallbacks {
+  int hp;
+  final Vector2 position;
+  
+  Brick({required this.position, required this.hp});
+  
+  @override
+  Body createBody() {
+    final bodyDef = BodyDef()
+      ..type = BodyType.static
+      ..position = position;
+    
+    final shape = PolygonShape()
+      ..setAsBox(brickWidth / 2, brickHeight / 2);
+    
+    final fixtureDef = FixtureDef(shape)
+      ..density = 1.0
+      ..friction = 0.3
+      ..restitution = 0.5;
+    
+    return world.createBody(bodyDef)..createFixture(fixtureDef);
+  }
+  
+  @override
+  void beginContact(Object other, Contact contact) {
+    if (other is Ball) {
+      hp--;
+      showHitAnimation();
+      if (hp <= 0) {
+        destroy();
+      }
+    }
+  }
+  
+  void destroy() {
+    showDestroyAnimation();
+    removeFromParent();
+  }
+}
+```
+
+# Test Strategy:
+1. Test collision detection accuracy
+2. Verify HP reduction works correctly
+3. Test brick destruction when HP reaches zero
+4. Validate visual feedback for hits
+5. Test score calculation
+6. Verify particle effects render correctly

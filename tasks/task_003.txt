@@ -1,0 +1,110 @@
+# Task ID: 3
+# Title: Implement Ball Chain Firing Mechanism
+# Status: pending
+# Dependencies: 2
+# Priority: high
+# Description: Create the core ball chain firing system where multiple balls are fired in sequence along the same trajectory.
+# Details:
+1. Create Ball component with physics body
+2. Implement aiming system with mouse position tracking
+3. Create aim line visualization
+4. Implement sequential ball firing with configurable delay
+5. Add ball return mechanism when all balls are off-screen
+6. Implement ball counter and display
+
+```dart
+class BallManager {
+  final List<Ball> balls = [];
+  int ballCount = 1;
+  bool isFiring = false;
+  Vector2 aimDirection = Vector2(0, -1);
+  
+  Future<void> fireBalls(Vector2 startPosition, Vector2 direction) async {
+    isFiring = true;
+    final normalizedDirection = direction.normalized();
+    
+    for (int i = 0; i < ballCount; i++) {
+      final ball = Ball();
+      ball.position = startPosition.clone();
+      ball.applyLinearImpulse(normalizedDirection.scaled(10));
+      balls.add(ball);
+      game.add(ball);
+      
+      // Wait between ball launches
+      await Future.delayed(Duration(milliseconds: 150));
+    }
+    
+    isFiring = false;
+  }
+}
+```
+
+# Test Strategy:
+1. Test aiming with different mouse positions
+2. Verify multiple balls fire at the same angle
+3. Test collision response of balls with boundaries
+4. Measure timing between ball launches
+5. Verify ball return mechanism works correctly
+6. Test with different ball counts
+
+# Subtasks:
+## 1. Design Ball Chain Firing Mechanism Core Components [pending]
+### Dependencies: None
+### Description: Create the fundamental structure for the ball chain firing mechanism, including the ball holder, firing pin, and trigger system.
+### Details:
+Design a system where balls are held in a chain-like structure and can be fired sequentially. The firing pin should be spring-loaded with a hammer mechanism that strikes when triggered. Include a ball seat design that ensures proper positioning before firing.
+
+## 2. Implement Ball Physics Engine [pending]
+### Dependencies: 3.1
+### Description: Develop the physics engine to accurately simulate ball movement, including velocity, acceleration, and collision detection.
+### Details:
+Create physics calculations for ball trajectory following a parabolic path. Account for factors like gravity, air resistance, and initial velocity. Implement collision detection for when balls hit surfaces or other objects in the environment.
+
+## 3. Build Sequential Firing Logic [pending]
+### Dependencies: 3.1
+### Description: Create the control system that manages the sequential firing of multiple balls in the chain.
+### Details:
+Develop a mechanism that feeds balls one at a time to the firing position. Implement timing controls to determine the interval between firing each ball. Create a queue system to manage which balls are next in the firing sequence.
+
+## 4. Develop Trajectory Calculation System [pending]
+### Dependencies: 3.2
+### Description: Create algorithms to calculate and predict the trajectory of fired balls based on firing parameters.
+### Details:
+Implement mathematical models to predict ball paths using initial velocity, angle, and environmental factors. Create functions to calculate landing positions based on current firing parameters. Develop adjustment algorithms to modify trajectory based on target position.
+
+## 5. Create Aiming Visualization Interface [pending]
+### Dependencies: 3.4
+### Description: Design and implement a visual interface that shows predicted ball trajectories and aiming assistance.
+### Details:
+Develop a graphical overlay showing the predicted path of balls when fired. Create visual indicators for target zones and optimal firing angles. Implement real-time updates to the visualization as aiming parameters change.
+
+## 6. Implement Ball Return Mechanics [pending]
+### Dependencies: 3.2
+### Description: Design and build the system for collecting fired balls and returning them to the chain for reuse.
+### Details:
+Create collection mechanisms to gather balls after they've completed their trajectory. Design a return path that feeds balls back into the chain system. Implement sorting and alignment features to ensure balls re-enter the chain correctly.
+
+## 7. Develop State Management System [pending]
+### Dependencies: 3.3, 3.6
+### Description: Create a comprehensive state management system to track the status of all components in the firing mechanism.
+### Details:
+Implement state tracking for each ball (ready, loaded, fired, returned). Create status monitoring for mechanism components (trigger, firing pin, chain). Develop error handling for jams or misfires in the system.
+
+## 8. Build User Input Controls [pending]
+### Dependencies: 3.5, 3.7
+### Description: Develop the interface for user interaction with the firing mechanism, including trigger controls and parameter adjustments.
+### Details:
+Create intuitive controls for triggering the firing mechanism. Implement adjustable parameters for firing power, angle, and timing. Design feedback systems to communicate mechanism status to the user.
+
+## 9. Implement Performance Optimization [pending]
+### Dependencies: 3.2, 3.4, 3.7
+### Description: Optimize the system for efficient performance, focusing on physics calculations and state updates.
+### Details:
+Refine physics calculations to balance accuracy with performance. Implement efficient state update mechanisms to minimize processing overhead. Create level-of-detail systems that adjust calculation precision based on visibility and importance.
+
+## 10. Create Testing and Calibration Tools [pending]
+### Dependencies: 3.8, 3.9
+### Description: Develop tools for testing, debugging, and calibrating the ball chain firing mechanism.
+### Details:
+Create diagnostic visualizations to monitor internal system states. Implement parameter adjustment tools for fine-tuning physics behaviors. Design automated test scenarios to verify system performance under various conditions.
+
