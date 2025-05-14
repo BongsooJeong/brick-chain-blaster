@@ -11,6 +11,8 @@ import 'package:brick_chain_blaster/components/brick.dart';
 import 'package:brick_chain_blaster/components/wall.dart';
 import 'package:brick_chain_blaster/managers/ball_manager.dart';
 import 'package:brick_chain_blaster/managers/input_handler.dart';
+import 'package:brick_chain_blaster/managers/brick_manager.dart';
+import 'package:brick_chain_blaster/managers/wave_manager.dart';
 import 'package:flutter/material.dart' show Colors;
 import 'package:flutter/foundation.dart' show debugPrint, debugPrintStack;
 
@@ -51,6 +53,11 @@ class BrickChainGame extends Forge2DGame {
   // 게임 매니저
   late BallManager ballManager;
   late InputHandler inputHandler;
+  late BrickManager brickManager;
+  late WaveManager waveManager;
+
+  // 게임 상태
+  bool gameStarted = false;
 
   @override
   Future<void> onLoad() async {
@@ -86,6 +93,17 @@ class BrickChainGame extends Forge2DGame {
     inputHandler = InputHandler(ballManager: ballManager);
     await add(inputHandler);
 
+    // 벽돌 매니저 초기화 및 추가
+    brickManager = BrickManager();
+    await add(brickManager);
+
+    // 웨이브 매니저 초기화 및 추가
+    waveManager = WaveManager(brickManager: brickManager);
+    await add(waveManager);
+
+    // 볼과 벽돌의 충돌 처리 설정
+    setupCollisions();
+
     // 디버그 정보 다시 출력
     debugPrint('🟢 초기화 완료 - 카메라 확인:');
     debugPrint('🟢 camera.viewfinder.zoom = ${camera.viewfinder.zoom}');
@@ -114,6 +132,96 @@ class BrickChainGame extends Forge2DGame {
     debugPrint(
       '🔄 zoom 설정: ${camera.viewfinder.zoom} (화면 ${canvasSize.x}x${canvasSize.y}, 월드 ${worldWidth}x$worldHeight)',
     );
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+
+    // 볼과 벽돌의 충돌 확인
+    // 참고: Forge2D의 물리 엔진 충돌 감지를 대체하는 임시 로직
+    // 추후 Forge2D의 충돌 콜백으로 교체하는 것이 더 효율적
+    _checkBallBrickCollisions();
+  }
+
+  /// 볼과 벽돌의 충돌 처리 설정
+  void setupCollisions() {
+    // Forge2D 충돌 처리는 별도 구현 예정
+    // 현재는 update에서 수동 확인
+  }
+
+  /// 볼과 벽돌 충돌 확인 (임시 구현)
+  void _checkBallBrickCollisions() {
+    if (brickManager.brickCount == 0) return;
+
+    // 볼 목록 가져오기
+    final balls = ballManager.balls;
+
+    // 간단한 충돌 감지
+    // 참고: 이것은 단순화된 로직이므로 실제 물리 기반 충돌 처리와는 다릅니다
+    for (final ball in balls) {
+      if (!ball.isMounted) continue;
+
+      for (final brick in brickManager.activeBricks) {
+        if (!brick.isMounted || brick.isDestroying) continue;
+
+        // 볼과 벽돌 사이의 거리 계산
+        final ballCenter = ball.body.position;
+        final brickCenter = brick.body.position;
+        final brickSize = brick.size;
+
+        // 단순 사각형-원 충돌 테스트
+        final halfWidth = brickSize.x / 2;
+        final halfHeight = brickSize.y / 2;
+
+        // 벽돌 중심에서 볼까지의 벡터
+        final dx = (ballCenter.x - brickCenter.x).abs();
+        final dy = (ballCenter.y - brickCenter.y).abs();
+
+        // 벽돌 경계 밖으로 돌출된 거리
+        final overlapX = dx - halfWidth - ball.radius;
+        final overlapY = dy - halfHeight - ball.radius;
+
+        // 충돌 발생
+        if (overlapX < 0 && overlapY < 0) {
+          // 벽돌에 데미지
+          brick.hit();
+
+          // 벽돌 타입에 따라 다른 처리 가능
+          if (brick.type == BrickType.special) {
+            // 특수 효과 구현 (향후)
+          }
+
+          // 볼의 반사
+          final ballVelocity = ball.body.linearVelocity;
+
+          // 수평/수직 충돌 구분
+          if (overlapX > overlapY) {
+            // 수직 표면 충돌
+            ball.body.linearVelocity = Vector2(
+              -ballVelocity.x * 0.95,
+              ballVelocity.y * 0.95,
+            );
+          } else {
+            // 수평 표면 충돌
+            ball.body.linearVelocity = Vector2(
+              ballVelocity.x * 0.95,
+              -ballVelocity.y * 0.95,
+            );
+          }
+
+          // 충돌 시 속도 약간 증가 (게임성 향상)
+          final speed = ball.body.linearVelocity.length;
+          if (speed < 20) {
+            // 최대 속도 제한
+            ball.body.linearVelocity.scale(1.05);
+          }
+
+          // 충돌한 벽돌은 더 이상 처리하지 않음
+          break;
+        }
+      }
+    }
   }
 
   // 화면 경계 추가

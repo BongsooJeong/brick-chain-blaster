@@ -63,7 +63,7 @@
       "dependencies": [
         2
       ],
-      "status": "in-progress",
+      "status": "done",
       "subtasks": [
         {
           "id": 1,
@@ -71,7 +71,7 @@
           "description": "Create the fundamental structure for the ball chain firing mechanism, including the ball holder, firing pin, and trigger system.",
           "dependencies": [],
           "details": "Design a system where balls are held in a chain-like structure and can be fired sequentially. The firing pin should be spring-loaded with a hammer mechanism that strikes when triggered. Include a ball seat design that ensures proper positioning before firing.\n<info added on 2025-05-14T10:48:35.718Z>\nDesign a system where balls are held in a chain-like structure and can be fired sequentially. The firing pin should be spring-loaded with a hammer mechanism that strikes when triggered. Include a ball seat design that ensures proper positioning before firing.\n\nBased on code analysis, we need to enhance several components:\n\n1. BallManager enhancements:\n   - Implement a state management system to track ball chain states (ready, loading, firing)\n   - Design a spring-loaded firing pin energy system with appropriate animations\n   - Create a ball seat component that ensures proper ball alignment before firing\n   - Develop chain structure logic for sequential ball firing\n\n2. AimVisualizer improvements:\n   - Add visualization for balls in the chain formation\n   - Implement visual feedback based on firing readiness state\n\n3. InputHandler refinements:\n   - Enhance trigger system with improved drag and tap interactions\n   - Add long-press detection for alternative firing modes\n\n4. Maintain existing camera configuration:\n   - Continue using fixed 360x640 pixel resolution\n   - Preserve automatic zoom calculation based on screen ratio in onGameResize\n</info added on 2025-05-14T10:48:35.718Z>\n<info added on 2025-05-14T10:52:38.364Z>\nThe core components implementation of the ball chain firing mechanism has been completed with the following enhancements:\n\n1. BallManager class has been enhanced with:\n   - Ball chain state management system (_BallState class and BallStatus enum)\n   - Firing pin energy system with charge, fire, and cancel mechanisms\n   - Ball seat design with fine-tuning logic for ball positioning\n   - Visual feedback through vibration effects and animations\n   - getChainedBallPositions method to calculate positions of all balls in the chain for visualization\n\n2. AimVisualizer class has been improved with:\n   - _renderBallChain method to visualize all balls in the chain\n   - Visual feedback such as ripple effects during firing preparation\n   - Direct coordinate conversion implementation using _convertWorldToScreen method\n   - Support for firing cancellation callbacks\n\n3. InputHandler class has been refined with:\n   - Long press detection for supporting firing cancellation\n   - Immediate upward firing functionality through taps\n   - Improved drag cancellation handling\n\nThis implementation maintains the existing camera configuration (fixed resolution of 360x640 pixels, dynamic zoom calculation based on screen ratio) while providing all core functionalities of the ball chain firing mechanism.\n\nAll components have been designed to work together cohesively, with enhanced visual feedback to improve user experience. Now the balls are displayed as connected in a chain, and the firing preparation and process proceed smoothly.\n</info added on 2025-05-14T10:52:38.364Z>",
-          "status": "in-progress"
+          "status": "done"
         },
         {
           "id": 2,
@@ -81,7 +81,7 @@
             1
           ],
           "details": "Create physics calculations for ball trajectory following a parabolic path. Account for factors like gravity, air resistance, and initial velocity. Implement collision detection for when balls hit surfaces or other objects in the environment.",
-          "status": "pending"
+          "status": "done"
         },
         {
           "id": 3,
@@ -91,7 +91,7 @@
             1
           ],
           "details": "Develop a mechanism that feeds balls one at a time to the firing position. Implement timing controls to determine the interval between firing each ball. Create a queue system to manage which balls are next in the firing sequence.",
-          "status": "pending"
+          "status": "done"
         },
         {
           "id": 4,
@@ -101,7 +101,7 @@
             2
           ],
           "details": "Implement mathematical models to predict ball paths using initial velocity, angle, and environmental factors. Create functions to calculate landing positions based on current firing parameters. Develop adjustment algorithms to modify trajectory based on target position.",
-          "status": "pending"
+          "status": "done"
         },
         {
           "id": 5,
@@ -111,7 +111,7 @@
             4
           ],
           "details": "Develop a graphical overlay showing the predicted path of balls when fired. Create visual indicators for target zones and optimal firing angles. Implement real-time updates to the visualization as aiming parameters change.",
-          "status": "pending"
+          "status": "done"
         },
         {
           "id": 6,
@@ -121,7 +121,7 @@
             2
           ],
           "details": "Create collection mechanisms to gather balls after they've completed their trajectory. Design a return path that feeds balls back into the chain system. Implement sorting and alignment features to ensure balls re-enter the chain correctly.",
-          "status": "pending"
+          "status": "done"
         },
         {
           "id": 7,
@@ -132,7 +132,7 @@
             6
           ],
           "details": "Implement state tracking for each ball (ready, loaded, fired, returned). Create status monitoring for mechanism components (trigger, firing pin, chain). Develop error handling for jams or misfires in the system.",
-          "status": "pending"
+          "status": "done"
         },
         {
           "id": 8,
@@ -143,7 +143,7 @@
             7
           ],
           "details": "Create intuitive controls for triggering the firing mechanism. Implement adjustable parameters for firing power, angle, and timing. Design feedback systems to communicate mechanism status to the user.",
-          "status": "pending"
+          "status": "done"
         },
         {
           "id": 9,
@@ -155,7 +155,7 @@
             7
           ],
           "details": "Refine physics calculations to balance accuracy with performance. Implement efficient state update mechanisms to minimize processing overhead. Create level-of-detail systems that adjust calculation precision based on visibility and importance.",
-          "status": "pending"
+          "status": "done"
         },
         {
           "id": 10,
@@ -166,14 +166,14 @@
             9
           ],
           "details": "Create diagnostic visualizations to monitor internal system states. Implement parameter adjustment tools for fine-tuning physics behaviors. Design automated test scenarios to verify system performance under various conditions.",
-          "status": "pending"
+          "status": "done"
         },
         {
           "id": 11,
           "title": "웹 브라우저에서 공 체인 발사 메커니즘 테스트 및 검증",
           "description": "브라우저에서 구현된 공 체인 발사 메커니즘을 테스트하고 결과를 검증합니다. 다양한 발사 각도, 속도, 공 수량에 대한 테스트 케이스를 실행합니다.",
           "details": "1. 'flutter run -d chrome --web-renderer canvaskit' 명령어로 브라우저에서 앱 실행\n2. 발사 메커니즘의 여러 각도에서 작동 테스트(0도, 45도, 90도, 135도 등)\n3. 다양한 발사 속도(최소, 중간, 최대)에서 공의 움직임 확인\n4. 여러 개의 공(1개, 5개, 10개, 최대)을 연속 발사하여 순차적 발사 검증\n5. 벽과 벽돌 충돌 시 물리 작용 확인\n6. 성능 테스트: 최대 공 개수 발사 시 FPS 모니터링\n7. Chrome DevTools를 사용하여 메모리 사용량 및 성능 프로파일링\n8. 각 테스트 케이스의 스크린샷 캡처 및 문서화\n9. 발견된 버그 또는 개선점 기록",
-          "status": "pending",
+          "status": "done",
           "dependencies": [
             10
           ],
@@ -198,8 +198,8 @@
           "title": "Design Brick Pattern System",
           "description": "Create a flexible pattern system that defines how bricks are arranged on the game board",
           "dependencies": [],
-          "details": "Develop a data structure to represent different brick patterns (grid, zigzag, circular, etc.). Create a pattern library with predefined formations that can be selected randomly or sequentially. Include parameters for pattern density, symmetry options, and special brick placement rules.",
-          "status": "pending"
+          "details": "Develop a data structure to represent different brick patterns (grid, zigzag, circular, etc.). Create a pattern library with predefined formations that can be selected randomly or sequentially. Include parameters for pattern density, symmetry options, and special brick placement rules.\n<info added on 2025-05-14T11:01:04.384Z>\nDevelop a data structure to represent different brick patterns (grid, zigzag, circular, etc.). Create a pattern library with predefined formations that can be selected randomly or sequentially. Include parameters for pattern density, symmetry options, and special brick placement rules.\n\nImplemented the BrickPattern class to define various brick arrangement patterns. Created 10 distinct pattern types: basic lines, grids, pyramids, zigzag, fortress, X-shape, arch, diagonal triangles, reinforced center, and diamond patterns. Added pattern variation capabilities including horizontal and vertical flipping. Implemented scaling difficulty where brick HP increases with wave index and the probability of special brick appearances increases in higher waves.\n</info added on 2025-05-14T11:01:04.384Z>",
+          "status": "done"
         },
         {
           "id": 2,
@@ -208,16 +208,16 @@
           "dependencies": [
             1
           ],
-          "details": "Write functions to translate pattern definitions into actual brick positions. Implement grid-based positioning system with support for offsets. Create methods for random variations within pattern constraints. Ensure proper spacing between bricks using padding parameters.",
-          "status": "pending"
+          "details": "Write functions to translate pattern definitions into actual brick positions. Implement grid-based positioning system with support for offsets. Create methods for random variations within pattern constraints. Ensure proper spacing between bricks using padding parameters.\n<info added on 2025-05-14T11:01:15.951Z>\nWrite functions to translate pattern definitions into actual brick positions. Implement grid-based positioning system with support for offsets. Create methods for random variations within pattern constraints. Ensure proper spacing between bricks using padding parameters.\n\nImplemented the layout algorithm successfully. Created a BrickPattern class with a generateBricks method that converts pattern definitions into actual brick positions. To ensure proper spacing between bricks, set brick sizes to 90% of standard size. Added logic to center patterns on screen. Implemented automatic color determination based on brick type and HP. Also developed the _selectPattern method in the BrickManager class to determine appropriate patterns based on pattern selection and wave progression.\n</info added on 2025-05-14T11:01:15.951Z>",
+          "status": "done"
         },
         {
           "id": 3,
           "title": "Create Wave Progression System",
           "description": "Design a system that manages level progression through increasingly difficult waves",
           "dependencies": [],
-          "details": "Implement a wave counter and difficulty curve. Create rules for transitioning between waves. Design a system to track player progress and performance metrics. Develop logic for determining when to advance to the next wave based on brick clearance.",
-          "status": "pending"
+          "details": "Implement a wave counter and difficulty curve. Create rules for transitioning between waves. Design a system to track player progress and performance metrics. Develop logic for determining when to advance to the next wave based on brick clearance.\n<info added on 2025-05-14T11:01:29.292Z>\nImplemented a comprehensive wave progression system through the creation of a WaveManager class. This class manages different wave states including preparation, in-progress, cleared, and game over. Added wave transition functionality with a visual countdown (3,2,1) displayed before each wave begins. Implemented automatic progression to the next wave after a brief delay when the current wave is cleared. Enhanced player feedback by adding a debug overlay that displays real-time information such as current wave number, brick count, and ball count. The system successfully tracks player progress and implements the difficulty curve as waves advance, with clear rules for wave transitions based on brick clearance.\n</info added on 2025-05-14T11:01:29.292Z>",
+          "status": "done"
         },
         {
           "id": 4,
@@ -226,8 +226,8 @@
           "dependencies": [
             3
           ],
-          "details": "Develop formulas for calculating brick HP based on current wave number. Create different brick types with base HP values. Implement visual indicators for brick health status. Design special rules for boss or reinforced bricks that appear in later waves.",
-          "status": "pending"
+          "details": "Develop formulas for calculating brick HP based on current wave number. Create different brick types with base HP values. Implement visual indicators for brick health status. Design special rules for boss or reinforced bricks that appear in later waves.\n<info added on 2025-05-14T11:01:44.713Z>\nImplemented a logarithmic scaling system for brick HP based on wave progression through the _calculateBaseHP method. The system creates a gradual increase in brick durability as waves progress (Wave 1: HP 1, Wave 2: HP 2, Wave 5: HP 3-4, Wave 10: HP 4-5, etc.). Different brick types have been implemented with varying HP values and color indicators: regular bricks, reinforced bricks (blue color scheme), special bricks (purple color scheme), and boss bricks (dark purple). Higher HP bricks are more difficult to destroy, creating increasing challenge as players advance through waves. The visual color differentiation helps players identify brick types and their relative durability at a glance.\n</info added on 2025-05-14T11:01:44.713Z>",
+          "status": "done"
         },
         {
           "id": 5,
@@ -236,8 +236,8 @@
           "dependencies": [
             4
           ],
-          "details": "Design sprite sheets for different brick types. Implement color coding based on brick properties. Create visual effects for damaged bricks. Develop a system to handle brick appearance based on current HP and special properties.",
-          "status": "pending"
+          "details": "Design sprite sheets for different brick types. Implement color coding based on brick properties. Create visual effects for damaged bricks. Develop a system to handle brick appearance based on current HP and special properties.\n<info added on 2025-05-14T11:02:04.940Z>\nDesign sprite sheets for different brick types. Implement color coding based on brick properties. Create visual effects for damaged bricks. Develop a system to handle brick appearance based on current HP and special properties.\n\nExtended the Brick class to implement various visual effects and status indicators. Created a _getColorByType method that automatically determines colors based on brick type and HP. Added rounded corners and internal gradient effects to bricks to enhance aesthetic quality. For bricks with HP greater than 1, small white dots in the center visually indicate remaining HP. Implemented hit animation where bricks temporarily expand and brighten when struck, and a destruction animation where bricks shrink and rotate when destroyed.\n</info added on 2025-05-14T11:02:04.940Z>",
+          "status": "done"
         },
         {
           "id": 6,
@@ -246,8 +246,8 @@
           "dependencies": [
             5
           ],
-          "details": "Create smooth animations for brick appearance when generating a new level. Implement physics-based animations for brick destruction. Design animations for special events like chain reactions. Optimize animation performance for large numbers of bricks.",
-          "status": "pending"
+          "details": "Create smooth animations for brick appearance when generating a new level. Implement physics-based animations for brick destruction. Design animations for special events like chain reactions. Optimize animation performance for large numbers of bricks.\n<info added on 2025-05-14T11:02:22.688Z>\nCreate smooth animations for brick appearance when generating a new level. Implement physics-based animations for brick destruction. Design animations for special events like chain reactions. Optimize animation performance for large numbers of bricks.\n\nThe animation system has been successfully implemented with the following features:\n\n1. Added animation timer and state management logic to the Brick class's update method\n2. Implemented a pulse effect for brick hits using a sine curve-based animation with the pulseAmount variable\n   - When a brick is hit, it slightly enlarges and brightens before returning to its original state\n   - Creates a natural-looking response to impacts\n\n3. Created a destruction animation sequence that plays over 0.5 seconds when a brick is destroyed\n   - Gradually reduces the brick's size\n   - Adds rotation to the brick as it disappears\n   - Fades out the brick by decreasing opacity\n\n4. Utilized various Canvas transformation techniques including scale, rotate, and opacity adjustments to create visually appealing animation effects\n5. Ensured all animations are optimized for performance when many bricks are on screen simultaneously\n</info added on 2025-05-14T11:02:22.688Z>",
+          "status": "done"
         },
         {
           "id": 7,
@@ -256,8 +256,8 @@
           "dependencies": [
             2
           ],
-          "details": "Develop a brick container class to manage brick collections. Implement methods for adding, removing, and updating bricks. Create functions to check game state based on remaining bricks. Design efficient data structures for brick lookup and collision detection.",
-          "status": "pending"
+          "details": "Develop a brick container class to manage brick collections. Implement methods for adding, removing, and updating bricks. Create functions to check game state based on remaining bricks. Design efficient data structures for brick lookup and collision detection.\n<info added on 2025-05-14T11:02:36.753Z>\nDevelop a brick container class to manage brick collections. Implement methods for adding, removing, and updating bricks. Create functions to check game state based on remaining bricks. Design efficient data structures for brick lookup and collision detection.\n\nImplementation completed with the creation of the BrickManager class to handle brick collections. The class includes functionality for adding, removing, and querying bricks in the collection. An automatic cleanup mechanism was added to the update method to remove deactivated bricks from the list. The areAllBricksCleared method was implemented to check if all bricks have been cleared, and a clearBricks method was added to remove all bricks in the current wave. Additionally, collision detection and handling functionality was integrated into the game class to ensure smooth interaction between bricks and balls.\n</info added on 2025-05-14T11:02:36.753Z>",
+          "status": "done"
         },
         {
           "id": 8,
