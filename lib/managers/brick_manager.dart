@@ -324,11 +324,13 @@ class BrickManager extends Component with HasGameRef<BrickChainGame> {
     final pattern = _selectPattern();
 
     // 벽돌 생성 시작 위치 계산 (게임 화면 상단에 적절히 배치)
+    // 카메라의 visibleWorldRect를 사용하여 월드 좌표계 위치 계산
+    final visibleRect = gameRef.camera.visibleWorldRect;
     final startX =
-        (BrickChainGame.worldWidth - (pattern.layout[0].length * brickWidth)) /
-            2 +
+        (visibleRect.width - (pattern.layout[0].length * brickWidth)) / 2 +
+        visibleRect.left +
         (brickWidth / 2);
-    final startY = 2.0; // 상단에서 약간 여유 공간
+    final startY = visibleRect.top + 2.0; // 상단에서 약간 여유 공간
 
     // 벽돌 생성
     final bricks = pattern.generateBricks(
@@ -339,13 +341,15 @@ class BrickManager extends Component with HasGameRef<BrickChainGame> {
       applyRandomization: currentWave > 1, // 첫 웨이브는 변형 없이 기본 형태로
     );
 
-    // 벽돌을 게임에 추가
+    // 월드에 직접 벽돌 추가
     for (final brick in bricks) {
-      await gameRef.add(brick);
+      // 게임이 아닌 월드에 직접 추가
+      await gameRef.world.add(brick);
       _bricks.add(brick);
     }
 
-    print('웨이브 $currentWave 생성 완료: ${_bricks.length}개 벽돌, 패턴: ${pattern.name}');
+    // 웨이브 시작
+    gameRef.startWave();
   }
 
   /// 벽돌 패턴 선택 로직

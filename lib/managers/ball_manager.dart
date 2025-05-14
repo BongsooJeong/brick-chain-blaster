@@ -60,7 +60,7 @@ class BallManager extends Component with HasGameRef<BrickChainGame> {
   /// 발사 준비 중인지 상태 (트리거가 당겨졌지만 아직 발사 전)
   bool isPrimed = false;
 
-  /// 발사 시작 위치
+  /// 발사 시작 위치 (월드 좌표 사용)
   Vector2 firingPosition = Vector2(4.5, 14.0);
 
   /// 조준 방향 (기본값: 위쪽)
@@ -161,104 +161,53 @@ class BallManager extends Component with HasGameRef<BrickChainGame> {
     print('발사 준비 완료, 에너지: ${firingPinEnergy.toStringAsFixed(2)}');
   }
 
-  /// 메인 Thread가 블로킹되지 않도록 비동기 메서드로 구현
-  Future<void> startFiring(Vector2 direction) async {
-    if (isFiring) return;
-
-    // 발사 방향 정규화
-    aimDirection = direction.normalized();
-
-    // 발사 준비 중이 아니라면 먼저 준비
-    if (!isPrimed) {
-      // 기본 에너지로 즉시 발사 (탭 발사용)
-      firingPinEnergy = 0.7;
-      isPrimed = true;
-    }
-
-    print(
-      '공 발사 시작: 방향 = $direction, 에너지 = ${firingPinEnergy.toStringAsFixed(2)}',
+  /// 새로운 공 생성
+  Future<Ball> _createBall(Vector2 position) async {
+    final ball = Ball(
+      position: position,
+      radius: ballRadius,
+      color: ballColor,
+      velocity: Vector2.zero(), // 공 생성자가 요구하는 velocity 파라미터
     );
-    isFiring = true;
-    isPrimed = false;
-    _vibrationIntensity = 0.0;
 
-    try {
-      // 모든 공을 발사
-      for (int i = 0; i < ballCount; i++) {
-        if (i < _ballStates.length) {
-          _ballStates[i].status = BallStatus.loaded;
-        }
+    // 공을 월드에 직접 추가
+    await gameRef.world.add(ball);
+    balls.add(ball);
 
-        await _fireBall(aimDirection, firingPinEnergy);
-
-        // 발사 간격 대기
-        if (i < ballCount - 1) {
-          await Future.delayed(Duration(milliseconds: firingDelay));
-        }
-      }
-    } catch (e) {
-      print('공 발사 중 오류: $e');
-    } finally {
-      print('공 발사 완료');
-    }
+    return ball;
   }
 
-  /// 단일 공 발사 메서드
-  Future<void> _fireBall(Vector2 direction, double energy) async {
-    if (!gameRef.children.contains(this)) {
-      print('BallManager가 게임에 추가되지 않음');
-      return;
-    }
+  /// 볼 발사
+  Future<void> fireBall(Vector2 direction) async {
+    if (isFiring) return;
 
-    try {
-      // 작은 무작위 변동 추가하여 자연스러운 발사 구현
-      final randomAngle = (_random.nextDouble() - 0.5) * 0.05; // ±0.025 rad 변동
-      final randomDirection = Vector2(
-        direction.x * math.cos(randomAngle) -
-            direction.y * math.sin(randomAngle),
-        direction.x * math.sin(randomAngle) +
-            direction.y * math.cos(randomAngle),
-      );
+    // 첫 발사 시 준비
+    isPrimed = true;
+    isFiring = true;
 
-      // 에너지에 기반한 속도 계산 (0.5~1.5 배율)
-      final speedMultiplier = 0.5 + energy;
+    // 볼의 총 개수만큼 발사 (지연 간격 적용)
+    for (int i = 0; i < ballCount; i++) {
+      // 공 생성 및 발사
+      final ball = await _createBall(firingPosition.clone());
 
-      // 가속 방향 계산 (정규화된 방향 * 속도 * 에너지 배율)
-      final velocity =
-          randomDirection.clone()..scale(ballSpeed * speedMultiplier);
+      // 발사 방향에 속도 적용
+      final normalizedDir = direction.normalized();
+      final velocity = normalizedDir.scaled(ballSpeed);
 
-      // 미세한 위치 변동으로 더 자연스러운 발사
-      final startPosition = firingPosition.clone();
-      startPosition.x += (_random.nextDouble() - 0.5) * 0.02;
-      startPosition.y += (_random.nextDouble() - 0.5) * 0.02;
+      // 속도 설정 (Ball 클래스의 setVelocity 메서드 사용)
+      ball.setVelocity(velocity);
 
-      // 새 공 생성
-      final ball = Ball(
-        position: startPosition,
-        radius: ballRadius,
-        color: ballColor,
-        velocity: velocity,
-      );
+      // 상태 업데이트
+      _ballStates[i].status = BallStatus.fired;
+      _ballStates[i].ball = ball;
 
-      // 게임에 공 추가
-      await gameRef.add(ball);
-
-      // 공 목록에 추가
-      balls.add(ball);
-
-      // 공 상태 업데이트 - 빈 슬롯 찾기
-      for (final state in _ballStates) {
-        if (state.status == BallStatus.loaded) {
-          state.ball = ball;
-          state.status = BallStatus.fired;
-          break;
-        }
+      // 마지막 공이 아니면 지연 시간 적용
+      if (i < ballCount - 1) {
+        await Future.delayed(Duration(milliseconds: firingDelay));
       }
-
-      print('공 발사됨: 위치 = ${ball.position}, 속도 = $velocity');
-    } catch (e) {
-      print('_fireBall 메서드 오류: $e');
     }
+
+    isFiring = false;
   }
 
   /// 모든 공을 원래 위치로 되돌림
@@ -299,7 +248,7 @@ class BallManager extends Component with HasGameRef<BrickChainGame> {
 
       // 모든 공이 멈춤 (마지막 공의 위치 저장)
       if (balls.isNotEmpty) {
-        _lastReturnPosition = balls.last.position.clone();
+        _lastReturnPosition = balls.last.body.position.clone();
 
         // 상태 업데이트
         for (final state in _ballStates) {
@@ -320,15 +269,33 @@ class BallManager extends Component with HasGameRef<BrickChainGame> {
   List<Vector2> getChainedBallPositions() {
     final positions = <Vector2>[];
 
-    // 체인 내 모든 공 위치 계산
-    for (int i = 0; i < ballCount; i++) {
-      // 첫 번째 공은 발사 위치에 표시
-      if (i == 0) {
-        positions.add(firingPosition.clone());
-      } else {
-        // 나머지 공들은 첫 번째 공 뒤에 일정 간격으로 배치
-        final offset = Vector2(0, ballRadius * 2.2 * i);
-        positions.add(firingPosition + offset);
+    // 발사된 공이 없으면 빈 목록 반환
+    if (balls.isEmpty) return positions;
+
+    // 첫 번째 공의 위치를 기준으로 선 그리기
+    // (발사되지 않은 경우 발사 위치 사용)
+    if (balls.isNotEmpty) {
+      // Ball 클래스의 position 속성 사용
+      final firstBallPos = balls[0].position.clone();
+      // 첫 번째 공 위치 추가
+      positions.add(firstBallPos);
+
+      // 선 길이 계산을 위한 변수
+      final lineLength = 6.0;
+      final segmentCount = 10;
+      final segmentLength = lineLength / segmentCount;
+
+      // 발사 방향으로 선 세그먼트 추가
+      final direction =
+          (isPrimed && !isFiring)
+              ? aimDirection.normalized()
+              // Ball 클래스의 velocity 속성 사용
+              : balls[0].velocity.normalized();
+
+      for (int i = 1; i <= segmentCount; i++) {
+        final offset = direction.scaled(i * segmentLength);
+        final segmentPos = firstBallPos + offset;
+        positions.add(segmentPos);
       }
     }
 
@@ -367,16 +334,15 @@ class BallManager extends Component with HasGameRef<BrickChainGame> {
 
   /// 발사 위치 진동 오프셋 계산 (발사 준비 애니메이션용)
   Vector2 getVibrationOffset() {
-    if (!isPrimed || _vibrationIntensity <= 0) {
-      return Vector2.zero();
-    }
+    // 발사 중에만 진동 효과
+    if (!isFiring || balls.isEmpty) return Vector2.zero();
 
-    // 사인 파동으로 진동 표현
-    final xOffset = math.sin(_firingAnimationTimer) * _vibrationIntensity;
-    final yOffset =
-        math.cos(_firingAnimationTimer * 0.8) * _vibrationIntensity * 0.7;
+    // 랜덤 진동
+    final maxOffset = 0.05;
+    final dx = (math.Random().nextDouble() * 2 - 1) * maxOffset;
+    final dy = (math.Random().nextDouble() * 2 - 1) * maxOffset;
 
-    return Vector2(xOffset, yOffset);
+    return Vector2(dx, dy);
   }
 
   /// 발사 완료 후 처리
@@ -388,6 +354,16 @@ class BallManager extends Component with HasGameRef<BrickChainGame> {
     print('모든 공 발사 완료. 새 발사 위치: $firingPosition');
 
     // 상태 초기화
+    _initializeBallStates();
+  }
+
+  /// 모든 볼 제거
+  void clearBalls() {
+    for (final ball in balls) {
+      ball.removeFromParent();
+    }
+    balls.clear();
+    _ballStates.clear();
     _initializeBallStates();
   }
 }

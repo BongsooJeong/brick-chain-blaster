@@ -86,29 +86,34 @@ class Brick extends BodyComponent {
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    renderBody = false; // Forge2D의 기본 그리기를 비활성화하고 직접 렌더링
+    renderBody = true;
+    paint = Paint()..color = _getColorByType(type, hp);
   }
 
   @override
   Body createBody() {
-    final bodyDef =
-        BodyDef()
-          ..type = BodyType.static
-          ..position = position;
-
-    final body = world.createBody(bodyDef);
+    final bodyDef = BodyDef(
+      position: position,
+      type: BodyType.static,
+      userData: this,
+    );
 
     final shape =
-        PolygonShape()..setAsBox(size.x / 2, size.y / 2, Vector2.zero(), 0.0);
+        PolygonShape()..setAsBox(size.x / 2, size.y / 2, Vector2.zero(), 0);
 
-    final fixtureDef =
-        FixtureDef(shape)
-          ..density = 1.0
-          ..friction = 0.3
-          ..restitution = 0.5;
+    final fixtureDef = FixtureDef(
+      shape,
+      friction: 0.1,
+      restitution: 0.5,
+      filter:
+          Filter()
+            ..categoryBits =
+                0x0004 // 벽돌 카테고리
+            ..maskBits = 0xFFFF, // 모든 객체와 충돌
+    );
 
+    final body = world.createBody(bodyDef);
     body.createFixture(fixtureDef);
-
     return body;
   }
 
@@ -180,7 +185,10 @@ class Brick extends BodyComponent {
     );
 
     // 기본 배경 그리기
-    final paint = Paint()..color = _adjustColor(color, opacity, brightness);
+    final paint =
+        Paint()
+          ..color = _adjustColor(color, opacity, brightness)
+          ..style = PaintingStyle.fill;
 
     // 약간의 라운드 모서리 효과
     final radius = Radius.circular(size.y * 0.15);
@@ -261,18 +269,25 @@ class Brick extends BodyComponent {
 
   /// 벽돌이 타격을 받을 때 호출
   void hit() {
-    // 이미 파괴 중이면 무시
     if (_isDestroying) return;
 
-    // 타격 시 애니메이션 트리거
-    _isDamaged = true;
-    _animationTime = 0;
-
     _currentHp--;
+
+    // 타격 효과
+    final oldColor = paint.color;
+    paint.color = Colors.white;
+
+    // 타이머로 깜빡임 효과
+    Future.delayed(const Duration(milliseconds: 50), () {
+      if (isMounted) {
+        paint.color = oldColor.withOpacity(_currentHp / hp);
+      }
+    });
+
+    // HP가 0 이하면 파괴
     if (_currentHp <= 0) {
-      // 파괴 애니메이션 시작
       _isDestroying = true;
-      _destroyProgress = 0;
+      removeFromParent();
     }
   }
 

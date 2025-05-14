@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart' show Colors, TextStyle, FontWeight;
 import 'package:brick_chain_blaster/game/brick_chain_game.dart';
@@ -26,6 +27,9 @@ class WaveManager extends Component with HasGameRef<BrickChainGame> {
 
   /// 웨이브 상태 getter
   WaveState get state => _state;
+
+  /// 웨이브 텍스트 표시 여부
+  final bool _waveTextVisible = true;
 
   /// 벽돌 매니저 참조
   late final BrickManager brickManager;
@@ -68,25 +72,21 @@ class WaveManager extends Component with HasGameRef<BrickChainGame> {
   Future<void> onLoad() async {
     await super.onLoad();
 
-    // 텍스트 컴포넌트 추가
+    // 텍스트 컴포넌트 추가 (월드 좌표계에 맞게 위치 지정)
+    _countdownText.position = Vector2(
+      BrickChainGame.worldWidth / 2,
+      BrickChainGame.worldHeight / 2,
+    );
+    _waveText.position = Vector2(
+      BrickChainGame.worldWidth / 2,
+      BrickChainGame.worldHeight / 2 - 3,
+    );
+
     await add(_countdownText);
     await add(_waveText);
 
     // 첫 웨이브 준비 시작
     prepareNextWave();
-  }
-
-  @override
-  void onGameResize(Vector2 size) {
-    super.onGameResize(size);
-
-    // 텍스트 위치 업데이트
-    _countdownText.position = Vector2(gameRef.size.x / 2, gameRef.size.y / 2);
-
-    _waveText.position = Vector2(
-      gameRef.size.x / 2,
-      _countdownText.position.y - 80,
-    );
   }
 
   @override
@@ -181,5 +181,35 @@ class WaveManager extends Component with HasGameRef<BrickChainGame> {
     _countdownText.text = 'GAME OVER';
 
     // 게임 오버 시 추가 처리 구현
+  }
+
+  @override
+  void render(Canvas canvas) {
+    if (!_waveTextVisible) return;
+
+    // 카메라의 월드 좌표 경계 얻기
+    final visibleRect = gameRef.camera.visibleWorldRect;
+    final centerX = visibleRect.center.dx;
+    final topY = visibleRect.top + 2.0; // 상단에서 약간 아래로
+
+    final waveText =
+        _state == WaveState.preparing ? '웨이브 $_waveStartCountdown' : '웨이브 시작!';
+
+    // 웨이브 텍스트 그리기
+    final textConfig = TextPaint(
+      style: TextStyle(
+        color: Colors.white,
+        fontSize: 24.0,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+
+    // 화면 상단 중앙에 텍스트 그리기
+    textConfig.render(
+      canvas,
+      waveText,
+      Vector2(centerX, topY),
+      anchor: Anchor.topCenter,
+    );
   }
 }

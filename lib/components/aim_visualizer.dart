@@ -229,17 +229,23 @@ class AimVisualizer extends Component with HasGameRef<BrickChainGame> {
 
   /// 월드 좌표를 화면 좌표로 변환
   Vector2 _convertWorldToScreen(Vector2 worldPosition) {
+    // 월드 좌표를 화면 좌표로 변환 (Flame 1.28.1 호환 방식)
     final position = worldPosition.clone();
     final zoom = gameRef.camera.viewfinder.zoom;
     final cameraPosition = gameRef.camera.viewfinder.position;
-    final size = gameRef.size;
-    final centerX = size.x / 2;
-    final centerY = size.y / 2;
 
-    // 월드 -> 화면 변환 (월드 -> 카메라 상대 좌표 -> 화면 좌표)
-    position.x = (position.x - cameraPosition.x) * zoom + centerX;
-    position.y = (position.y - cameraPosition.y) * zoom + centerY;
-    return position;
+    // 카메라의 실제 크기와 화면(캔버스) 크기
+    final canvasSize = gameRef.canvasSize;
+
+    // 화면 중앙 좌표
+    final centerX = canvasSize.x / 2;
+    final centerY = canvasSize.y / 2;
+
+    // 월드 좌표 -> 화면 좌표 변환
+    final screenX = (position.x - cameraPosition.x) * zoom + centerX;
+    final screenY = (position.y - cameraPosition.y) * zoom + centerY;
+
+    return Vector2(screenX, screenY);
   }
 
   /// 체인의 모든 공을 시각화
@@ -248,6 +254,7 @@ class AimVisualizer extends Component with HasGameRef<BrickChainGame> {
     final ballPositions = ballManager.getChainedBallPositions();
     final vibrationOffset = ballManager.getVibrationOffset();
     final ballRadius = ballManager.ballRadius;
+    // zoom은 필요 없음 - 이미 _convertWorldToScreen에서 적용됨
 
     // 모든 공 그리기
     for (int i = 0; i < ballPositions.length; i++) {
@@ -257,7 +264,7 @@ class AimVisualizer extends Component with HasGameRef<BrickChainGame> {
       final adjustedPos = (i == 0) ? pos + vibrationOffset : pos;
 
       // 월드 좌표계로 변환
-      final transform = _convertWorldToScreen(adjustedPos);
+      final screenPos = _convertWorldToScreen(adjustedPos);
 
       // 체인에서의 위치에 따라 크기와 투명도 조정
       final opacity = 1.0 - (i * 0.15).clamp(0.0, 0.7);
@@ -265,22 +272,14 @@ class AimVisualizer extends Component with HasGameRef<BrickChainGame> {
 
       // 공 그리기
       _ballPaint.color = const Color(0xFFFFFFFF).withOpacity(opacity);
-      canvas.drawCircle(
-        transform.toOffset(),
-        size * gameRef.camera.viewfinder.zoom,
-        _ballPaint,
-      );
+      canvas.drawCircle(screenPos.toOffset(), size, _ballPaint);
 
       // 첫 번째 공에만 하이라이트 효과 추가
       if (i == 0) {
         _ballHighlightPaint.color = const Color(0xAAFFFFFF);
         canvas.drawCircle(
-          transform.toOffset() +
-              Offset(
-                -size * 0.3 * gameRef.camera.viewfinder.zoom,
-                -size * 0.3 * gameRef.camera.viewfinder.zoom,
-              ),
-          size * 0.3 * gameRef.camera.viewfinder.zoom,
+          screenPos.toOffset() + Offset(-size * 0.3, -size * 0.3),
+          size * 0.3,
           _ballHighlightPaint,
         );
       }

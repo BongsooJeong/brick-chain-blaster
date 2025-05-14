@@ -1,20 +1,25 @@
 import 'dart:ui';
 import 'package:flame_forge2d/flame_forge2d.dart';
+import 'package:flutter/material.dart';
+import 'package:flame/extensions.dart';
 
 /// 게임 벽 컴포넌트 클래스
 class Wall extends BodyComponent {
-  final Vector2 position;
-  final Vector2 size;
+  final Vector2 start;
+  final Vector2 end;
   final Color color;
+  final double thickness;
 
   /// 생성자
-  /// [position] 벽의 위치
-  /// [size] 벽의 크기
+  /// [start] 시작점
+  /// [end] 끝점
   /// [color] 벽의 색상
+  /// [thickness] 벽의 두께
   Wall({
-    required this.position,
-    required this.size,
-    this.color = const Color(0xFF444444),
+    required this.start,
+    required this.end,
+    this.color = const Color(0xFF666666),
+    this.thickness = 0.1,
   });
 
   @override
@@ -25,25 +30,12 @@ class Wall extends BodyComponent {
 
   @override
   Body createBody() {
-    final bodyDef =
-        BodyDef()
-          ..position = position
-          ..type = BodyType.static;
+    final shape = EdgeShape()..set(start, end);
+    final fixtureDef = FixtureDef(shape, friction: 0.3, restitution: 0.8);
 
-    final body = world.createBody(bodyDef);
+    final bodyDef = BodyDef(position: Vector2.zero(), type: BodyType.static);
 
-    final shape =
-        PolygonShape()..setAsBox(size.x / 2, size.y / 2, Vector2.zero(), 0.0);
-
-    final fixtureDef =
-        FixtureDef(shape)
-          ..restitution =
-              1.0 // 완전 탄성 충돌
-          ..friction = 0.1; // 약간의 마찰
-
-    body.createFixture(fixtureDef);
-
-    return body;
+    return world.createBody(bodyDef)..createFixture(fixtureDef);
   }
 
   @override
@@ -53,29 +45,9 @@ class Wall extends BodyComponent {
     final paint =
         Paint()
           ..color = color
-          ..style = PaintingStyle.fill;
+          ..strokeWidth = thickness
+          ..style = PaintingStyle.stroke;
 
-    // 중심이 (0,0)인 상자 그리기
-    final rect = Rect.fromCenter(
-      center: Offset.zero,
-      width: size.x,
-      height: size.y,
-    );
-
-    canvas.drawRect(rect, paint);
-
-    // 테두리 그리기 (조금 밝은 색으로)
-    final borderPaint =
-        Paint()
-          ..color = Color.fromARGB(
-            color.alpha,
-            (color.red + 30).clamp(0, 255),
-            (color.green + 30).clamp(0, 255),
-            (color.blue + 30).clamp(0, 255),
-          )
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 0.05;
-
-    canvas.drawRect(rect, borderPaint);
+    canvas.drawLine(start.toOffset(), end.toOffset(), paint);
   }
 }

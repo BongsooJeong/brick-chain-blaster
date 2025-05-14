@@ -166,17 +166,23 @@ class InputHandler extends Component
 
   /// 화면 좌표를 월드 좌표로 변환
   Vector2 _convertPositionToWorld(Vector2 screenPosition) {
-    // Flame 1.28.1에서 고정 해상도 뷰포트 사용 시
-    // 직접 변환을 계산하는 것이 더 안정적입니다
+    // 화면 좌표를 월드 좌표로 변환 (Flame 1.28.1 호환 방식)
     final position = screenPosition.clone();
     final zoom = gameRef.camera.viewfinder.zoom;
     final cameraPosition = gameRef.camera.viewfinder.position;
-    final size = gameRef.size;
-    final centerX = size.x / 2;
-    final centerY = size.y / 2;
-    position.x = (position.x - centerX) / zoom + cameraPosition.x;
-    position.y = (position.y - centerY) / zoom + cameraPosition.y;
-    return position;
+
+    // 카메라의 실제 크기와 화면(캔버스) 크기
+    final canvasSize = gameRef.canvasSize;
+
+    // 화면 중앙 좌표
+    final centerX = canvasSize.x / 2;
+    final centerY = canvasSize.y / 2;
+
+    // 화면 좌표 -> 월드 좌표 변환
+    final worldX = (position.x - centerX) / zoom + cameraPosition.x;
+    final worldY = (position.y - centerY) / zoom + cameraPosition.y;
+
+    return Vector2(worldX, worldY);
   }
 
   /// 공 발사 메서드
@@ -189,7 +195,7 @@ class InputHandler extends Component
     if (direction.length < 0.1) return;
 
     // 공 발사 시작
-    ballManager.startFiring(direction);
+    ballManager.fireBall(direction);
   }
 
   /// 발사 취소 메서드

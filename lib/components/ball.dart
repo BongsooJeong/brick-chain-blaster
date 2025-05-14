@@ -1,86 +1,97 @@
 import 'dart:ui';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart' show Colors;
+import 'package:flame/components.dart';
+import 'package:flame/events.dart';
 
 /// 게임 볼 컴포넌트 클래스
-class Ball extends BodyComponent {
-  @override
-  final Vector2 position;
+class Ball extends BodyComponent with TapCallbacks {
+  final Vector2? initialPosition;
   final double radius;
-  final Color color;
-  final Vector2 velocity;
-
-  // 초기 속도를 저장해 두었다가 body 초기화 후 적용
-  Vector2? _pendingVelocity;
+  final double restitution;
+  final double density;
+  final double friction;
 
   /// 생성자
-  /// [position] 공의 시작 위치
+  /// [initialPosition] 공의 초기 위치
   /// [radius] 공의 반지름
-  /// [color] 공의 색상
-  /// [velocity] 초기 발사 속도 벡터
+  /// [restitution] 반발 계수
+  /// [density] 밀도
+  /// [friction] 마찰 계수
   Ball({
-    required this.position,
+    this.initialPosition,
     this.radius = 0.3,
-    this.color = const Color(0xFFFFFFFF),
-    required this.velocity,
+    this.restitution = 0.8,
+    this.density = 1.0,
+    this.friction = 0.4,
+    super.priority = 1,
   });
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    renderBody = false; // Forge2D의 기본 그리기를 비활성화하고 직접 렌더링
 
-    // body가 완전히 초기화된 후 대기 중인 속도 적용
-    if (_pendingVelocity != null) {
-      body.linearVelocity.setFrom(_pendingVelocity!);
-      _pendingVelocity = null;
-    }
+    // 그려질 모양 추가
+    renderBody = true;
+    paint = Paint()..color = Colors.white;
   }
 
   @override
   Body createBody() {
-    final bodyDef =
-        BodyDef()
-          ..type = BodyType.dynamic
-          ..position = position
-          ..bullet =
-              true // 빠른 속도에서도 충돌 감지가 정확하게 동작하도록 설정
-          ..linearVelocity = velocity;
+    final bodyDef = BodyDef(
+      position: initialPosition ?? Vector2.zero(),
+      type: BodyType.dynamic,
+      userData: this, // 객체 참조 설정 (충돌 처리시 사용)
+      angularDamping: 0.8,
+      bullet: true, // 고속 충돌 처리 최적화
+      fixedRotation: false, // 회전 허용
+    );
 
     final body = world.createBody(bodyDef);
 
     final shape = CircleShape()..radius = radius;
 
-    final fixtureDef =
-        FixtureDef(shape)
-          ..density = 1.0
-          ..friction =
-              0.0 // 벽에 마찰이 없도록
-          ..restitution =
-              1.0 // 완전 탄성 충돌
-          ..filter.groupIndex = -1; // 다른 공과 충돌하지 않도록 설정
+    final fixtureDef = FixtureDef(
+      shape,
+      restitution: restitution,
+      density: density,
+      friction: friction,
+      filter:
+          Filter()
+            ..categoryBits =
+                0x0002 // 볼 카테고리
+            ..maskBits = 0xFFFF, // 모든 객체와 충돌
+    );
 
     body.createFixture(fixtureDef);
-
     return body;
   }
 
-  /// 안전하게 공의 속도를 설정하는 메서드
-  void setVelocity(Vector2 newVelocity) {
-    try {
-      // body가 초기화되었으면 직접 속도 설정
-      body.linearVelocity.setFrom(newVelocity);
-    } catch (e) {
-      // body가 아직 초기화되지 않았으면 나중에 적용할 속도로 저장
-      _pendingVelocity = newVelocity.clone();
-    }
+  @override
+  void onTapDown(TapDownEvent event) {
+    // 볼을 탭하면 무작위 방향으로 힘 적용
+    body.applyLinearImpulse(Vector2.random() * 10);
+  }
+
+  /// 볼 리셋 (위치 및 속도)
+  void reset(Vector2 position) {
+    body.setTransform(position, 0);
+    body.linearVelocity = Vector2.zero();
+    body.angularVelocity = 0;
+  }
+
+  /// 발사 메서드 - 지정된 방향과 세기로 볼 발사
+  void launch(Vector2 direction, double power) {
+    // 방향 정규화 및 힘 적용
+    final impulse = direction.normalized() * power;
+    body.applyLinearImpulse(impulse);
   }
 
   @override
   void render(Canvas canvas) {
     super.render(canvas);
 
-    final paint = Paint()..color = color;
+    final paint = Paint()..color = Colors.white;
 
     // 공의 내부 채우기
     canvas.drawCircle(Offset.zero, radius, paint);

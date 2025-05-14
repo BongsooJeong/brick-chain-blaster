@@ -39,16 +39,7 @@ class BrickChainGame extends Forge2DGame {
   static const worldHeight = 16.0;
 
   // 생성자
-  BrickChainGame()
-    : super(
-        // Forge2D 월드의 중력 설정
-        gravity: Vector2(0, 10),
-        // 고정 해상도 카메라 - 월드 단위가 아닌 화면 단위로 설정
-        camera: CameraComponent.withFixedResolution(
-          width: 360, // 실제 픽셀 단위로 지정
-          height: 640, // 실제 픽셀 단위로 지정
-        ),
-      );
+  BrickChainGame() : super(gravity: Vector2(0, 10));
 
   // 게임 매니저
   late BallManager ballManager;
@@ -58,6 +49,28 @@ class BrickChainGame extends Forge2DGame {
 
   // 게임 상태
   bool gameStarted = false;
+
+  // 점수
+  int _score = 0;
+
+  // 점수 getter
+  int get score => _score;
+
+  // 점수 증가 메서드
+  void addScore(int points) {
+    _score += points;
+    // 향후 점수 변경 이벤트 발생 가능
+  }
+
+  /// 웨이브 시작
+  void startWave() {
+    // 웨이브가 시작될 때 게임 상태 업데이트
+    gameStarted = true;
+
+    // 필요한 경우 여기에 추가 로직 구현
+    // 예: 사운드 재생, 애니메이션 트리거 등
+    debugPrint('💫 새 웨이브 시작!');
+  }
 
   @override
   Future<void> onLoad() async {
@@ -76,14 +89,12 @@ class BrickChainGame extends Forge2DGame {
     // 카메라 위치 설정 - 월드 중앙으로
     camera.viewfinder.position = Vector2(worldWidth / 2, worldHeight / 2);
 
-    // 줌 설정 - zoom 값을 명시적으로 조정하지 않음
-    // 대신 전체 화면 표시를 위해 viewport 비율에 따라 자동 계산되도록 함
-
     // 디버그 모드 비활성화
     debugMode = false;
 
     // 세계 경계 추가
-    await addWorldBoundaries();
+    await add(world);
+    world.addAll(createBoundaries());
 
     // 볼 매니저 초기화 및 추가
     ballManager = BallManager();
@@ -113,7 +124,6 @@ class BrickChainGame extends Forge2DGame {
   @override
   void onGameResize(Vector2 canvasSize) {
     super.onGameResize(canvasSize);
-
     debugPrint('[Resize] canvas=$canvasSize');
 
     // 동적 zoom 재계산 - 월드 크기에 맞게 zoom 조정
@@ -129,8 +139,9 @@ class BrickChainGame extends Forge2DGame {
       camera.viewfinder.zoom = canvasSize.x / worldWidth;
     }
 
-    debugPrint(
-      '🔄 zoom 설정: ${camera.viewfinder.zoom} (화면 ${canvasSize.x}x${canvasSize.y}, 월드 ${worldWidth}x$worldHeight)',
+    // 로그 출력 (디버깅용)
+    print(
+      '🔄 zoom 설정: ${camera.viewfinder.zoom} (화면 ${canvasSize.x.toInt()}x${canvasSize.y.toInt()}, 월드 ${worldWidth}x$worldHeight)',
     );
   }
 
@@ -187,9 +198,26 @@ class BrickChainGame extends Forge2DGame {
           // 벽돌에 데미지
           brick.hit();
 
-          // 벽돌 타입에 따라 다른 처리 가능
-          if (brick.type == BrickType.special) {
-            // 특수 효과 구현 (향후)
+          // 벽돌 파괴 시 점수 증가
+          if (brick.currentHp <= 0) {
+            // 벽돌 유형에 따라 다른 점수 부여
+            switch (brick.type) {
+              case BrickType.normal:
+                addScore(10);
+                break;
+              case BrickType.special:
+                addScore(30);
+                break;
+              case BrickType.reinforced:
+                addScore(20 * brick.hp); // HP가 높을수록 더 많은 점수
+                break;
+              case BrickType.boss:
+                addScore(50 * brick.hp); // 보스는 더 많은 점수
+                break;
+            }
+          } else {
+            // 부분 타격에도 작은 점수 부여
+            addScore(1);
           }
 
           // 볼의 반사
@@ -224,33 +252,26 @@ class BrickChainGame extends Forge2DGame {
     }
   }
 
-  // 화면 경계 추가
-  Future<void> addWorldBoundaries() async {
-    // 바닥
-    final bottomWall = Wall(
-      position: Vector2(worldWidth / 2, worldHeight),
-      size: Vector2(worldWidth, 0.1),
-    );
+  /// 게임 경계 벽 생성
+  List<Wall> createBoundaries() {
+    // 카메라의 월드 좌표 경계 얻기
+    final visibleRect = camera.visibleWorldRect;
+    final topLeft = visibleRect.topLeft.toVector2();
+    final topRight = visibleRect.topRight.toVector2();
+    final bottomRight = visibleRect.bottomRight.toVector2();
+    final bottomLeft = visibleRect.bottomLeft.toVector2();
 
-    // 왼쪽 벽
-    final leftWall = Wall(
-      position: Vector2(0, worldHeight / 2),
-      size: Vector2(0.1, worldHeight),
-    );
-
-    // 오른쪽 벽
-    final rightWall = Wall(
-      position: Vector2(worldWidth, worldHeight / 2),
-      size: Vector2(0.1, worldHeight),
-    );
-
-    // 위 벽
-    final topWall = Wall(
-      position: Vector2(worldWidth / 2, 0),
-      size: Vector2(worldWidth, 0.1),
-    );
-
-    await addAll([bottomWall, leftWall, rightWall, topWall]);
+    // 경계선 위치에 벽 생성 (Wall.line 생성자 사용)
+    return [
+      // 상단 벽
+      Wall.line(topLeft, topRight),
+      // 우측 벽
+      Wall.line(topRight, bottomRight),
+      // 하단 벽 (공이 떨어지는 부분은 제외 가능)
+      Wall.line(bottomLeft, bottomRight),
+      // 좌측 벽
+      Wall.line(topLeft, bottomLeft),
+    ];
   }
 
   /// 테스트를 위한 벽돌 추가 메서드
