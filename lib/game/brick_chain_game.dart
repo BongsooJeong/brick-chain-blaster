@@ -41,8 +41,8 @@ class BrickChainGame extends Forge2DGame {
   Future<void> onLoad() async {
     await super.onLoad();
 
-    // 디버그 모드 활성화 (개발 중에만)
-    debugMode = true;
+    // 개발 중에만 디버그 모드 사용 (배포 시 false로 변경)
+    debugMode = false;
 
     // 세계 경계 추가
     await addWorldBoundaries();
@@ -59,32 +59,6 @@ class BrickChainGame extends Forge2DGame {
     await addTestBricks();
 
     print('게임 초기화 완료: 월드 크기=${worldWidth}x$worldHeight');
-    print('카메라 뷰포트: ${camera.viewport}, 줌: ${camera.viewfinder.zoom}');
-  }
-
-  @override
-  void update(double dt) {
-    super.update(dt);
-
-    // 개발 중에만 디버깅 정보 출력 (프레임 드롭 가능성 있음)
-    if (debugMode && (DateTime.now().millisecondsSinceEpoch % 1000 < 20)) {
-      // 약 1초에 한번만 출력
-      print(
-        '카메라 줌: ${camera.viewfinder.zoom}, 앵커: ${camera.viewfinder.anchor}, 위치: ${camera.viewfinder.position}',
-      );
-    }
-
-    // 디버그 정보 출력 (개발용, 실제 게임에선 제거)
-    if (ballManager.balls.isNotEmpty) {
-      try {
-        final ball = ballManager.balls.first;
-        print(
-          'Ball position: ${ball.position}, velocity: ${ball.body.linearVelocity}',
-        );
-      } catch (e) {
-        // 무시
-      }
-    }
   }
 
   // 세계 경계 추가

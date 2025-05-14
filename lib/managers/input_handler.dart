@@ -91,23 +91,16 @@ class InputHandler extends Component
 
   /// 화면 좌표를 월드 좌표로 변환
   Vector2 _convertPositionToWorld(Vector2 screenPosition) {
-    // 화면 좌표계에서 게임 월드 좌표계로 변환하는 로직
-    // Flame 1.28.1에서는 수동 변환이 필요함
+    // Flame 1.28.1에서 고정 해상도 뷰포트 사용 시
+    // 직접 변환을 계산하는 것이 더 안정적입니다
     final position = screenPosition.clone();
-
-    // viewfinder의 위치와 줌을 고려하여 변환
     final zoom = gameRef.camera.viewfinder.zoom;
     final cameraPosition = gameRef.camera.viewfinder.position;
-
-    // 화면 중앙을 원점으로 하는 오프셋 계산
     final size = gameRef.size;
     final centerX = size.x / 2;
     final centerY = size.y / 2;
-
-    // 화면 좌표에서 중앙을 빼고 줌으로 나눔
     position.x = (position.x - centerX) / zoom + cameraPosition.x;
     position.y = (position.y - centerY) / zoom + cameraPosition.y;
-
     return position;
   }
 
