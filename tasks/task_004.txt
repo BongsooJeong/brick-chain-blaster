@@ -105,3 +105,20 @@ Design and implement explosive bricks that affect neighboring bricks. Create pow
 ### Details:
 Conduct performance testing with large numbers of bricks. Implement optimizations for rendering and updating brick states. Test various pattern combinations and difficulty progressions. Debug and fix any issues with brick collision detection or animation.
 
+## 10. 웹 브라우저에서 벽돌 생성 시스템 테스트 및 검증 [pending]
+### Dependencies: 4.9
+### Description: 브라우저에서 구현된 벽돌 생성 시스템을 테스트하고 다양한 패턴, 웨이브, HP 스케일링 등의 기능을 검증합니다.
+### Details:
+1. 'flutter run -d chrome --web-renderer canvaskit' 명령어로 브라우저에서 앱 실행
+2. 다양한 벽돌 패턴이 올바르게 생성되는지 확인
+3. 웨이브 진행에 따른 패턴 변화 테스트
+4. 웨이브에 따른 벽돌 HP 스케일링 검증
+5. 다양한 브라우저 창 크기에서 반응형 레이아웃 테스트
+6. 특수 벽돌 타입의 시각적 표현 및 작동 확인
+7. 벽돌 그룹 관리 시스템 테스트
+8. 벽돌 애니메이션(생성, 이동, 파괴) 확인
+9. 성능 테스트: 최대 벽돌 개수 생성 시 FPS 모니터링
+10. Chrome DevTools를 사용하여 메모리 사용량 및 성능 프로파일링
+11. 각 테스트 케이스의 스크린샷 캡처 및 문서화
+12. 발견된 버그 또는 개선점 기록
+

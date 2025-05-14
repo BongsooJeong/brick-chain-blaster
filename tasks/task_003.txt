@@ -108,3 +108,17 @@ Refine physics calculations to balance accuracy with performance. Implement effi
 ### Details:
 Create diagnostic visualizations to monitor internal system states. Implement parameter adjustment tools for fine-tuning physics behaviors. Design automated test scenarios to verify system performance under various conditions.
 
+## 11. 웹 브라우저에서 공 체인 발사 메커니즘 테스트 및 검증 [pending]
+### Dependencies: 3.10
+### Description: 브라우저에서 구현된 공 체인 발사 메커니즘을 테스트하고 결과를 검증합니다. 다양한 발사 각도, 속도, 공 수량에 대한 테스트 케이스를 실행합니다.
+### Details:
+1. 'flutter run -d chrome --web-renderer canvaskit' 명령어로 브라우저에서 앱 실행
+2. 발사 메커니즘의 여러 각도에서 작동 테스트(0도, 45도, 90도, 135도 등)
+3. 다양한 발사 속도(최소, 중간, 최대)에서 공의 움직임 확인
+4. 여러 개의 공(1개, 5개, 10개, 최대)을 연속 발사하여 순차적 발사 검증
+5. 벽과 벽돌 충돌 시 물리 작용 확인
+6. 성능 테스트: 최대 공 개수 발사 시 FPS 모니터링
+7. Chrome DevTools를 사용하여 메모리 사용량 및 성능 프로파일링
+8. 각 테스트 케이스의 스크린샷 캡처 및 문서화
+9. 발견된 버그 또는 개선점 기록
+

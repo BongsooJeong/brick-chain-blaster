@@ -61,3 +61,35 @@ class Brick extends BodyComponent with ContactCallbacks {
 4. Validate visual feedback for hits
 5. Test score calculation
 6. Verify particle effects render correctly
+
+# Subtasks:
+## 1. Ball-Brick Collision Detection Implementation [pending]
+### Dependencies: None
+### Description: Implement a function to detect collisions between the ball and each brick, updating the ball's direction upon collision.
+### Details:
+Loop through all bricks and compare their positions with the ball's coordinates each frame. If a collision is detected, reverse the ball's vertical velocity and mark the brick for further processing (e.g., HP reduction or destruction). Test in the browser by moving the ball into bricks and verifying the collision response.
+
+## 2. Brick HP Management System [pending]
+### Dependencies: 5.1
+### Description: Add an HP property to each brick and implement logic to reduce HP upon collision.
+### Details:
+Each brick should have an HP value. When a collision is detected, decrement the brick's HP. If HP reaches zero, mark the brick for destruction. Test by checking that HP decreases with each collision and bricks are removed when HP is zero.
+
+## 3. Visual Feedback and Destruction Animations [pending]
+### Dependencies: 5.2
+### Description: Implement visual feedback for collisions and destruction animations for bricks.
+### Details:
+Add visual effects such as color changes or particle bursts when a brick is hit or destroyed. Test by verifying that animations play on collision and destruction, and that they are visible in the browser.
+
+## 4. Scoring Mechanics and Particle Effects [pending]
+### Dependencies: 5.3
+### Description: Implement a scoring system and particle effects for brick destruction.
+### Details:
+Increase the player's score when a brick is destroyed. Add particle effects (e.g., sparks or debris) upon brick destruction. Test by checking that the score increases and particles are visible when bricks are destroyed.
+
+## 5. Collision Sound and Comprehensive Browser Testing [pending]
+### Dependencies: 5.4
+### Description: Add collision sound effects and perform comprehensive browser testing for all features.
+### Details:
+Play a sound effect on each collision and brick destruction. Test all scenarios: multiple collisions, HP reduction, visual feedback, animations, scoring, and particle effects. Ensure all features work as expected in the browser.
+

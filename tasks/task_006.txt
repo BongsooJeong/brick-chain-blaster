@@ -129,3 +129,20 @@ Develop a state visualization panel showing current state and transition history
 ### Details:
 Profile state transitions and update loops to identify performance bottlenecks. Create automated tests for state transitions and edge cases. Perform integration testing with all game systems. Document the state system architecture and usage patterns.
 
+## 11. 웹 브라우저에서 게임 상태 관리 시스템 테스트 [pending]
+### Dependencies: 6.10
+### Description: 브라우저에서 구현된 게임 상태 관리 시스템을 테스트하고 턴, 웨이브, 게임 오버 조건 및 진행 과정을 검증합니다.
+### Details:
+1. 'flutter run -d chrome --web-renderer canvaskit' 명령어로 브라우저에서 앱 실행
+2. 게임 시작, 일시 정지, 재개, 종료 상태 전환 테스트
+3. 턴 기반 진행 시스템 검증
+4. 웨이브 완료 및 다음 웨이브 전환 테스트
+5. 게임 오버 조건 발생 시 상태 전환 확인
+6. 게임 상태에 따른 UI 변화 검증
+7. 게임 상태 저장 및 로드 기능 테스트
+8. 다양한 게임 상태에서의 사용자 입력 처리 확인
+9. Chrome DevTools를 사용한 상태 관리 디버깅
+10. 각 상태 전환 시 발생할 수 있는 Edge Case 테스트
+11. 각 게임 상태의 스크린샷 캡처 및 문서화
+12. 발견된 버그 또는 개선점 기록
+

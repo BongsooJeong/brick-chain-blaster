@@ -9,7 +9,17 @@
       "priority": "high",
       "dependencies": [],
       "status": "done",
-      "subtasks": []
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Flutter 웹 프로젝트 구동 및 기본 기능 테스트",
+          "description": "Flutter 웹 프로젝트와 Flame 엔진의 기본 구동을 테스트하고, 초기 설정이 올바르게 구성되었는지 확인합니다.",
+          "details": "1. 'flutter run -d chrome --web-renderer canvaskit' 명령어로 브라우저에서 앱 실행\n2. 앱이 브라우저에서 올바르게 로드되는지 확인\n3. Flame 게임 엔진이 Canvas에 올바르게 렌더링되는지 검증\n4. 기본 게임 루프 작동 확인 (FPS 카운터 또는 디버그 정보)\n5. 다양한 브라우저 크기에서 반응형 테스트\n6. Chrome DevTools를 사용한 성능 모니터링\n7. Forge2D 물리 엔진 초기화 확인\n8. 다양한 브라우저(Chrome, Firefox, Safari)에서 호환성 테스트\n9. 디버그 모드와 릴리스 모드 간의 성능 차이 측정\n10. 초기 설정 시 발생할 수 있는 문제점 기록\n11. 추가 최적화가 필요한 영역 식별",
+          "status": "done",
+          "dependencies": [],
+          "parentTaskId": 1
+        }
+      ]
     },
     {
       "id": 2,
@@ -138,6 +148,17 @@
           ],
           "details": "Create diagnostic visualizations to monitor internal system states. Implement parameter adjustment tools for fine-tuning physics behaviors. Design automated test scenarios to verify system performance under various conditions.",
           "status": "pending"
+        },
+        {
+          "id": 11,
+          "title": "웹 브라우저에서 공 체인 발사 메커니즘 테스트 및 검증",
+          "description": "브라우저에서 구현된 공 체인 발사 메커니즘을 테스트하고 결과를 검증합니다. 다양한 발사 각도, 속도, 공 수량에 대한 테스트 케이스를 실행합니다.",
+          "details": "1. 'flutter run -d chrome --web-renderer canvaskit' 명령어로 브라우저에서 앱 실행\n2. 발사 메커니즘의 여러 각도에서 작동 테스트(0도, 45도, 90도, 135도 등)\n3. 다양한 발사 속도(최소, 중간, 최대)에서 공의 움직임 확인\n4. 여러 개의 공(1개, 5개, 10개, 최대)을 연속 발사하여 순차적 발사 검증\n5. 벽과 벽돌 충돌 시 물리 작용 확인\n6. 성능 테스트: 최대 공 개수 발사 시 FPS 모니터링\n7. Chrome DevTools를 사용하여 메모리 사용량 및 성능 프로파일링\n8. 각 테스트 케이스의 스크린샷 캡처 및 문서화\n9. 발견된 버그 또는 개선점 기록",
+          "status": "pending",
+          "dependencies": [
+            10
+          ],
+          "parentTaskId": 3
         }
       ]
     },
@@ -246,6 +267,17 @@
           ],
           "details": "Conduct performance testing with large numbers of bricks. Implement optimizations for rendering and updating brick states. Test various pattern combinations and difficulty progressions. Debug and fix any issues with brick collision detection or animation.",
           "status": "pending"
+        },
+        {
+          "id": 10,
+          "title": "웹 브라우저에서 벽돌 생성 시스템 테스트 및 검증",
+          "description": "브라우저에서 구현된 벽돌 생성 시스템을 테스트하고 다양한 패턴, 웨이브, HP 스케일링 등의 기능을 검증합니다.",
+          "details": "1. 'flutter run -d chrome --web-renderer canvaskit' 명령어로 브라우저에서 앱 실행\n2. 다양한 벽돌 패턴이 올바르게 생성되는지 확인\n3. 웨이브 진행에 따른 패턴 변화 테스트\n4. 웨이브에 따른 벽돌 HP 스케일링 검증\n5. 다양한 브라우저 창 크기에서 반응형 레이아웃 테스트\n6. 특수 벽돌 타입의 시각적 표현 및 작동 확인\n7. 벽돌 그룹 관리 시스템 테스트\n8. 벽돌 애니메이션(생성, 이동, 파괴) 확인\n9. 성능 테스트: 최대 벽돌 개수 생성 시 FPS 모니터링\n10. Chrome DevTools를 사용하여 메모리 사용량 및 성능 프로파일링\n11. 각 테스트 케이스의 스크린샷 캡처 및 문서화\n12. 발견된 버그 또는 개선점 기록",
+          "status": "pending",
+          "dependencies": [
+            9
+          ],
+          "parentTaskId": 4
         }
       ]
     },
@@ -261,7 +293,56 @@
         4
       ],
       "status": "pending",
-      "subtasks": []
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Ball-Brick Collision Detection Implementation",
+          "description": "Implement a function to detect collisions between the ball and each brick, updating the ball's direction upon collision.",
+          "dependencies": [],
+          "details": "Loop through all bricks and compare their positions with the ball's coordinates each frame. If a collision is detected, reverse the ball's vertical velocity and mark the brick for further processing (e.g., HP reduction or destruction). Test in the browser by moving the ball into bricks and verifying the collision response.",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "Brick HP Management System",
+          "description": "Add an HP property to each brick and implement logic to reduce HP upon collision.",
+          "dependencies": [
+            1
+          ],
+          "details": "Each brick should have an HP value. When a collision is detected, decrement the brick's HP. If HP reaches zero, mark the brick for destruction. Test by checking that HP decreases with each collision and bricks are removed when HP is zero.",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "Visual Feedback and Destruction Animations",
+          "description": "Implement visual feedback for collisions and destruction animations for bricks.",
+          "dependencies": [
+            2
+          ],
+          "details": "Add visual effects such as color changes or particle bursts when a brick is hit or destroyed. Test by verifying that animations play on collision and destruction, and that they are visible in the browser.",
+          "status": "pending"
+        },
+        {
+          "id": 4,
+          "title": "Scoring Mechanics and Particle Effects",
+          "description": "Implement a scoring system and particle effects for brick destruction.",
+          "dependencies": [
+            3
+          ],
+          "details": "Increase the player's score when a brick is destroyed. Add particle effects (e.g., sparks or debris) upon brick destruction. Test by checking that the score increases and particles are visible when bricks are destroyed.",
+          "status": "pending"
+        },
+        {
+          "id": 5,
+          "title": "Collision Sound and Comprehensive Browser Testing",
+          "description": "Add collision sound effects and perform comprehensive browser testing for all features.",
+          "dependencies": [
+            4
+          ],
+          "details": "Play a sound effect on each collision and brick destruction. Test all scenarios: multiple collisions, HP reduction, visual feedback, animations, scoring, and particle effects. Ensure all features work as expected in the browser.",
+          "status": "pending"
+        }
+      ]
     },
     {
       "id": 6,
@@ -389,6 +470,17 @@
           ],
           "details": "Profile state transitions and update loops to identify performance bottlenecks. Create automated tests for state transitions and edge cases. Perform integration testing with all game systems. Document the state system architecture and usage patterns.",
           "status": "pending"
+        },
+        {
+          "id": 11,
+          "title": "웹 브라우저에서 게임 상태 관리 시스템 테스트",
+          "description": "브라우저에서 구현된 게임 상태 관리 시스템을 테스트하고 턴, 웨이브, 게임 오버 조건 및 진행 과정을 검증합니다.",
+          "details": "1. 'flutter run -d chrome --web-renderer canvaskit' 명령어로 브라우저에서 앱 실행\n2. 게임 시작, 일시 정지, 재개, 종료 상태 전환 테스트\n3. 턴 기반 진행 시스템 검증\n4. 웨이브 완료 및 다음 웨이브 전환 테스트\n5. 게임 오버 조건 발생 시 상태 전환 확인\n6. 게임 상태에 따른 UI 변화 검증\n7. 게임 상태 저장 및 로드 기능 테스트\n8. 다양한 게임 상태에서의 사용자 입력 처리 확인\n9. Chrome DevTools를 사용한 상태 관리 디버깅\n10. 각 상태 전환 시 발생할 수 있는 Edge Case 테스트\n11. 각 게임 상태의 스크린샷 캡처 및 문서화\n12. 발견된 버그 또는 개선점 기록",
+          "status": "pending",
+          "dependencies": [
+            10
+          ],
+          "parentTaskId": 6
         }
       ]
     },
@@ -404,7 +496,97 @@
         6
       ],
       "status": "pending",
-      "subtasks": []
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Implement Basic Ball Animation",
+          "description": "Create a basic ball animation system using canvas or a game engine.",
+          "dependencies": [],
+          "details": "Use JavaScript or a game engine like Unity to create a simple ball animation.",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "Integrate Physics Simulation",
+          "description": "Add physics to the ball animation to simulate realistic movement.",
+          "dependencies": [
+            1
+          ],
+          "details": "Use physics engines like Box2D or Unity Physics to simulate gravity and collisions.",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "Separate Physics from Animation",
+          "description": "Decouple physics simulation from visual animation to allow for speed adjustments.",
+          "dependencies": [
+            2
+          ],
+          "details": "Use separate loops or threads for physics and rendering to maintain consistent physics.",
+          "status": "pending"
+        },
+        {
+          "id": 4,
+          "title": "Implement Speed Control",
+          "description": "Add functionality to control the visual speed of the animation.",
+          "dependencies": [
+            3
+          ],
+          "details": "Use variables to adjust the frame rate or animation speed without affecting physics.",
+          "status": "pending"
+        },
+        {
+          "id": 5,
+          "title": "Add Fast-Forward Functionality",
+          "description": "Allow users to fast-forward the animation while maintaining physics integrity.",
+          "dependencies": [
+            4
+          ],
+          "details": "Use a multiplier to increase the animation speed while keeping physics updates consistent.",
+          "status": "pending"
+        },
+        {
+          "id": 6,
+          "title": "Optimize Animation Performance",
+          "description": "Improve the efficiency of the animation system for smoother rendering.",
+          "dependencies": [
+            5
+          ],
+          "details": "Use caching, reduce unnecessary computations, and optimize rendering loops.",
+          "status": "pending"
+        },
+        {
+          "id": 7,
+          "title": "Integrate Visual Effects",
+          "description": "Add visual effects like trails, shadows, or lighting to enhance the animation.",
+          "dependencies": [
+            6
+          ],
+          "details": "Use graphics libraries or built-in effects in game engines to add visual enhancements.",
+          "status": "pending"
+        },
+        {
+          "id": 8,
+          "title": "Implement Progress Tracking",
+          "description": "Track the progress of the animation and provide feedback to users.",
+          "dependencies": [
+            7
+          ],
+          "details": "Use metrics like time elapsed or distance traveled to display progress indicators.",
+          "status": "pending"
+        },
+        {
+          "id": 9,
+          "title": "웹 브라우저에서 공 애니메이션 및 빠른 앞으로 기능 테스트",
+          "description": "브라우저에서 구현된 공 애니메이션 및 빠른 앞으로 기능을 테스트하고 검증합니다. 다양한 속도 설정과 결과 스킵 기능이 올바르게 작동하는지 확인합니다.",
+          "details": "1. 'flutter run -d chrome --web-renderer canvaskit' 명령어로 브라우저에서 앱 실행\n2. 기본 애니메이션 속도(1x)에서 공의 부드러운 움직임 확인\n3. 다양한 속도 설정(2x, 4x) 테스트 및 움직임 자연스러움 검증\n4. 빠른 앞으로 버튼 UI 작동 확인\n5. 결과 스킵 기능 테스트 및 최종 결과의 정확성 검증\n6. 공 애니메이션 트레일 효과 시각적 확인\n7. 진행 상태 표시줄 정확성 테스트\n8. 다양한 플레이 상황(많은 공/벽돌, 복잡한 충돌)에서 성능 측정\n9. 속도 변경 시 물리 시뮬레이션 일관성 확인\n10. Chrome DevTools Performance 탭을 사용한 프레임 레이트 모니터링\n11. 다양한 브라우저(Chrome, Firefox, Safari)에서 호환성 테스트\n12. 각 테스트 케이스의 스크린샷 캡처 및 문서화\n13. 발견된 버그 또는 개선점 기록",
+          "status": "pending",
+          "dependencies": [
+            8
+          ],
+          "parentTaskId": 7
+        }
+      ]
     },
     {
       "id": 8,
@@ -720,6 +902,69 @@
             9
           ],
           "details": "Implement in-app feedback forms for reporting issues with specific devices or screen sizes. Create analytics to track user interactions with responsive elements. Develop a system for categorizing and prioritizing user-reported issues related to responsive design. Plan for iterative improvements based on collected feedback.",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "title": "Establish Web Browser Testing and Debugging Workflow for Flutter Web",
+      "description": "Create a systematic workflow for testing and debugging in web browsers after each major implementation phase, enabling immediate feedback and documentation of test results.",
+      "details": "This task involves setting up a repeatable process where, after each significant code change or feature implementation, the Flutter web application is built and run in a browser for live testing and debugging. The workflow should include the following steps:\n\n1. **Flutter Web Build Command**: Use the standard Flutter web build command (`flutter build web`) to generate the latest version of the application for web deployment.\n2. **Browser Execution**: Launch the built application in a supported web browser (e.g., Chrome, Firefox) to verify functionality and UI behavior.\n3. **Immediate Testing**: After each build, perform manual and automated tests to check for regressions or new issues.\n4. **Debugging Tools**: Utilize browser developer tools (e.g., Chrome DevTools) for inspecting elements, monitoring network activity, and debugging JavaScript/Dart code.\n5. **Test Documentation**: Document test results, including any issues found, steps to reproduce, and screenshots of both expected and unexpected behaviors.\n6. **Test Checklist**: For each major task (Tasks 1-15), create a checklist of test cases to ensure all critical features are covered. This checklist should be updated as new features are added.\n7. **Screenshot Capture**: Implement a process for capturing screenshots during testing, either manually or using automated tools, to visually document the state of the application at key points.\n8. **Integration with CI/CD**: Optionally, integrate this workflow into a CI/CD pipeline to automate builds, tests, and documentation for every code push.\n\nThis workflow ensures that developers receive immediate feedback on their changes, can quickly identify and fix issues, and maintain a comprehensive record of testing activities.",
+      "testStrategy": "To verify the completion and effectiveness of this task, perform the following checks:\n\n- **Build and Run**: Confirm that the Flutter web build command (`flutter build web`) successfully generates the application and that it can be launched in a browser.\n- **Test Execution**: After each build, run both manual and automated tests (using `flutter test` for unit/widget tests and `flutter drive` for integration tests) to ensure all features work as expected[1][2].\n- **Debugging**: Use browser developer tools to inspect elements, debug code, and monitor network requests. Ensure that any issues can be identified and resolved efficiently.\n- **Documentation**: Review the test documentation to ensure it includes detailed descriptions of test cases, results, and screenshots for each major task.\n- **Checklist and Screenshots**: Verify that a test checklist exists for each major task (Tasks 1-15) and that screenshots are captured and stored for key test scenarios.\n- **Automation**: If integrated with CI/CD, confirm that builds, tests, and documentation are triggered automatically on code changes.\n\nThis strategy ensures a robust, repeatable, and well-documented testing and debugging process for Flutter web development.",
+      "status": "pending",
+      "dependencies": [
+        1
+      ],
+      "priority": "high",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Set Up Flutter Web Build Process",
+          "description": "Configure and standardize the Flutter web build command to generate the latest web application version after each major implementation phase.",
+          "dependencies": [],
+          "details": "Use the `flutter build web` command to compile the Flutter application for web deployment, ensuring the build process is repeatable and integrated into the workflow.",
+          "status": "pending"
+        },
+        {
+          "id": 2,
+          "title": "Implement Browser Execution and Immediate Testing",
+          "description": "Launch the built Flutter web application in supported browsers and perform immediate manual and automated testing to verify functionality and UI behavior.",
+          "dependencies": [
+            1
+          ],
+          "details": "Run the built app in browsers like Chrome or Firefox, then execute predefined test cases and exploratory tests to detect regressions or new issues promptly.",
+          "status": "pending"
+        },
+        {
+          "id": 3,
+          "title": "Integrate Browser Debugging Tools",
+          "description": "Utilize browser developer tools such as Chrome DevTools to inspect elements, monitor network activity, and debug JavaScript/Dart code during testing.",
+          "dependencies": [
+            2
+          ],
+          "details": "Leverage features like element inspection, console debugging, and network monitoring to identify and resolve issues efficiently during the testing phase.",
+          "status": "pending"
+        },
+        {
+          "id": 4,
+          "title": "Develop Test Documentation and Checklist",
+          "description": "Create and maintain comprehensive documentation of test results, including issues found, reproduction steps, screenshots, and a checklist of test cases for each major task.",
+          "dependencies": [
+            2
+          ],
+          "details": "Document all testing outcomes systematically and update the test checklist to cover critical features and new additions, ensuring traceability and quality control.",
+          "status": "pending"
+        },
+        {
+          "id": 5,
+          "title": "Establish Screenshot Capture and CI/CD Integration",
+          "description": "Implement a process for capturing screenshots during testing and optionally integrate the entire testing and debugging workflow into a CI/CD pipeline for automation.",
+          "dependencies": [
+            3,
+            4
+          ],
+          "details": "Use manual or automated tools to capture visual evidence of application states and configure CI/CD tools to automate builds, tests, and documentation generation for continuous feedback.",
           "status": "pending"
         }
       ]

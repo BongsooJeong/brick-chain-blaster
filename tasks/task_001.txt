@@ -28,3 +28,21 @@ dependencies:
 3. Test basic rendering capabilities
 4. Validate CanvasKit renderer is active
 5. Ensure responsive layout works across different desktop browser sizes
+
+# Subtasks:
+## 1. Flutter 웹 프로젝트 구동 및 기본 기능 테스트 [done]
+### Dependencies: None
+### Description: Flutter 웹 프로젝트와 Flame 엔진의 기본 구동을 테스트하고, 초기 설정이 올바르게 구성되었는지 확인합니다.
+### Details:
+1. 'flutter run -d chrome --web-renderer canvaskit' 명령어로 브라우저에서 앱 실행
+2. 앱이 브라우저에서 올바르게 로드되는지 확인
+3. Flame 게임 엔진이 Canvas에 올바르게 렌더링되는지 검증
+4. 기본 게임 루프 작동 확인 (FPS 카운터 또는 디버그 정보)
+5. 다양한 브라우저 크기에서 반응형 테스트
+6. Chrome DevTools를 사용한 성능 모니터링
+7. Forge2D 물리 엔진 초기화 확인
+8. 다양한 브라우저(Chrome, Firefox, Safari)에서 호환성 테스트
+9. 디버그 모드와 릴리스 모드 간의 성능 차이 측정
+10. 초기 설정 시 발생할 수 있는 문제점 기록
+11. 추가 최적화가 필요한 영역 식별
+
