@@ -37,3 +37,24 @@ class BrickChainGame extends Forge2DGame {
 3. Measure frame rate to ensure smooth performance
 4. Test game loop timing consistency
 5. Validate boundary collisions work as expected
+
+# Subtasks:
+## 1. Flame 및 flame_forge2d 버전 호환성 문제 해결 [done]
+### Dependencies: None
+### Description: Flame 버전과 flame_forge2d 버전 간의 호환성 문제를 해결하고, API 변경사항에 맞게 코드를 업데이트합니다.
+### Details:
+## 2023-05-22 업데이트
+- Flame 1.5.0 및 flame_forge2d 0.12.3 버전으로 다운그레이드하여 호환성 문제 해결
+- 최신 버전(1.28.1과 0.13.0+)은 API 변경으로 인한 충돌 발생
+  - Camera 타입 충돌
+  - World 객체 충돌 (forge2d의 World와 flame의 World)
+  - Vector2 타입 충돌
+- 수정 사항:
+  - pubspec.yaml에서 버전 고정: flame: 1.5.0, flame_forge2d: 0.12.3
+  - BrickChainGame 클래스에서 이전 버전 API에 맞게 카메라 줌 설정 방법 변경
+    - 'camera.viewfinder.zoom'에서 'camera.zoom'으로 변경
+  - 구버전에서 zoom 매개변수가 생성자에 없으므로 onLoad() 메서드에서 설정
+- 테스트 결과:
+  - Chrome에서 정상 실행 확인
+  - 벽돌, 공, 벽 컴포넌트 정상 렌더링 및 물리 작동 확인
+

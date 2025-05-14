@@ -12,7 +12,7 @@ class BrickChainGame extends Forge2DGame {
   static const double worldWidth = 9.0;
   static const double worldHeight = 16.0;
 
-  // 중력 없이 시작, 이전 버전에서는 카메라 옵션이 생성자에 포함됨
+  // 중력 없이 시작
   BrickChainGame() : super(gravity: Vector2(0, 0));
 
   @override
@@ -22,7 +22,7 @@ class BrickChainGame extends Forge2DGame {
   Future<void> onLoad() async {
     await super.onLoad();
 
-    // 카메라 줌 설정 (이전 버전 호환성 방식)
+    // 카메라 설정
     camera.zoom = 50.0;
 
     // 세계 경계 추가

@@ -32,7 +32,17 @@
         1
       ],
       "status": "done",
-      "subtasks": []
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Flame 및 flame_forge2d 버전 호환성 문제 해결",
+          "description": "Flame 버전과 flame_forge2d 버전 간의 호환성 문제를 해결하고, API 변경사항에 맞게 코드를 업데이트합니다.",
+          "details": "## 2023-05-22 업데이트\n- Flame 1.5.0 및 flame_forge2d 0.12.3 버전으로 다운그레이드하여 호환성 문제 해결\n- 최신 버전(1.28.1과 0.13.0+)은 API 변경으로 인한 충돌 발생\n  - Camera 타입 충돌\n  - World 객체 충돌 (forge2d의 World와 flame의 World)\n  - Vector2 타입 충돌\n- 수정 사항:\n  - pubspec.yaml에서 버전 고정: flame: 1.5.0, flame_forge2d: 0.12.3\n  - BrickChainGame 클래스에서 이전 버전 API에 맞게 카메라 줌 설정 방법 변경\n    - 'camera.viewfinder.zoom'에서 'camera.zoom'으로 변경\n  - 구버전에서 zoom 매개변수가 생성자에 없으므로 onLoad() 메서드에서 설정\n- 테스트 결과:\n  - Chrome에서 정상 실행 확인\n  - 벽돌, 공, 벽 컴포넌트 정상 렌더링 및 물리 작동 확인",
+          "status": "done",
+          "dependencies": [],
+          "parentTaskId": 2
+        }
+      ]
     },
     {
       "id": 3,
