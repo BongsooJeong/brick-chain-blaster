@@ -51,7 +51,7 @@ class BrickPattern {
 6. Validate HP visualization on bricks
 
 # Subtasks:
-## 1. Design Brick Pattern System [done]
+## 1. Design Brick Pattern System [pending]
 ### Dependencies: None
 ### Description: Create a flexible pattern system that defines how bricks are arranged on the game board
 ### Details:
@@ -62,7 +62,7 @@ Develop a data structure to represent different brick patterns (grid, zigzag, ci
 Implemented the BrickPattern class to define various brick arrangement patterns. Created 10 distinct pattern types: basic lines, grids, pyramids, zigzag, fortress, X-shape, arch, diagonal triangles, reinforced center, and diamond patterns. Added pattern variation capabilities including horizontal and vertical flipping. Implemented scaling difficulty where brick HP increases with wave index and the probability of special brick appearances increases in higher waves.
 </info added on 2025-05-14T11:01:04.384Z>
 
-## 2. Implement Layout Algorithm [done]
+## 2. Implement Layout Algorithm [pending]
 ### Dependencies: 4.1
 ### Description: Develop algorithms to procedurally generate brick layouts based on pattern definitions
 ### Details:
@@ -137,7 +137,7 @@ Develop a brick container class to manage brick collections. Implement methods f
 Implementation completed with the creation of the BrickManager class to handle brick collections. The class includes functionality for adding, removing, and querying bricks in the collection. An automatic cleanup mechanism was added to the update method to remove deactivated bricks from the list. The areAllBricksCleared method was implemented to check if all bricks have been cleared, and a clearBricks method was added to remove all bricks in the current wave. Additionally, collision detection and handling functionality was integrated into the game class to ensure smooth interaction between bricks and balls.
 </info added on 2025-05-14T11:02:36.753Z>
 
-## 8. Create Special Brick Types [pending]
+## 8. Create Special Brick Types [in-progress]
 ### Dependencies: 4.4, 4.5
 ### Description: Implement various special brick types with unique behaviors and effects
 ### Details:

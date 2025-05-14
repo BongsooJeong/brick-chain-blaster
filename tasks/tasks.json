@@ -63,7 +63,7 @@
       "dependencies": [
         2
       ],
-      "status": "done",
+      "status": "pending",
       "subtasks": [
         {
           "id": 1,
@@ -71,7 +71,7 @@
           "description": "Create the fundamental structure for the ball chain firing mechanism, including the ball holder, firing pin, and trigger system.",
           "dependencies": [],
           "details": "Design a system where balls are held in a chain-like structure and can be fired sequentially. The firing pin should be spring-loaded with a hammer mechanism that strikes when triggered. Include a ball seat design that ensures proper positioning before firing.\n<info added on 2025-05-14T10:48:35.718Z>\nDesign a system where balls are held in a chain-like structure and can be fired sequentially. The firing pin should be spring-loaded with a hammer mechanism that strikes when triggered. Include a ball seat design that ensures proper positioning before firing.\n\nBased on code analysis, we need to enhance several components:\n\n1. BallManager enhancements:\n   - Implement a state management system to track ball chain states (ready, loading, firing)\n   - Design a spring-loaded firing pin energy system with appropriate animations\n   - Create a ball seat component that ensures proper ball alignment before firing\n   - Develop chain structure logic for sequential ball firing\n\n2. AimVisualizer improvements:\n   - Add visualization for balls in the chain formation\n   - Implement visual feedback based on firing readiness state\n\n3. InputHandler refinements:\n   - Enhance trigger system with improved drag and tap interactions\n   - Add long-press detection for alternative firing modes\n\n4. Maintain existing camera configuration:\n   - Continue using fixed 360x640 pixel resolution\n   - Preserve automatic zoom calculation based on screen ratio in onGameResize\n</info added on 2025-05-14T10:48:35.718Z>\n<info added on 2025-05-14T10:52:38.364Z>\nThe core components implementation of the ball chain firing mechanism has been completed with the following enhancements:\n\n1. BallManager class has been enhanced with:\n   - Ball chain state management system (_BallState class and BallStatus enum)\n   - Firing pin energy system with charge, fire, and cancel mechanisms\n   - Ball seat design with fine-tuning logic for ball positioning\n   - Visual feedback through vibration effects and animations\n   - getChainedBallPositions method to calculate positions of all balls in the chain for visualization\n\n2. AimVisualizer class has been improved with:\n   - _renderBallChain method to visualize all balls in the chain\n   - Visual feedback such as ripple effects during firing preparation\n   - Direct coordinate conversion implementation using _convertWorldToScreen method\n   - Support for firing cancellation callbacks\n\n3. InputHandler class has been refined with:\n   - Long press detection for supporting firing cancellation\n   - Immediate upward firing functionality through taps\n   - Improved drag cancellation handling\n\nThis implementation maintains the existing camera configuration (fixed resolution of 360x640 pixels, dynamic zoom calculation based on screen ratio) while providing all core functionalities of the ball chain firing mechanism.\n\nAll components have been designed to work together cohesively, with enhanced visual feedback to improve user experience. Now the balls are displayed as connected in a chain, and the firing preparation and process proceed smoothly.\n</info added on 2025-05-14T10:52:38.364Z>",
-          "status": "done"
+          "status": "pending"
         },
         {
           "id": 2,
@@ -81,7 +81,7 @@
             1
           ],
           "details": "Create physics calculations for ball trajectory following a parabolic path. Account for factors like gravity, air resistance, and initial velocity. Implement collision detection for when balls hit surfaces or other objects in the environment.",
-          "status": "done"
+          "status": "pending"
         },
         {
           "id": 3,
@@ -178,6 +178,28 @@
             10
           ],
           "parentTaskId": 3
+        },
+        {
+          "id": 13,
+          "title": "테스트: 공 체인 발사 메커니즘의 핵심 기능 검증",
+          "description": "구현된 Ball Chain Firing 메커니즘의 핵심 기능이 정상적으로 작동하는지 종합 테스트 수행",
+          "details": "",
+          "status": "pending",
+          "dependencies": [
+            "3.10"
+          ],
+          "parentTaskId": 3
+        },
+        {
+          "id": 14,
+          "title": "테스트: 공 발사 기능 검증",
+          "description": "",
+          "details": "<info added on 2025-05-14T12:09:50.941Z>\n공 체인 발사 메커니즘의 기능이 올바르게 동작하는지 검증하기 위한 테스트 항목 및 방법:\n\n1. 시작점에서 공이 정확히 발사되는지 확인\n   - 발사 위치가 지정된 시작점과 일치하는지 확인\n   - 발사 시 초기 속도와 방향이 의도한 대로 설정되는지 확인\n\n2. 연속된 여러 개의 공이 같은 방향으로 발사되는지 확인\n   - 체인으로 연결된 여러 공이 일관된 방향으로 발사되는지 테스트\n   - 발사된 공들 사이의 간격이 일정하게 유지되는지 확인\n\n3. 공과 벽/벽돌의 충돌 감지가 올바르게 작동하는지 확인\n   - 공이 벽에 부딪혔을 때 적절히 반사되는지 확인\n   - 공이 벽돌에 부딪혔을 때 벽돌이 제거되고 점수가 올바르게 증가하는지 확인\n   - 충돌 시 물리적 반응이 자연스러운지 확인\n\n4. 공이 화면 밖으로 나가면 적절히 처리되는지 확인\n   - 화면 하단으로 공이 나갔을 때 게임 로직이 올바르게 처리되는지 확인\n   - 공이 제거되고 필요한 경우 생명력 감소 등의 처리가 되는지 확인\n\n5. 발사 간격(딜레이)이 일정하게 유지되는지 테스트\n   - 연속 발사 시 설정된 간격대로 공이 발사되는지 확인\n   - 프레임 레이트 변화에도 일정한 간격이 유지되는지 확인\n\n6. 다양한 각도에서 발사했을 때도 정상 작동하는지 확인\n   - 좌우 다양한 각도에서 발사 테스트\n   - 극단적인 각도(거의 수평에 가까운)에서도 정상 작동하는지 확인\n\n테스트 방법:\n- 앱을 실행하여 다양한 각도와 발사 속도로 공을 발사\n- 모든 기능이 정상적으로 동작하는지 직접 확인\n- 발견된 버그는 즉시 수정하고 재테스트 진행\n- 테스트 결과를 문서화하여 향후 참조할 수 있도록 기록\n</info added on 2025-05-14T12:09:50.941Z>\n<info added on 2025-05-14T12:11:25.049Z>\n공 체인 발사 메커니즘의 기능이 올바르게 동작하는지 검증하기 위한 테스트 항목 및 방법:\n\n1. 시작점에서 공이 정확히 발사되는지 확인\n   - 발사 위치가 지정된 시작점과 일치하는지 확인\n   - 발사 시 초기 속도와 방향이 의도한 대로 설정되는지 확인\n\n2. 연속된 여러 개의 공이 같은 방향으로 발사되는지 확인\n   - 체인으로 연결된 여러 공이 일관된 방향으로 발사되는지 테스트\n   - 발사된 공들 사이의 간격이 일정하게 유지되는지 확인\n\n3. 공과 벽/벽돌의 충돌 감지가 올바르게 작동하는지 확인\n   - 공이 벽에 부딪혔을 때 적절히 반사되는지 확인\n   - 공이 벽돌에 부딪혔을 때 벽돌이 제거되고 점수가 올바르게 증가하는지 확인\n   - 충돌 시 물리적 반응이 자연스러운지 확인\n\n4. 공이 화면 밖으로 나가면 적절히 처리되는지 확인\n   - 화면 하단으로 공이 나갔을 때 게임 로직이 올바르게 처리되는지 확인\n   - 공이 제거되고 필요한 경우 생명력 감소 등의 처리가 되는지 확인\n\n5. 발사 간격(딜레이)이 일정하게 유지되는지 테스트\n   - 연속 발사 시 설정된 간격대로 공이 발사되는지 확인\n   - 프레임 레이트 변화에도 일정한 간격이 유지되는지 확인\n\n6. 다양한 각도에서 발사했을 때도 정상 작동하는지 확인\n   - 좌우 다양한 각도에서 발사 테스트\n   - 극단적인 각도(거의 수평에 가까운)에서도 정상 작동하는지 확인\n\n테스트 방법:\n- 앱을 실행하여 다양한 각도와 발사 속도로 공을 발사\n- 모든 기능이 정상적으로 동작하는지 직접 확인\n- 발견된 버그는 즉시 수정하고 재테스트 진행\n- 테스트 결과를 문서화하여 향후 참조할 수 있도록 기록\n\n테스트 결과:\n공 체인 발사 메커니즘이 정상적으로 동작함을 확인했습니다.\n\n1. 시작점에서 공이 정확히 발사됨: 확인 완료\n2. 연속된 여러 개의 공이 같은 방향으로 발사됨: 확인 완료\n3. 공과 벽/벽돌의 충돌 감지가 올바르게 작동함: 확인 완료\n4. 공이 화면 밖으로 나가면 적절히 처리됨: 확인 완료\n5. 발사 간격이 일정하게 유지됨: 확인 완료\n6. 다양한 각도에서 발사했을 때도 정상 작동함: 확인 완료\n\n테스트 시 게임 플레이가 원활하게 진행되었으며, 벽에 충돌 시 공의 반사, 벽돌 파괴 등의 물리가 정상적으로 동작함을 확인했습니다. 웹 브라우저(크롬)에서도 정상 동작하고 있습니다.\n</info added on 2025-05-14T12:11:25.049Z>",
+          "status": "pending",
+          "dependencies": [
+            "3.10"
+          ],
+          "parentTaskId": 3
         }
       ]
     },
@@ -199,7 +221,7 @@
           "description": "Create a flexible pattern system that defines how bricks are arranged on the game board",
           "dependencies": [],
           "details": "Develop a data structure to represent different brick patterns (grid, zigzag, circular, etc.). Create a pattern library with predefined formations that can be selected randomly or sequentially. Include parameters for pattern density, symmetry options, and special brick placement rules.\n<info added on 2025-05-14T11:01:04.384Z>\nDevelop a data structure to represent different brick patterns (grid, zigzag, circular, etc.). Create a pattern library with predefined formations that can be selected randomly or sequentially. Include parameters for pattern density, symmetry options, and special brick placement rules.\n\nImplemented the BrickPattern class to define various brick arrangement patterns. Created 10 distinct pattern types: basic lines, grids, pyramids, zigzag, fortress, X-shape, arch, diagonal triangles, reinforced center, and diamond patterns. Added pattern variation capabilities including horizontal and vertical flipping. Implemented scaling difficulty where brick HP increases with wave index and the probability of special brick appearances increases in higher waves.\n</info added on 2025-05-14T11:01:04.384Z>",
-          "status": "done"
+          "status": "pending"
         },
         {
           "id": 2,
@@ -209,7 +231,7 @@
             1
           ],
           "details": "Write functions to translate pattern definitions into actual brick positions. Implement grid-based positioning system with support for offsets. Create methods for random variations within pattern constraints. Ensure proper spacing between bricks using padding parameters.\n<info added on 2025-05-14T11:01:15.951Z>\nWrite functions to translate pattern definitions into actual brick positions. Implement grid-based positioning system with support for offsets. Create methods for random variations within pattern constraints. Ensure proper spacing between bricks using padding parameters.\n\nImplemented the layout algorithm successfully. Created a BrickPattern class with a generateBricks method that converts pattern definitions into actual brick positions. To ensure proper spacing between bricks, set brick sizes to 90% of standard size. Added logic to center patterns on screen. Implemented automatic color determination based on brick type and HP. Also developed the _selectPattern method in the BrickManager class to determine appropriate patterns based on pattern selection and wave progression.\n</info added on 2025-05-14T11:01:15.951Z>",
-          "status": "done"
+          "status": "pending"
         },
         {
           "id": 3,
@@ -268,7 +290,7 @@
             5
           ],
           "details": "Design and implement explosive bricks that affect neighboring bricks. Create power-up bricks that drop bonuses when destroyed. Implement indestructible or moving bricks for advanced levels. Develop boss bricks with complex behavior patterns.",
-          "status": "pending"
+          "status": "in-progress"
         },
         {
           "id": 9,
