@@ -10,20 +10,21 @@ class ScoreDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: Alignment.topRight,
+      alignment: Alignment.topLeft,
       child: Padding(
-        padding: const EdgeInsets.only(top: 50, right: 50),
+        padding: const EdgeInsets.only(top: 40, left: 20),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.5),
+            color: Colors.black.withOpacity(0.7),
             borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.cyan, width: 2),
           ),
           child: Text(
             '점수: ${game.score}',
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 24,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
