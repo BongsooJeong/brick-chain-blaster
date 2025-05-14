@@ -1,6 +1,6 @@
 # Task ID: 2
 # Title: Implement Core Game Loop and Physics
-# Status: pending
+# Status: done
 # Dependencies: 1
 # Priority: high
 # Description: Create the foundational game loop with Forge2D physics integration for ball movement and collision detection.
