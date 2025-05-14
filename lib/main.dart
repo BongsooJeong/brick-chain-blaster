@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
-import 'game/forge2d_game.dart';
+import 'game/brick_chain_game.dart';
 
 void main() {
   runApp(
@@ -14,7 +14,7 @@ class GameScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GameWidget.controlled(gameFactory: Forge2DExample.new),
+      body: GameWidget.controlled(gameFactory: BrickChainGame.new),
     );
   }
 }

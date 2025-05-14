@@ -164,7 +164,7 @@ class BallManager extends Component with HasGameRef<BrickChainGame> {
   /// 새로운 공 생성
   Future<Ball> _createBall(Vector2 position) async {
     final ball = Ball(
-      position: position,
+      initialPosition: position,
       radius: ballRadius,
       color: ballColor,
       velocity: Vector2.zero(), // 공 생성자가 요구하는 velocity 파라미터

@@ -21,6 +21,12 @@ class Ball extends BodyComponent with TapCallbacks, ContactCallbacks {
   // 충돌 시간 추적
   final Set<Fixture> _contactFixtures = {};
 
+  // 속도 상태 저장
+  Vector2 _velocity = Vector2.zero();
+
+  /// 공의 현재 속도 벡터
+  Vector2 get velocity => body.linearVelocity;
+
   /// 생성자
   /// [initialPosition] 공의 초기 위치
   /// [radius] 공의 반지름
@@ -39,8 +45,13 @@ class Ball extends BodyComponent with TapCallbacks, ContactCallbacks {
     this.color = Colors.white,
     this.minSpeed = 10.0,
     this.maxSpeed = 20.0,
+    Vector2? velocity,
     super.priority = 1,
-  });
+  }) {
+    if (velocity != null) {
+      _velocity = velocity;
+    }
+  }
 
   @override
   Future<void> onLoad() async {
@@ -79,7 +90,27 @@ class Ball extends BodyComponent with TapCallbacks, ContactCallbacks {
     );
 
     body.createFixture(fixtureDef);
+
+    // 초기 속도 설정 (있는 경우)
+    if (_velocity.length2 > 0) {
+      body.linearVelocity = _velocity;
+    }
+
     return body;
+  }
+
+  /// 속도 벡터 설정 메서드
+  void setVelocity(Vector2 newVelocity) {
+    try {
+      if (body.isActive) {
+        body.linearVelocity = newVelocity;
+      } else {
+        _velocity = newVelocity; // 바디가 아직 생성되지 않은 경우 저장
+      }
+    } catch (e) {
+      // 게임 바디가 아직 초기화되지 않았을 경우
+      _velocity = newVelocity;
+    }
   }
 
   @override

@@ -22,6 +22,20 @@ class Wall extends BodyComponent {
     this.thickness = 0.1,
   });
 
+  /// 두 점 사이에 선형 벽 생성 팩토리 메서드
+  /// [start] 시작점
+  /// [end] 끝점
+  /// [color] 벽의 색상
+  /// [thickness] 벽의 두께
+  factory Wall.line(
+    Vector2 start,
+    Vector2 end, {
+    Color color = const Color(0xFF666666),
+    double thickness = 0.1,
+  }) {
+    return Wall(start: start, end: end, color: color, thickness: thickness);
+  }
+
   @override
   Future<void> onLoad() async {
     await super.onLoad();

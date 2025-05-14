@@ -211,8 +211,17 @@ class BrickChainGame extends Forge2DGame {
               case BrickType.reinforced:
                 addScore(20 * brick.hp); // HP가 높을수록 더 많은 점수
                 break;
+              case BrickType.explosive:
+                addScore(40); // 폭발성 벽돌은 높은 점수
+                break;
               case BrickType.boss:
                 addScore(50 * brick.hp); // 보스는 더 많은 점수
+                break;
+              case BrickType.powerup:
+                addScore(25); // 파워업 벽돌
+                break;
+              case BrickType.moving:
+                addScore(35); // 이동 벽돌
                 break;
             }
           } else {
