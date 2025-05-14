@@ -85,18 +85,18 @@ packages:
     dependency: "direct main"
     description:
       name: flame
-      sha256: f9e7a100c25f8d6bfd143bf325a9689c509216cd1c8133ce4684955c56770de7
+      sha256: "24ce7b69bddc4f23aebdd9317fc24f08c37d4b42239baa00a34b768b6de9af85"
       url: "https://pub.dev"
     source: hosted
-    version: "1.28.1"
+    version: "1.5.0"
   flame_forge2d:
     dependency: "direct main"
     description:
       name: flame_forge2d
-      sha256: "23a6b3a57f5a5a60ed64ea87ca38453fde9fac97a7479d44209464a58ad1efa8"
+      sha256: "89a6aa3fdbb9f43fcc9f47781772737ea39ee10c2d0f0a02e2764e91c6614388"
       url: "https://pub.dev"
     source: hosted
-    version: "0.13.0+1"
+    version: "0.12.3"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -188,10 +188,10 @@ packages:
     dependency: transitive
     description:
       name: ordered_set
-      sha256: dc68b8f1abc7115b81cf890bf7d2ece4ed1d95e0f3e486ab4b64ab3d16d2ea42
+      sha256: "1bfaaaee0419e43ecc9eaebd410eb4bd5039657b72011de75ff3e2915c9aac60"
       url: "https://pub.dev"
     source: hosted
-    version: "7.0.0"
+    version: "5.0.3"
   path:
     dependency: transitive
     description:
@@ -287,4 +287,4 @@ packages:
     version: "1.1.1"
 sdks:
   dart: ">=3.7.2 <4.0.0"
-  flutter: ">=3.27.1"
+  flutter: ">=3.22.0"
