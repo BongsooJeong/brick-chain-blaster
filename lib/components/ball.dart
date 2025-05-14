@@ -7,19 +7,25 @@ class Ball extends BodyComponent {
   final Vector2 position;
   final double radius;
   final Color color;
-  final Vector2 initialVelocity;
+  final Vector2 velocity;
 
   /// 생성자
   /// [position] 공의 시작 위치
   /// [radius] 공의 반지름
   /// [color] 공의 색상
-  /// [initialVelocity] 초기 발사 속도 벡터
+  /// [velocity] 초기 발사 속도 벡터
   Ball({
     required this.position,
     this.radius = 0.3,
     this.color = const Color(0xFFFFFFFF),
-    required this.initialVelocity,
+    required this.velocity,
   });
+
+  @override
+  Future<void> onLoad() async {
+    await super.onLoad();
+    renderBody = false; // Forge2D의 기본 그리기를 비활성화하고 직접 렌더링
+  }
 
   @override
   Body createBody() {
@@ -29,7 +35,7 @@ class Ball extends BodyComponent {
           ..position = position
           ..bullet =
               true // 빠른 속도에서도 충돌 감지가 정확하게 동작하도록 설정
-          ..linearVelocity = initialVelocity;
+          ..linearVelocity = velocity;
 
     final body = world.createBody(bodyDef);
 
@@ -75,22 +81,13 @@ class Ball extends BodyComponent {
   void update(double dt) {
     super.update(dt);
 
-    // 현재 속도 확인하여 최소 속도 유지
+    // 공의 속도 제한
     final velocity = body.linearVelocity;
     final speed = velocity.length;
+    const maxSpeed = 20.0;
 
-    // 최소 속도 보다 느려지면 속도 보정
-    final minSpeed = 10.0;
-    if (speed < minSpeed) {
-      final normalizedVelocity = velocity.normalized();
-      body.linearVelocity = normalizedVelocity.scaled(minSpeed);
-    }
-
-    // 최대 속도 제한
-    final maxSpeed = 20.0;
     if (speed > maxSpeed) {
-      final normalizedVelocity = velocity.normalized();
-      body.linearVelocity = normalizedVelocity.scaled(maxSpeed);
+      body.linearVelocity = velocity * (maxSpeed / speed);
     }
   }
 }

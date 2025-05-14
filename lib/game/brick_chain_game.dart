@@ -1,5 +1,9 @@
 import 'dart:ui';
 import 'dart:math' as math;
+import 'package:flame/game.dart';
+import 'package:flame/components.dart';
+import 'package:forge2d/forge2d.dart' hide Vector2;
+import 'package:flame/extensions.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:brick_chain_blaster/components/ball.dart';
 import 'package:brick_chain_blaster/components/brick.dart';
@@ -22,8 +26,8 @@ class BrickChainGame extends Forge2DGame {
   Future<void> onLoad() async {
     await super.onLoad();
 
-    // 카메라 설정
-    camera.zoom = 50.0;
+    // 카메라 설정 (Flame 1.28.0 버전에 맞게 조정)
+    camera.viewfinder.zoom = 50.0;
 
     // 세계 경계 추가
     await addWorldBoundaries();
@@ -33,104 +37,69 @@ class BrickChainGame extends Forge2DGame {
 
     // 테스트용 공 추가
     addBall();
-
-    print('BrickChainGame 초기화 완료!');
   }
 
-  /// 월드 경계 추가 메서드
+  // 세계 경계 추가
   Future<void> addWorldBoundaries() async {
-    final walls = [
-      // 왼쪽 벽
-      Wall(
-        position: Vector2(0, worldHeight / 2),
-        size: Vector2(0.2, worldHeight),
-      ),
-
-      // 오른쪽 벽
-      Wall(
-        position: Vector2(worldWidth, worldHeight / 2),
-        size: Vector2(0.2, worldHeight),
-      ),
-
-      // 상단 벽
-      Wall(
-        position: Vector2(worldWidth / 2, 0),
-        size: Vector2(worldWidth, 0.2),
-      ),
-
-      // 하단 벽 (없음 - 공이 떨어지도록)
-    ];
-
-    addAll(walls);
+    // 상하좌우 벽 추가
+    await _addWall(
+      Vector2(worldWidth / 2, 0),
+      Vector2(worldWidth, 0.2),
+    ); // 상단 벽
+    await _addWall(
+      Vector2(worldWidth / 2, worldHeight),
+      Vector2(worldWidth, 0.2),
+    ); // 하단 벽
+    await _addWall(
+      Vector2(0, worldHeight / 2),
+      Vector2(0.2, worldHeight),
+    ); // 좌측 벽
+    await _addWall(
+      Vector2(worldWidth, worldHeight / 2),
+      Vector2(0.2, worldHeight),
+    ); // 우측 벽
   }
 
-  /// 테스트용 벽돌 추가 메서드
+  // 벽 추가 헬퍼 메서드
+  Future<Wall> _addWall(Vector2 position, Vector2 size) async {
+    final wall = Wall(position: position, size: size);
+    add(wall);
+    return wall;
+  }
+
+  // 테스트용 벽돌 추가
   Future<void> addTestBricks() async {
-    final brickColors = [
-      const Color(0xFFFF0000), // 빨강
-      const Color(0xFFFF7F00), // 주황
-      const Color(0xFFFFFF00), // 노랑
-      const Color(0xFF00FF00), // 초록
-      const Color(0xFF0000FF), // 파랑
-      const Color(0xFF4B0082), // 남색
-      const Color(0xFF9400D3), // 보라
-    ];
+    final brickSize = Vector2(1.0, 0.5);
 
-    final random = math.Random();
-
-    // 벽돌 크기
-    const brickWidth = 1.5;
-    const brickHeight = 0.6;
-
-    // 벽돌 간격
-    const horizontalGap = 0.1;
-    const verticalGap = 0.1;
-
-    // 벽돌 행과 열 계산
-    final rows = 4;
-    final cols = 5;
-
-    // 벽돌 시작 위치 계산 (중앙 정렬)
-    final startX =
-        (worldWidth - (cols * (brickWidth + horizontalGap) - horizontalGap)) /
-        2;
-    final startY = 2.0; // 상단에서 2 단위 아래부터 시작
-
-    for (int row = 0; row < rows; row++) {
-      for (int col = 0; col < cols; col++) {
+    // 3x3 벽돌 그리드 추가
+    for (int i = 0; i < 3; i++) {
+      for (int j = 0; j < 3; j++) {
         final position = Vector2(
-          startX + col * (brickWidth + horizontalGap) + brickWidth / 2,
-          startY + row * (brickHeight + verticalGap) + brickHeight / 2,
+          2.0 + i * (brickSize.x + 0.5),
+          3.0 + j * (brickSize.y + 0.5),
         );
 
-        final hitPoints = row + 1; // 위쪽 벽돌일수록 내구도 높음
-        final colorIndex = row % brickColors.length;
-
-        add(
-          Brick(
-            position: position,
-            size: Vector2(brickWidth, brickHeight),
-            hitPoints: hitPoints,
-            color: brickColors[colorIndex],
-          ),
+        final brick = Brick(
+          position: position,
+          size: brickSize,
+          hp: 1 + math.Random().nextInt(3), // 1-3 랜덤 HP
         );
+
+        add(brick);
       }
     }
   }
 
-  /// 테스트용 공 추가 메서드
+  // 테스트용 공 추가
   void addBall() {
-    final ballPosition = Vector2(worldWidth / 2, worldHeight - 2.0);
-    final ballVelocity = Vector2(3.0, -15.0); // 위쪽 방향으로 발사
-
-    add(
-      Ball(
-        position: ballPosition,
-        initialVelocity: ballVelocity,
-        radius: 0.3,
-        color: Colors.white,
-      ),
+    // 화면 중앙 하단에 공 추가
+    final ball = Ball(
+      position: Vector2(worldWidth / 2, worldHeight - 2),
+      radius: 0.3,
+      velocity: Vector2(2.0, -10.0),
     );
+
+    add(ball);
   }
 }
 

@@ -5,25 +5,31 @@ import 'package:flame_forge2d/flame_forge2d.dart';
 class Brick extends BodyComponent {
   final Vector2 position;
   final Vector2 size;
-  final int hitPoints;
+  final int hp;
   final Color color;
 
-  int _currentHitPoints;
+  int _currentHp;
 
   /// 생성자
   /// [position] 벽돌의 위치
   /// [size] 벽돌의 크기
-  /// [hitPoints] 파괴하기 위해 필요한 타격 횟수
+  /// [hp] 파괴하기 위해 필요한 타격 횟수
   /// [color] 벽돌의 색상
   Brick({
     required this.position,
     required this.size,
-    this.hitPoints = 1,
+    this.hp = 1,
     this.color = const Color(0xFFFF0000),
-  }) : _currentHitPoints = hitPoints;
+  }) : _currentHp = hp;
 
   /// 현재 남아있는 타격 횟수
-  int get currentHitPoints => _currentHitPoints;
+  int get currentHp => _currentHp;
+
+  @override
+  Future<void> onLoad() async {
+    await super.onLoad();
+    renderBody = false; // Forge2D의 기본 그리기를 비활성화하고 직접 렌더링
+  }
 
   @override
   Body createBody() {
@@ -75,13 +81,11 @@ class Brick extends BodyComponent {
     // 타격 횟수를 표시할 경우 텍스트 그리기 (추후 구현)
   }
 
-  /// 벽돌에 타격을 가했을 때 호출
-  bool hit() {
-    _currentHitPoints--;
-    if (_currentHitPoints <= 0) {
+  /// 벽돌이 타격을 받을 때 호출
+  void hit() {
+    _currentHp--;
+    if (_currentHp <= 0) {
       removeFromParent();
-      return true; // 파괴됨
     }
-    return false; // 아직 파괴되지 않음
   }
 }

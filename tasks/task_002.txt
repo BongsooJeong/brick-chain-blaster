@@ -58,3 +58,20 @@ class BrickChainGame extends Forge2DGame {
   - Chrome에서 정상 실행 확인
   - 벽돌, 공, 벽 컴포넌트 정상 렌더링 및 물리 작동 확인
 
+## 2. Flame 및 flame_forge2d 버전 호환성 문제 추가 수정 [done]
+### Dependencies: None
+### Description: NotifyingVector2 클래스의 UnmodifiableFloat64ListView 메서드 누락 오류 해결을 위해 Flame 및 flame_forge2d 버전을 업데이트합니다.
+### Details:
+## 2023-05-22 업데이트
+- Flame 버전 1.5.0에서 발생한 NotifyingVector2 클래스의 UnmodifiableFloat64ListView 메서드 누락 오류 발견
+- 이 오류는 브라우저에서 게임 실행 시 발생
+- 테스트 결과, Flame 1.1.1 및 flame_forge2d 0.10.0 버전이 현재 Flutter 버전(3.29.3)과 Dart 버전(3.7.2)에 가장 안정적 호환
+- 수정 사항:
+  - pubspec.yaml에서 버전 고정: flame: 1.1.1, flame_forge2d: 0.10.0
+  - BrickChainGame 클래스에서 카메라 설정 방식 수정
+    - viewport.camera.zoom 대신 camera.zoom 사용
+  - 이전 버전 API와 호환되는 방식으로 코드 수정
+- 테스트 결과:
+  - Chrome 브라우저에서 정상 실행 확인
+  - 게임 요소(벽, 벽돌, 공) 정상 렌더링 및 물리 작동 확인
+

@@ -52,11 +52,18 @@ class WorldBoundaries extends Component with HasGameRef<Forge2DGame> {
 /// 경계 벽 클래스
 class Wall extends BodyComponent {
   /// 벽의 위치와 크기
+  @override
   final Vector2 position;
   final Vector2 size;
 
   /// 생성자
   Wall(this.position, this.size);
+
+  @override
+  Future<void> onLoad() async {
+    await super.onLoad();
+    renderBody = false; // Forge2D의 기본 그리기를 비활성화
+  }
 
   @override
   Body createBody() {

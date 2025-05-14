@@ -18,6 +18,12 @@ class Wall extends BodyComponent {
   });
 
   @override
+  Future<void> onLoad() async {
+    await super.onLoad();
+    renderBody = false; // Forge2D의 기본 그리기를 비활성화하고 직접 렌더링
+  }
+
+  @override
   Body createBody() {
     final bodyDef =
         BodyDef()
