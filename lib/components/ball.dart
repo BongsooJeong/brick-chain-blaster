@@ -4,10 +4,14 @@ import 'package:flutter/material.dart' show Colors;
 
 /// 게임 볼 컴포넌트 클래스
 class Ball extends BodyComponent {
+  @override
   final Vector2 position;
   final double radius;
   final Color color;
   final Vector2 velocity;
+
+  // 초기 속도를 저장해 두었다가 body 초기화 후 적용
+  Vector2? _pendingVelocity;
 
   /// 생성자
   /// [position] 공의 시작 위치
@@ -25,6 +29,12 @@ class Ball extends BodyComponent {
   Future<void> onLoad() async {
     await super.onLoad();
     renderBody = false; // Forge2D의 기본 그리기를 비활성화하고 직접 렌더링
+
+    // body가 완전히 초기화된 후 대기 중인 속도 적용
+    if (_pendingVelocity != null) {
+      body.linearVelocity.setFrom(_pendingVelocity!);
+      _pendingVelocity = null;
+    }
   }
 
   @override
@@ -55,6 +65,17 @@ class Ball extends BodyComponent {
     return body;
   }
 
+  /// 안전하게 공의 속도를 설정하는 메서드
+  void setVelocity(Vector2 newVelocity) {
+    try {
+      // body가 초기화되었으면 직접 속도 설정
+      body.linearVelocity.setFrom(newVelocity);
+    } catch (e) {
+      // body가 아직 초기화되지 않았으면 나중에 적용할 속도로 저장
+      _pendingVelocity = newVelocity.clone();
+    }
+  }
+
   @override
   void render(Canvas canvas) {
     super.render(canvas);
@@ -81,13 +102,17 @@ class Ball extends BodyComponent {
   void update(double dt) {
     super.update(dt);
 
-    // 공의 속도 제한
-    final velocity = body.linearVelocity;
-    final speed = velocity.length;
-    const maxSpeed = 20.0;
+    try {
+      // 공의 속도 제한
+      final velocity = body.linearVelocity;
+      final speed = velocity.length;
+      const maxSpeed = 20.0;
 
-    if (speed > maxSpeed) {
-      body.linearVelocity = velocity * (maxSpeed / speed);
+      if (speed > maxSpeed) {
+        body.linearVelocity = velocity * (maxSpeed / speed);
+      }
+    } catch (e) {
+      // body가 아직 초기화되지 않았을 경우 무시
     }
   }
 }

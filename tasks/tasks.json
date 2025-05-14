@@ -63,7 +63,7 @@
       "dependencies": [
         2
       ],
-      "status": "pending",
+      "status": "in-progress",
       "subtasks": [
         {
           "id": 1,
@@ -71,7 +71,7 @@
           "description": "Create the fundamental structure for the ball chain firing mechanism, including the ball holder, firing pin, and trigger system.",
           "dependencies": [],
           "details": "Design a system where balls are held in a chain-like structure and can be fired sequentially. The firing pin should be spring-loaded with a hammer mechanism that strikes when triggered. Include a ball seat design that ensures proper positioning before firing.",
-          "status": "pending"
+          "status": "in-progress"
         },
         {
           "id": 2,

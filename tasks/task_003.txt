@@ -1,6 +1,6 @@
 # Task ID: 3
 # Title: Implement Ball Chain Firing Mechanism
-# Status: pending
+# Status: in-progress
 # Dependencies: 2
 # Priority: high
 # Description: Create the core ball chain firing system where multiple balls are fired in sequence along the same trajectory.
@@ -48,7 +48,7 @@ class BallManager {
 6. Test with different ball counts
 
 # Subtasks:
-## 1. Design Ball Chain Firing Mechanism Core Components [pending]
+## 1. Design Ball Chain Firing Mechanism Core Components [in-progress]
 ### Dependencies: None
 ### Description: Create the fundamental structure for the ball chain firing mechanism, including the ball holder, firing pin, and trigger system.
 ### Details:

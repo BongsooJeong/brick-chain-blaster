@@ -5,19 +5,34 @@ import 'package:flame/components.dart';
 import 'package:forge2d/forge2d.dart' hide Vector2;
 import 'package:flame/extensions.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
+import 'package:flame/camera.dart';
 import 'package:brick_chain_blaster/components/ball.dart';
 import 'package:brick_chain_blaster/components/brick.dart';
 import 'package:brick_chain_blaster/components/wall.dart';
+import 'package:brick_chain_blaster/managers/ball_manager.dart';
+import 'package:brick_chain_blaster/managers/input_handler.dart';
 import 'package:flutter/material.dart' show Colors;
 
 /// 벽돌 체인 블래스터 게임 클래스
 class BrickChainGame extends Forge2DGame {
-  // 게임 세계의 크기
-  static const double worldWidth = 9.0;
-  static const double worldHeight = 16.0;
+  static const worldWidth = 9.0;
+  static const worldHeight = 16.0;
 
-  // 중력 없이 시작
-  BrickChainGame() : super(gravity: Vector2(0, 0));
+  // ✔ 고정 해상도 뷰포트 + 카메라 생성
+  BrickChainGame()
+    : super(
+        gravity: Vector2(0, 10),
+        camera: CameraComponent.withFixedResolution(
+          width: worldWidth,
+          height: worldHeight,
+        ),
+      );
+
+  // 공 관리자
+  late final BallManager ballManager;
+
+  // 입력 처리 관리자
+  late final InputHandler inputHandler;
 
   @override
   Color backgroundColor() => const Color(0xFF000000);
@@ -26,17 +41,50 @@ class BrickChainGame extends Forge2DGame {
   Future<void> onLoad() async {
     await super.onLoad();
 
-    // 카메라 설정 (Flame 1.28.0 버전에 맞게 조정)
-    camera.viewfinder.zoom = 50.0;
+    // 디버그 모드 활성화 (개발 중에만)
+    debugMode = true;
 
     // 세계 경계 추가
     await addWorldBoundaries();
 
+    // 볼 매니저 초기화 및 추가
+    ballManager = BallManager();
+    await add(ballManager);
+
+    // 입력 핸들러 초기화 및 추가
+    inputHandler = InputHandler(ballManager: ballManager);
+    await add(inputHandler);
+
     // 테스트용 벽돌 추가
     await addTestBricks();
 
-    // 테스트용 공 추가
-    addBall();
+    print('게임 초기화 완료: 월드 크기=${worldWidth}x$worldHeight');
+    print('카메라 뷰포트: ${camera.viewport}, 줌: ${camera.viewfinder.zoom}');
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+
+    // 개발 중에만 디버깅 정보 출력 (프레임 드롭 가능성 있음)
+    if (debugMode && (DateTime.now().millisecondsSinceEpoch % 1000 < 20)) {
+      // 약 1초에 한번만 출력
+      print(
+        '카메라 줌: ${camera.viewfinder.zoom}, 앵커: ${camera.viewfinder.anchor}, 위치: ${camera.viewfinder.position}',
+      );
+    }
+
+    // 디버그 정보 출력 (개발용, 실제 게임에선 제거)
+    if (ballManager.balls.isNotEmpty) {
+      try {
+        final ball = ballManager.balls.first;
+        print(
+          'Ball position: ${ball.position}, velocity: ${ball.body.linearVelocity}',
+        );
+      } catch (e) {
+        // 무시
+      }
+    }
   }
 
   // 세계 경계 추가
@@ -58,6 +106,8 @@ class BrickChainGame extends Forge2DGame {
       Vector2(worldWidth, worldHeight / 2),
       Vector2(0.2, worldHeight),
     ); // 우측 벽
+
+    print('경계 추가 완료');
   }
 
   // 벽 추가 헬퍼 메서드
@@ -88,23 +138,14 @@ class BrickChainGame extends Forge2DGame {
         add(brick);
       }
     }
-  }
 
-  // 테스트용 공 추가
-  void addBall() {
-    // 화면 중앙 하단에 공 추가
-    final ball = Ball(
-      position: Vector2(worldWidth / 2, worldHeight - 2),
-      radius: 0.3,
-      velocity: Vector2(2.0, -10.0),
-    );
-
-    add(ball);
+    print('테스트 벽돌 추가 완료');
   }
 }
 
 /// 테스트용 상자 클래스
 class Box extends BodyComponent {
+  @override
   final Vector2 position;
   final Vector2 size;
 
