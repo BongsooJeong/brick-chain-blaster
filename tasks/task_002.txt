@@ -1,77 +1,24 @@
 # Task ID: 2
-# Title: Implement Core Game Loop and Physics
-# Status: done
+# Title: Setup Phaser 3 with TypeScript
+# Status: pending
 # Dependencies: 1
 # Priority: high
-# Description: Create the foundational game loop with Forge2D physics integration for ball movement and collision detection.
+# Description: Install and configure Phaser 3 game framework with TypeScript support using create-phaser template as part of the MVP approach
 # Details:
-1. Create a main game class extending FlameGame with Forge2D
-2. Implement game world boundaries with collision walls
-3. Setup basic physics parameters (gravity, restitution, friction)
-4. Create a game tick system that handles updates at fixed intervals
-5. Implement a basic camera system
-6. Setup debug rendering for physics bodies during development
-
-```dart
-class BrickChainGame extends Forge2DGame {
-  BrickChainGame() : super(gravity: Vector2(0, 0));
-  
-  @override
-  Future<void> onLoad() async {
-    await super.onLoad();
-    // Setup world boundaries
-    add(WorldBoundaries());
-  }
-  
-  @override
-  void update(double dt) {
-    super.update(dt);
-    // Game state updates
-  }
-}
-```
+1. Install Phaser 3 using `npm install phaser`
+2. Setup TypeScript with `npm install typescript ts-loader`
+3. Configure tsconfig.json for Phaser compatibility and optimize TypeScript settings
+4. Create webpack configuration for development and production
+5. Setup development server with hot-reload
+6. Create basic game structure following Phaser 3 scene architecture
+7. Implement simple loading screen to verify setup
+8. Create skeleton structure for game scenes and objects
+9. Configure build scripts for production deployment
 
 # Test Strategy:
-1. Test physics simulation with simple objects
-2. Verify collision detection works correctly
-3. Measure frame rate to ensure smooth performance
-4. Test game loop timing consistency
-5. Validate boundary collisions work as expected
-
-# Subtasks:
-## 1. Flame 및 flame_forge2d 버전 호환성 문제 해결 [done]
-### Dependencies: None
-### Description: Flame 버전과 flame_forge2d 버전 간의 호환성 문제를 해결하고, API 변경사항에 맞게 코드를 업데이트합니다.
-### Details:
-## 2023-05-22 업데이트
-- Flame 1.5.0 및 flame_forge2d 0.12.3 버전으로 다운그레이드하여 호환성 문제 해결
-- 최신 버전(1.28.1과 0.13.0+)은 API 변경으로 인한 충돌 발생
-  - Camera 타입 충돌
-  - World 객체 충돌 (forge2d의 World와 flame의 World)
-  - Vector2 타입 충돌
-- 수정 사항:
-  - pubspec.yaml에서 버전 고정: flame: 1.5.0, flame_forge2d: 0.12.3
-  - BrickChainGame 클래스에서 이전 버전 API에 맞게 카메라 줌 설정 방법 변경
-    - 'camera.viewfinder.zoom'에서 'camera.zoom'으로 변경
-  - 구버전에서 zoom 매개변수가 생성자에 없으므로 onLoad() 메서드에서 설정
-- 테스트 결과:
-  - Chrome에서 정상 실행 확인
-  - 벽돌, 공, 벽 컴포넌트 정상 렌더링 및 물리 작동 확인
-
-## 2. Flame 및 flame_forge2d 버전 호환성 문제 추가 수정 [done]
-### Dependencies: None
-### Description: NotifyingVector2 클래스의 UnmodifiableFloat64ListView 메서드 누락 오류 해결을 위해 Flame 및 flame_forge2d 버전을 업데이트합니다.
-### Details:
-## 2023-05-22 업데이트
-- Flame 버전 1.5.0에서 발생한 NotifyingVector2 클래스의 UnmodifiableFloat64ListView 메서드 누락 오류 발견
-- 이 오류는 브라우저에서 게임 실행 시 발생
-- 테스트 결과, Flame 1.1.1 및 flame_forge2d 0.10.0 버전이 현재 Flutter 버전(3.29.3)과 Dart 버전(3.7.2)에 가장 안정적 호환
-- 수정 사항:
-  - pubspec.yaml에서 버전 고정: flame: 1.1.1, flame_forge2d: 0.10.0
-  - BrickChainGame 클래스에서 카메라 설정 방식 수정
-    - viewport.camera.zoom 대신 camera.zoom 사용
-  - 이전 버전 API와 호환되는 방식으로 코드 수정
-- 테스트 결과:
-  - Chrome 브라우저에서 정상 실행 확인
-  - 게임 요소(벽, 벽돌, 공) 정상 렌더링 및 물리 작동 확인
-
+1. Verify development server runs without errors using `npm start`
+2. Confirm basic Phaser scene renders correctly in browser
+3. Test TypeScript compilation works correctly with Phaser types
+4. Verify hot-reload functionality during development
+5. Run `tsc` command to ensure TypeScript compilation completes without errors
+6. Test production build using `npm build` command

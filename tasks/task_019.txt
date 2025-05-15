@@ -1,0 +1,17 @@
+# Task ID: 19
+# Title: Implement Ad Reward System
+# Status: pending
+# Dependencies: 8, 17
+# Priority: low
+# Description: Integrate video ad rewards for gameplay benefits
+# Details:
+1. Research and select ad provider compatible with web/mobile
+2. Implement ad SDK integration
+3. Create reward options (extra balls, items, continues)
+4. Implement ad viewing flow
+5. Add reward distribution after successful ad view
+6. Create fallback for ad failures
+7. Implement ad frequency capping
+
+# Test Strategy:
+Test ad loading and display. Verify rewards are correctly distributed after ad viewing. Test error handling for ad failures. Ensure ad integration doesn't negatively impact game performance.

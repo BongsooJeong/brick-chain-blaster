@@ -1,130 +1,61 @@
 # Task ID: 10
-# Title: Implement UI/UX for Desktop
+# Title: Implement Multi-Ball Chain System
 # Status: pending
-# Dependencies: 6
+# Dependencies: 8
 # Priority: high
-# Description: Create the user interface for desktop web browsers with mouse-based controls and responsive design.
+# Description: Extend the single ball system to support multiple balls fired in sequence as part of Phase 2 (Multi-Launch Mechanism) implementation
 # Details:
-1. Implement mouse-based aiming system
-2. Create responsive layout for different screen sizes
-3. Implement game HUD (score, wave, ball count)
-4. Add menu system (pause, restart, settings)
-5. Create Modern Cool theme with dark background and neon lines
-6. Implement mouse wheel scrolling for UI navigation
-
-```dart
-class DesktopControls extends Component with HasGameRef {
-  Vector2 aimDirection = Vector2(0, -1);
-  bool isAiming = false;
-  
-  @override
-  bool onMouseMove(PointerHoverInfo info) {
-    if (gameRef.gameState == GameState.aiming) {
-      final worldPosition = gameRef.camera.screenToWorld(info.eventPosition.game);
-      aimDirection = (worldPosition - launchPosition).normalized();
-      return true;
-    }
-    return false;
-  }
-  
-  @override
-  bool onMouseDown(PointerDownInfo info) {
-    if (gameRef.gameState == GameState.aiming) {
-      gameRef.startFiring(aimDirection);
-      return true;
-    }
-    return false;
-  }
-}
-
-class GameHUD extends PositionComponent with HasGameRef {
-  TextComponent scoreText = TextComponent();
-  TextComponent waveText = TextComponent();
-  TextComponent ballCountText = TextComponent();
-  
-  @override
-  Future<void> onLoad() async {
-    // Setup HUD components with Modern Cool theme
-    final textStyle = TextStyle(color: Colors.cyanAccent, fontSize: 24);
-    
-    scoreText = TextComponent(textRenderer: TextPaint(style: textStyle));
-    waveText = TextComponent(textRenderer: TextPaint(style: textStyle));
-    ballCountText = TextComponent(textRenderer: TextPaint(style: textStyle));
-    
-    add(scoreText);
-    add(waveText);
-    add(ballCountText);
-  }
-  
-  @override
-  void update(double dt) {
-    scoreText.text = 'Score: ${gameRef.score}';
-    waveText.text = 'Wave: ${gameRef.currentWave}';
-    ballCountText.text = 'Balls: ${gameRef.ballCount}';
-  }
-}
-```
+1. Modify ball launch system to support multiple balls fired sequentially with a single aim
+2. Implement sequential firing with configurable delay between balls
+3. Create ball pool for efficient object reuse and optimize multi-ball physics handling
+4. Add visual indicators for total ball count, remaining balls, and firing angle in UI
+5. Implement consistent timing control system for ball launch intervals
+6. Ensure all balls follow the same initial trajectory based on the single aiming action
+7. Optimize performance for handling multiple balls simultaneously on screen
 
 # Test Strategy:
-1. Test aiming system with different mouse positions
-2. Verify responsive layout at various screen sizes
-3. Test HUD updates with game state changes
-4. Validate menu functionality
-5. Test theme consistency across all UI elements
-6. Verify mouse wheel scrolling in menus
+1. Verify balls are fired sequentially with the configured intervals
+2. Confirm all balls follow the exact same initial trajectory based on aim
+3. Test performance with various ball counts to ensure no degradation
+4. Verify ball count and firing information are accurately displayed in UI
+5. Confirm each ball maintains proper individual physics interactions
+6. Test multi-ball firing with different ball counts and intervals
+7. Measure performance with large numbers of balls on screen simultaneously
 
 # Subtasks:
-## 1. User Research and Requirements Analysis [pending]
+## 1. 구현: 다중 볼 발사 시스템 설계 [pending]
 ### Dependencies: None
-### Description: Conduct comprehensive research to understand user needs and define project requirements for the desktop UI/UX implementation.
+### Description: 단일 조준으로 다수의 볼을 순차적으로 발사하는 시스템 기본 구조 설계
 ### Details:
-Interview stakeholders across departments to identify business goals. Create user personas and user stories to guide the design process. Analyze user behavior patterns specific to desktop applications. Document accessibility requirements and technical constraints.
+1. 볼 발사 메커니즘을 단일 볼에서 다중 볼로 확장할 수 있는 구조 설계\n2. 조준 각도 및 발사 명령을 모든 볼에 일관되게 적용하는 방식 구현\n3. 볼 간 발사 간격과 타이밍 제어를 위한 로직 설계\n4. 디버그 모드에서 발사 시스템을 테스트할 수 있는 기능 추가
 
-## 2. Mouse Control System Design [pending]
-### Dependencies: 10.1
-### Description: Design and document the mouse interaction patterns for the desktop application.
+## 2. 구현: 볼 풀링 시스템 [pending]
+### Dependencies: None
+### Description: 다수의 볼을 효율적으로 관리하기 위한 객체 풀링 시스템 구현
 ### Details:
-Define hover states, click behaviors, and cursor feedback. Design drag-and-drop functionality where applicable. Create specifications for right-click context menus. Implement scroll behaviors and multi-select capabilities. Document mouse acceleration and precision requirements.
+1. Phaser에 최적화된 볼 객체 풀 생성\n2. 볼 재사용 메커니즘 구현으로 메모리 사용 최적화\n3. 풀링된 볼 객체의 속성 재설정 로직 구현\n4. 동시에 표시되는 볼 수에 따른 성능 테스트 및 최적화
 
-## 3. Responsive Layout Framework [pending]
-### Dependencies: 10.1
-### Description: Develop a responsive grid system that adapts to different desktop screen resolutions and window sizes.
+## 3. 구현: 순차적 타이밍 컨트롤 [pending]
+### Dependencies: None
+### Description: 볼 발사 간격과 타이밍을 일정하게 제어하는 시스템 구현
 ### Details:
-Create wireframes showing layout at different breakpoints. Define fluid vs. fixed elements. Establish content prioritization for different screen sizes. Document minimum and maximum supported resolutions. Design window resizing behaviors and element reflow rules.
+1. 볼 발사 간격 타이머 구현\n2. 발사 상태 관리 및 대기열 시스템 구현\n3. 게임 일시정지/재개 시 타이밍 시스템 동기화\n4. 여러 속도 설정에서의 일관된 타이밍 유지 테스트
 
-## 4. HUD Component Library Design [pending]
-### Dependencies: 10.1, 10.3
-### Description: Design the core HUD (Heads-Up Display) components that will appear throughout the application.
+## 4. 구현: 다중 볼 UI 표시 [pending]
+### Dependencies: None
+### Description: 총 볼 개수, 남은 볼 개수, 발사 각도를 UI에 표시
 ### Details:
-Create visual designs for notifications, alerts, and status indicators. Design progress bars and loading states. Develop tooltips and help overlays. Define information hierarchy for dashboard elements. Document component behaviors and states.
+1. HUD에 총 볼 개수 표시 요소 추가\n2. 발사된/남은 볼 수 실시간 업데이트 UI 구현\n3. 발사 각도 및 조준선 시각화 개선\n4. 다중 볼 발사 진행 상태 표시기 구현
 
-## 5. Menu System Architecture [pending]
-### Dependencies: 10.1, 10.2
-### Description: Design the complete menu system architecture including main navigation, submenus, and contextual menus.
+## 5. 구현: 궤적 일관성 확보 [pending]
+### Dependencies: None
+### Description: 모든 볼이 동일한 초기 궤적으로 발사되도록 구현
 ### Details:
-Create sitemap showing menu hierarchy. Design main navigation bar with dropdown capabilities. Develop keyboard shortcuts for menu navigation. Define menu animations and transitions. Document menu accessibility considerations.
+1. 조준 각도 계산 및 저장 시스템 구현\n2. 모든 볼에 동일한 초기 속도와 방향 적용\n3. 물리 시스템에서 일관된 초기 궤적 유지 확인\n4. 다양한 발사 각도에서의 일관성 테스트
 
-## 6. Visual Theme Implementation [pending]
-### Dependencies: 10.3, 10.4, 10.5
-### Description: Develop the visual design system including color schemes, typography, and visual elements.
+## 6. 최적화: 다중 볼 성능 향상 [pending]
+### Dependencies: None
+### Description: 대량의 볼이 화면에 존재할 때 성능 최적화
 ### Details:
-Create a comprehensive style guide with color palette, typography, and spacing rules. Design iconography system for consistent visual language. Develop light and dark theme variations. Document visual hierarchy principles. Create visual microinteractions for enhanced user experience.
-
-## 7. Accessibility Implementation [pending]
-### Dependencies: 10.2, 10.3, 10.4, 10.5, 10.6
-### Description: Ensure the UI/UX design meets accessibility standards for diverse user needs.
-### Details:
-Implement keyboard navigation alternatives to mouse controls. Ensure color contrast meets WCAG guidelines. Add screen reader support with proper ARIA attributes. Design focus states for keyboard navigation. Test with assistive technologies and document compliance.
-
-## 8. Prototype Development and Testing [pending]
-### Dependencies: 10.2, 10.3, 10.4, 10.5, 10.6, 10.7
-### Description: Create interactive prototypes and conduct usability testing with target users.
-### Details:
-Develop high-fidelity interactive prototypes in Figma or similar tool. Create test scenarios covering key user flows. Conduct usability testing sessions with representative users. Document findings and identify areas for improvement. Validate accessibility implementation with diverse users.
-
-## 9. Design Handoff and Implementation Support [pending]
-### Dependencies: 10.8
-### Description: Prepare design assets and documentation for development team and provide ongoing implementation support.
-### Details:
-Export all design assets in appropriate formats. Create detailed design specifications including measurements and behaviors. Document component states and interactions. Collaborate with developers during implementation. Conduct design QA reviews during development process.
+1. 볼 개체수에 따른 성능 측정 및 병목 지점 식별\n2. 충돌 감지 최적화\n3. 화면 밖 볼 객체의 효율적 관리\n4. 디버그 모드에서 FPS 모니터링 및 최적화 효과 측정
 

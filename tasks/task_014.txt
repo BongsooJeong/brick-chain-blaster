@@ -1,87 +1,17 @@
 # Task ID: 14
-# Title: Implement Audio System
+# Title: Implement Firebase Authentication
 # Status: pending
-# Dependencies: 1
-# Priority: low
-# Description: Create a comprehensive audio system with sound effects and background music.
+# Dependencies: 9
+# Priority: medium
+# Description: Integrate Firebase Authentication for user accounts and cloud save functionality
 # Details:
-1. Implement audio manager with Flame Audio
-2. Add sound effects for ball hits, brick destruction, etc.
-3. Implement background music with looping
-4. Add audio settings (volume, mute)
-5. Implement audio pooling for performance
-6. Add haptic feedback for mobile (future-proofing)
-
-```dart
-class AudioManager {
-  final Map<String, List<FlameAudio>> _pools = {};
-  bool soundEnabled = true;
-  bool musicEnabled = true;
-  double soundVolume = 1.0;
-  double musicVolume = 0.5;
-  
-  Future<void> initialize() async {
-    await FlameAudio.audioCache.loadAll([
-      'hit.wav',
-      'break.wav',
-      'powerup.wav',
-      'gameover.wav',
-      'background.mp3',
-    ]);
-    
-    // Create audio pools for frequently used sounds
-    createPool('hit', 10);
-    createPool('break', 5);
-  }
-  
-  void createPool(String sound, int size) {
-    _pools[sound] = List.generate(size, (_) => FlameAudio());
-  }
-  
-  void playSound(String sound) {
-    if (!soundEnabled) return;
-    
-    if (_pools.containsKey(sound)) {
-      final pool = _pools[sound]!;
-      final available = pool.firstWhere(
-        (audio) => !audio.isPlaying,
-        orElse: () => pool.first,
-      );
-      available.play('$sound.wav', volume: soundVolume);
-    } else {
-      FlameAudio.play('$sound.wav', volume: soundVolume);
-    }
-  }
-  
-  void playMusic() {
-    if (musicEnabled) {
-      FlameAudio.bgm.play('background.mp3', volume: musicVolume);
-    }
-  }
-  
-  void stopMusic() {
-    FlameAudio.bgm.stop();
-  }
-  
-  void toggleSound() {
-    soundEnabled = !soundEnabled;
-  }
-  
-  void toggleMusic() {
-    musicEnabled = !musicEnabled;
-    if (musicEnabled) {
-      playMusic();
-    } else {
-      stopMusic();
-    }
-  }
-}
-```
+1. Setup Firebase project and configure web app
+2. Install Firebase SDK via npm
+3. Implement authentication UI (login/register)
+4. Create anonymous authentication for new users
+5. Add account linking options
+6. Implement auth state persistence
+7. Create user profile management
 
 # Test Strategy:
-1. Test sound effects for all game events
-2. Verify background music looping
-3. Test audio settings persistence
-4. Validate audio pooling performance
-5. Test mute functionality
-6. Verify volume control works correctly
+Test authentication flow with different methods. Verify anonymous accounts can be upgraded. Test auth persistence between sessions. Ensure error handling for auth failures.

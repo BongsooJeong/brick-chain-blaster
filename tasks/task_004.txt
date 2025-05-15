@@ -1,168 +1,26 @@
 # Task ID: 4
-# Title: Implement Brick Generation System
+# Title: Implement Game Field and Physics
 # Status: pending
 # Dependencies: 2
 # Priority: high
-# Description: Create the pattern-based brick generation system that places bricks in various formations based on wave index.
+# Description: Create the basic game field with boundaries and implement Arcade Physics for ball movement as the first implementation task for Phase 1 (Basic Breakout Game MVP)
 # Details:
-1. Create Brick component with HP system
-2. Implement brick pattern library with predefined formations
-3. Create pattern selection and transformation logic
-4. Implement wave progression system
-5. Add brick movement animation (downward shift)
-6. Create HP visualization on bricks
-
-```dart
-class BrickPattern {
-  final List<List<int>> layout;
-  final double hpMultiplier;
-  
-  BrickPattern(this.layout, {this.hpMultiplier = 1.0});
-  
-  List<Brick> generateBricks(int waveIndex) {
-    final bricks = <Brick>[];
-    final baseHP = calculateBaseHP(waveIndex);
-    
-    for (int y = 0; y < layout.length; y++) {
-      for (int x = 0; x < layout[y].length; x++) {
-        if (layout[y][x] > 0) {
-          final hp = (baseHP * layout[y][x] * hpMultiplier).round();
-          final position = Vector2(x * brickWidth, y * brickHeight);
-          bricks.add(Brick(position: position, hp: hp));
-        }
-      }
-    }
-    
-    return bricks;
-  }
-  
-  int calculateBaseHP(int waveIndex) {
-    return max(1, waveIndex);
-  }
-}
-```
+1. Create a new game scene with proper dimensions for desktop
+2. Setup Arcade Physics in the scene
+3. Implement game boundaries with collision detection
+4. Create world bounds that reflect the ball
+5. Implement physics properties for the ball's movement and collisions
+6. Add debug visualization for physics bodies and collision points during development
+7. Ensure consistent physics behavior across different frame rates
+8. Set up the basic screen layout and background for the game
+9. Add FPS counter and performance metrics for debugging
+10. Ensure the game field scales appropriately across different resolutions
 
 # Test Strategy:
-1. Test brick generation with different patterns
-2. Verify HP scaling with wave progression
-3. Test brick placement and alignment
-4. Verify brick downward movement animation
-5. Test pattern randomization and variation
-6. Validate HP visualization on bricks
-
-# Subtasks:
-## 1. Design Brick Pattern System [pending]
-### Dependencies: None
-### Description: Create a flexible pattern system that defines how bricks are arranged on the game board
-### Details:
-Develop a data structure to represent different brick patterns (grid, zigzag, circular, etc.). Create a pattern library with predefined formations that can be selected randomly or sequentially. Include parameters for pattern density, symmetry options, and special brick placement rules.
-<info added on 2025-05-14T11:01:04.384Z>
-Develop a data structure to represent different brick patterns (grid, zigzag, circular, etc.). Create a pattern library with predefined formations that can be selected randomly or sequentially. Include parameters for pattern density, symmetry options, and special brick placement rules.
-
-Implemented the BrickPattern class to define various brick arrangement patterns. Created 10 distinct pattern types: basic lines, grids, pyramids, zigzag, fortress, X-shape, arch, diagonal triangles, reinforced center, and diamond patterns. Added pattern variation capabilities including horizontal and vertical flipping. Implemented scaling difficulty where brick HP increases with wave index and the probability of special brick appearances increases in higher waves.
-</info added on 2025-05-14T11:01:04.384Z>
-
-## 2. Implement Layout Algorithm [pending]
-### Dependencies: 4.1
-### Description: Develop algorithms to procedurally generate brick layouts based on pattern definitions
-### Details:
-Write functions to translate pattern definitions into actual brick positions. Implement grid-based positioning system with support for offsets. Create methods for random variations within pattern constraints. Ensure proper spacing between bricks using padding parameters.
-<info added on 2025-05-14T11:01:15.951Z>
-Write functions to translate pattern definitions into actual brick positions. Implement grid-based positioning system with support for offsets. Create methods for random variations within pattern constraints. Ensure proper spacing between bricks using padding parameters.
-
-Implemented the layout algorithm successfully. Created a BrickPattern class with a generateBricks method that converts pattern definitions into actual brick positions. To ensure proper spacing between bricks, set brick sizes to 90% of standard size. Added logic to center patterns on screen. Implemented automatic color determination based on brick type and HP. Also developed the _selectPattern method in the BrickManager class to determine appropriate patterns based on pattern selection and wave progression.
-</info added on 2025-05-14T11:01:15.951Z>
-
-## 3. Create Wave Progression System [done]
-### Dependencies: None
-### Description: Design a system that manages level progression through increasingly difficult waves
-### Details:
-Implement a wave counter and difficulty curve. Create rules for transitioning between waves. Design a system to track player progress and performance metrics. Develop logic for determining when to advance to the next wave based on brick clearance.
-<info added on 2025-05-14T11:01:29.292Z>
-Implemented a comprehensive wave progression system through the creation of a WaveManager class. This class manages different wave states including preparation, in-progress, cleared, and game over. Added wave transition functionality with a visual countdown (3,2,1) displayed before each wave begins. Implemented automatic progression to the next wave after a brief delay when the current wave is cleared. Enhanced player feedback by adding a debug overlay that displays real-time information such as current wave number, brick count, and ball count. The system successfully tracks player progress and implements the difficulty curve as waves advance, with clear rules for wave transitions based on brick clearance.
-</info added on 2025-05-14T11:01:29.292Z>
-
-## 4. Implement HP Scaling Mechanism [done]
-### Dependencies: 4.3
-### Description: Create a system that scales brick health points based on wave progression
-### Details:
-Develop formulas for calculating brick HP based on current wave number. Create different brick types with base HP values. Implement visual indicators for brick health status. Design special rules for boss or reinforced bricks that appear in later waves.
-<info added on 2025-05-14T11:01:44.713Z>
-Implemented a logarithmic scaling system for brick HP based on wave progression through the _calculateBaseHP method. The system creates a gradual increase in brick durability as waves progress (Wave 1: HP 1, Wave 2: HP 2, Wave 5: HP 3-4, Wave 10: HP 4-5, etc.). Different brick types have been implemented with varying HP values and color indicators: regular bricks, reinforced bricks (blue color scheme), special bricks (purple color scheme), and boss bricks (dark purple). Higher HP bricks are more difficult to destroy, creating increasing challenge as players advance through waves. The visual color differentiation helps players identify brick types and their relative durability at a glance.
-</info added on 2025-05-14T11:01:44.713Z>
-
-## 5. Develop Brick Visual Representation [done]
-### Dependencies: 4.4
-### Description: Create visual assets and rendering system for different brick types and states
-### Details:
-Design sprite sheets for different brick types. Implement color coding based on brick properties. Create visual effects for damaged bricks. Develop a system to handle brick appearance based on current HP and special properties.
-<info added on 2025-05-14T11:02:04.940Z>
-Design sprite sheets for different brick types. Implement color coding based on brick properties. Create visual effects for damaged bricks. Develop a system to handle brick appearance based on current HP and special properties.
-
-Extended the Brick class to implement various visual effects and status indicators. Created a _getColorByType method that automatically determines colors based on brick type and HP. Added rounded corners and internal gradient effects to bricks to enhance aesthetic quality. For bricks with HP greater than 1, small white dots in the center visually indicate remaining HP. Implemented hit animation where bricks temporarily expand and brighten when struck, and a destruction animation where bricks shrink and rotate when destroyed.
-</info added on 2025-05-14T11:02:04.940Z>
-
-## 6. Build Brick Animation System [done]
-### Dependencies: 4.5
-### Description: Implement animations for brick creation, movement, and destruction
-### Details:
-Create smooth animations for brick appearance when generating a new level. Implement physics-based animations for brick destruction. Design animations for special events like chain reactions. Optimize animation performance for large numbers of bricks.
-<info added on 2025-05-14T11:02:22.688Z>
-Create smooth animations for brick appearance when generating a new level. Implement physics-based animations for brick destruction. Design animations for special events like chain reactions. Optimize animation performance for large numbers of bricks.
-
-The animation system has been successfully implemented with the following features:
-
-1. Added animation timer and state management logic to the Brick class's update method
-2. Implemented a pulse effect for brick hits using a sine curve-based animation with the pulseAmount variable
-   - When a brick is hit, it slightly enlarges and brightens before returning to its original state
-   - Creates a natural-looking response to impacts
-
-3. Created a destruction animation sequence that plays over 0.5 seconds when a brick is destroyed
-   - Gradually reduces the brick's size
-   - Adds rotation to the brick as it disappears
-   - Fades out the brick by decreasing opacity
-
-4. Utilized various Canvas transformation techniques including scale, rotate, and opacity adjustments to create visually appealing animation effects
-5. Ensured all animations are optimized for performance when many bricks are on screen simultaneously
-</info added on 2025-05-14T11:02:22.688Z>
-
-## 7. Implement Brick Group Management [done]
-### Dependencies: 4.2
-### Description: Create a system to manage collections of bricks as cohesive units
-### Details:
-Develop a brick container class to manage brick collections. Implement methods for adding, removing, and updating bricks. Create functions to check game state based on remaining bricks. Design efficient data structures for brick lookup and collision detection.
-<info added on 2025-05-14T11:02:36.753Z>
-Develop a brick container class to manage brick collections. Implement methods for adding, removing, and updating bricks. Create functions to check game state based on remaining bricks. Design efficient data structures for brick lookup and collision detection.
-
-Implementation completed with the creation of the BrickManager class to handle brick collections. The class includes functionality for adding, removing, and querying bricks in the collection. An automatic cleanup mechanism was added to the update method to remove deactivated bricks from the list. The areAllBricksCleared method was implemented to check if all bricks have been cleared, and a clearBricks method was added to remove all bricks in the current wave. Additionally, collision detection and handling functionality was integrated into the game class to ensure smooth interaction between bricks and balls.
-</info added on 2025-05-14T11:02:36.753Z>
-
-## 8. Create Special Brick Types [in-progress]
-### Dependencies: 4.4, 4.5
-### Description: Implement various special brick types with unique behaviors and effects
-### Details:
-Design and implement explosive bricks that affect neighboring bricks. Create power-up bricks that drop bonuses when destroyed. Implement indestructible or moving bricks for advanced levels. Develop boss bricks with complex behavior patterns.
-
-## 9. Optimize and Test Brick Generation System [pending]
-### Dependencies: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8
-### Description: Perform optimization and testing to ensure the brick generation system works efficiently
-### Details:
-Conduct performance testing with large numbers of bricks. Implement optimizations for rendering and updating brick states. Test various pattern combinations and difficulty progressions. Debug and fix any issues with brick collision detection or animation.
-
-## 10. 웹 브라우저에서 벽돌 생성 시스템 테스트 및 검증 [pending]
-### Dependencies: 4.9
-### Description: 브라우저에서 구현된 벽돌 생성 시스템을 테스트하고 다양한 패턴, 웨이브, HP 스케일링 등의 기능을 검증합니다.
-### Details:
-1. 'flutter run -d chrome --web-renderer canvaskit' 명령어로 브라우저에서 앱 실행
-2. 다양한 벽돌 패턴이 올바르게 생성되는지 확인
-3. 웨이브 진행에 따른 패턴 변화 테스트
-4. 웨이브에 따른 벽돌 HP 스케일링 검증
-5. 다양한 브라우저 창 크기에서 반응형 레이아웃 테스트
-6. 특수 벽돌 타입의 시각적 표현 및 작동 확인
-7. 벽돌 그룹 관리 시스템 테스트
-8. 벽돌 애니메이션(생성, 이동, 파괴) 확인
-9. 성능 테스트: 최대 벽돌 개수 생성 시 FPS 모니터링
-10. Chrome DevTools를 사용하여 메모리 사용량 및 성능 프로파일링
-11. 각 테스트 케이스의 스크린샷 캡처 및 문서화
-12. 발견된 버그 또는 개선점 기록
-
+1. Verify ball correctly bounces off screen boundaries
+2. Confirm physics system operates reliably at consistent FPS
+3. Test game field scaling across various resolutions
+4. Verify all collision events are properly detected
+5. Test ball collision with boundaries
+6. Verify physics properties like bounce and velocity behave as expected
+7. Test at different frame rates to ensure consistent behavior

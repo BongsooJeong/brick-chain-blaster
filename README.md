@@ -1,36 +1,89 @@
-# 벽돌 체인 블래스터 (Brick Chain Blaster)
+# 🧱 Brick Chain Blaster 
 
-플러터로 개발하는, 고전적인 벽돌 깨기 게임의 현대적 재해석 프로젝트입니다.
+Brick Chain Blaster는 고전 벽돌깨기와 현대 캐주얼 게임의 다중 볼 체인 메커니즘을 결합한 퍼즐 아케이드 게임입니다.
 
-## 소개
+## 📖 프로젝트 개요
 
-벽돌 체인 블래스터는 클래식한 벽돌 깨기 게임에 현대적인 물리 시스템과 게임플레이 요소를 결합한 게임입니다. 
-플러터(Flutter) 프레임워크를 사용해 개발되며, 다양한 플랫폼(모바일, 데스크톱, 웹)에서 동작합니다.
+- 초기 출시 플랫폼: PC 웹 (데스크톱 브라우저)
+- 향후 확장: 모바일 (Android/iOS)
+- 핵심 기능: 
+  - 볼 체인 발사 (한 번의 조준으로 다수의 볼을 연속 발사)
+  - 패턴 기반 벽돌 생성
+  - 시원한 볼 애니메이션 및 패스트포워드
+  - 아이템 시스템
+  - 웨이브 진행형 레벨 시스템
 
-## 주요 특징
+## 🔧 기술 스택
 
-- **다중 볼 체인 발사**: 한 번의 조준으로 여러 개의 볼을 연속 발사
-- **패턴 기반 벽돌 생성**: 다양한 패턴으로 벽돌 배치, 도전적인 게임플레이 제공
-- **시원한 애니메이션 및 패스트포워드**: 화려한 시각 효과와 게임 속도 조절 기능
-- **아이템 시스템**: 다양한 아이템을 통한 전략적 게임플레이
-- **크로스 플랫폼**: 웹, 모바일 등 여러 플랫폼에서 동일한 경험 제공
+- **프론트엔드**: Phaser 3 (TypeScript)
+- **백엔드/클라우드**: Firebase (Auth, Firestore, Remote Config, Hosting)
+- **결제**: Stripe Web SDK / Google Play Billing & Apple IAP 
+- **모바일 래핑**: Capacitor
 
-## 개발 상태
+## 🚀 개발 로드맵
 
-현재 이 프로젝트는 Task Master를 이용하여 체계적으로 개발되고 있으며, 초기 설계 및 구현 단계에 있습니다.
+### Phase 0 – 환경 구축 & CI/CD
+- Node & NPM 세팅, Phaser 템플릿 구성
+- GitHub Actions → Vercel Preview URL 자동 배포
 
-## 기술 스택
+### Phase 1 – Single-Ball Block Breaker MVP
+- 플레이 필드, 패들, 벽돌 충돌, 데스크톱 PWA 첫 배포
+- HUD, 점수, 웨이브 루프, 게임 오버, 재시작
 
-- Flutter 및 Dart
-- Flame 게임 엔진
-- Forge2D (Box2D) 물리 엔진
-- Firebase (온라인 기능)
+### Phase 2 – 멀티볼 & 페이싱 전환
+- 볼 체인 발사(다중 볼), 패스트포워드 스위치
+- 패턴 기반 벽돌 생성, 볼 수 증가 메커니즘
 
-## 로드맵
+### Phase 3-5 – 확장 기능
+- 온라인 및 메타 시스템, 수익화, 모바일 확장
 
-1. **Phase 0**: 환경 구축
-2. **Phase 1**: PC Web MVP
-3. **Phase 2**: 온라인 확장
-4. **Phase 3**: 메타 및 수익화
-5. **Phase 4**: 라이브 운영
-6. **Phase 5**: 모바일 확장 
+## 🛠️ 개발 환경 설정
+
+```bash
+# Node.js 및 NPM 설치 필요
+
+# 프로젝트 클론
+git clone https://github.com/your-username/brick-chain-blaster.git
+cd brick-chain-blaster
+
+# 의존성 설치
+npm install
+
+# 개발 서버 실행
+npm start
+
+# 빌드
+npm run build
+```
+
+## 📋 Task Master 사용법
+
+이 프로젝트는 [Task Master](https://github.com/task-master-ai/task-master)를 사용하여 개발 작업을 관리합니다.
+
+### 주요 Task Master 명령어
+
+```bash
+# 작업 목록 조회
+task-master list
+
+# 다음 작업 확인
+task-master next
+
+# 특정 작업 상세 정보 보기
+task-master show <task-id>
+
+# 작업 상태 변경
+task-master set-status --id=<task-id> --status=<status>
+```
+
+## 🤝 기여 방법
+
+1. 프로젝트 포크
+2. 기능 브랜치 생성 (`git checkout -b feature/amazing-feature`)
+3. 변경사항 커밋 (`git commit -m 'Add some amazing feature'`)
+4. 브랜치에 푸시 (`git push origin feature/amazing-feature`)
+5. Pull Request 생성
+
+## 📄 라이선스
+
+MIT 라이선스 적용 

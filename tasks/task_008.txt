@@ -1,79 +1,24 @@
 # Task ID: 8
-# Title: Implement Item System
+# Title: Implement Game Over and Restart
 # Status: pending
-# Dependencies: 5, 6
+# Dependencies: 7
 # Priority: medium
-# Description: Create the item system where players can collect and use power-ups during gameplay.
+# Description: Create game over condition, screen, and restart functionality to complete the game cycle for the MVP
 # Details:
-1. Create Item component with different types (multi-ball, laser, etc.)
-2. Implement item collection through ball collision
-3. Create item inventory display
-4. Implement item activation system
-5. Add visual effects for active items
-6. Create item duration tracking
-
-```dart
-enum ItemType {
-  multiBall,
-  laser,
-  bomb,
-  extraLife
-}
-
-class Item extends BodyComponent with ContactCallbacks {
-  final ItemType type;
-  
-  Item({required this.type, required Vector2 position});
-  
-  @override
-  Body createBody() {
-    // Create physics body for item
-  }
-  
-  @override
-  void beginContact(Object other, Contact contact) {
-    if (other is Ball) {
-      collect();
-    }
-  }
-  
-  void collect() {
-    game.itemInventory.addItem(type);
-    removeFromParent();
-  }
-}
-
-class ItemInventory {
-  final Map<ItemType, int> items = {};
-  
-  void addItem(ItemType type) {
-    items[type] = (items[type] ?? 0) + 1;
-  }
-  
-  bool useItem(ItemType type) {
-    if ((items[type] ?? 0) > 0) {
-      items[type] = items[type]! - 1;
-      applyItemEffect(type);
-      return true;
-    }
-    return false;
-  }
-  
-  void applyItemEffect(ItemType type) {
-    switch (type) {
-      case ItemType.multiBall:
-        // Double current balls for this turn
-        break;
-      // Handle other item types
-    }
-  }
-}
-```
+1. Implement game over conditions and logic:
+   - When player loses all balls
+   - When blocks fill the screen/reach bottom boundary
+2. Create game over screen with final score display
+3. Implement score saving functionality using local storage
+4. Implement restart button functionality that fully resets the game state
+5. Implement win condition and screen when all blocks are destroyed
+6. Create smooth transitions between game states (play → game over/win → restart)
 
 # Test Strategy:
-1. Test item generation and placement
-2. Verify item collection through ball collision
-3. Test inventory display updates
-4. Validate item activation and effects
-5. Test item duration and expiration
-6. Verify visual effects for active items
+1. Verify game over triggers correctly when player loses all balls
+2. Verify game over triggers when blocks reach the bottom boundary
+3. Confirm game over screen displays properly with accurate final score
+4. Test that high scores are correctly saved to and retrieved from local storage
+5. Verify restart button properly resets all game elements and state
+6. Confirm win screen appears when all blocks are destroyed
+7. Test that state transitions (play → game over/win → restart) work smoothly

@@ -1,3 +1,4 @@
+```
 <context>
 # Overview  
 Brick Chain Blaster는 고전 벽돌깨기와 현대 캐주얼 게임의 다중 볼 체인 메커니즘을 결합한 퍼즐 아케이드 게임이다. 초기 출시 플랫폼은 PC 웹(데스크톱 브라우저)이며, 동일 코드베이스를 활용해 추후 모바일(Android/iOS)로 확장한다. 사용자는 마우스 오버로 조준선을 확인하고 클릭으로 여러 개의 볼을 발사하여 상단에서 내려오는 벽돌을 파괴하며, 벽돌이 화면을 가득 채우기 전에 최대한 높은 웨이브를 달성해야 한다. 짧고 중독성 강한 세션을 원하는 캐주얼 게이머에게 즉각적인 성취감과 장기적인 성장·수집·경쟁 요소를 제공한다.
@@ -53,20 +54,35 @@ Brick Chain Blaster는 고전 벽돌깨기와 현대 캐주얼 게임의 다중 
 <PRD>
 # Technical Architecture  
 - System components  
-  - Flutter Web + Flame (CanvasKit)  
-  - Forge2D (flame_forge2d)  
-  - Firebase Suite  
-  - Ad / IAP 솔루션(웹 Stripe, 모바일 Google Mobile Ads 등)  
+  - **Phaser 3** (JavaScript/TypeScript) + Arcade Physics  
+  - Firebase Suite (Auth, Firestore, Remote Config, Hosting)  
+  - Stripe Web SDK / Google Play Billing & Apple IAP (Capacitor plug‑ins)  
+  - Capacitor (or Cordova) wrapper for native Android/iOS builds  
 - Target platforms  
-  - V1: PC Web  
-  - V2: 모바일 Web 및 Android/iOS 앱  
-- Development Roadmap  
-  - Phase 0: 환경 구축  
-  - Phase 1: PC Web MVP  
-  - Phase 2: 온라인 확장  
-  - Phase 3: 메타 및 수익화  
-  - Phase 4: 라이브 운영  
-  - Phase 5: Mobile Expansion  
+  - V1: PC Web (Progressive Web App)  
+  - V2: 모바일 Web 및 Wrapped Android/iOS 앱  
+- Development Roadmap *(Agile, Incremental)*  
+  - **Phase 0 – 환경 구축 & CI/CD**  
+    - Node&nbsp;+&nbsp;NPM 세팅, Phaser 템플릿 `create-phaser`  
+    - GitHub Actions → Vercel Preview URL 자동 배포  
+  - **Phase 1 – Single‑Ball Block Breaker MVP**  
+    - *Sprint 1*: 플레이 필드·패들·벽돌 충돌, 데스크톱 PWA 첫 배포  
+    - *Sprint 2*: HUD, 점수·웨이브 루프, 게임 오버·재시작  
+  - **Phase 2 – 멀티볼 & 페이싱 전환**  
+    - *Sprint 3*: 볼 체인 발사(다중 볼), 패스트포워드 스위치 *(Feature Toggle)*  
+    - *Sprint 4*: 패턴 기반 벽돌 생성, 볼 수 증가 메커니즘  
+  - **Phase 3 – 온라인 & 메타 시스템**  
+    - *Sprint 5*: Firebase Auth + 클라우드 세이브, 글로벌 랭킹  
+    - *Sprint 6*: 스킨·아이템 인벤토리, Remote Config 통합  
+  - **Phase 4 – 수익화 & 런칭 준비**  
+    - *Sprint 7*: 광고 리워드, 기본 IAP(광고 제거)  
+    - *Sprint 8*: 시즌 패스 프로토타입, 밸런스 튜닝  
+  - **Phase 5 – 모바일 래핑 & 스토어 출시**  
+    - *Sprint 9*: Capacitor Build, 터치 HUD 최적화, 모바일 QA  
+    - *Sprint 10*: 스토어 메타데이터·릴리스, LiveOps Dashboard  
 - Risks & Mitigations  
-  - 브라우저 성능 편차, 모바일 UX 등  
+  - 브라우저별 WebGL 성능 편차 → Canvas fallback 및 성능 프로파일링  
+  - 모바일 메모리·터치 UX 제한 → 경량 에셋 및 반응형 UI 테스트  
+  - 패키지 버전 충돌 → `npm shrinkwrap` 및 정기적 통합 테스트  
 </PRD>
+```

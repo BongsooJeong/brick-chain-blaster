@@ -1,95 +1,25 @@
 # Task ID: 5
-# Title: Implement Ball-Brick Collision and HP System
+# Title: Implement Paddle and Ball Control
 # Status: pending
-# Dependencies: 3, 4
+# Dependencies: 4
 # Priority: high
-# Description: Create the collision detection system between balls and bricks, with HP reduction and brick destruction mechanics.
+# Description: Create the player-controlled paddle and implement mouse-based aiming and ball launching mechanics for Phase 1 MVP
 # Details:
-1. Implement collision detection between balls and bricks
-2. Create HP reduction system for bricks
-3. Add visual feedback for brick hits (flash, shake)
-4. Implement brick destruction animation
-5. Create score calculation based on brick destruction
-6. Add particle effects for enhanced visual feedback
-
-```dart
-class Brick extends BodyComponent with ContactCallbacks {
-  int hp;
-  final Vector2 position;
-  
-  Brick({required this.position, required this.hp});
-  
-  @override
-  Body createBody() {
-    final bodyDef = BodyDef()
-      ..type = BodyType.static
-      ..position = position;
-    
-    final shape = PolygonShape()
-      ..setAsBox(brickWidth / 2, brickHeight / 2);
-    
-    final fixtureDef = FixtureDef(shape)
-      ..density = 1.0
-      ..friction = 0.3
-      ..restitution = 0.5;
-    
-    return world.createBody(bodyDef)..createFixture(fixtureDef);
-  }
-  
-  @override
-  void beginContact(Object other, Contact contact) {
-    if (other is Ball) {
-      hp--;
-      showHitAnimation();
-      if (hp <= 0) {
-        destroy();
-      }
-    }
-  }
-  
-  void destroy() {
-    showDestroyAnimation();
-    removeFromParent();
-  }
-}
-```
+1. Create paddle sprite at bottom of screen
+2. Implement mouse control for paddle movement
+3. Implement mouse-over aim line visualization
+4. Calculate angle between paddle and mouse position
+5. Implement click-to-launch single ball mechanics (multiple balls will be in Phase 2)
+6. Add physics body to ball with proper collision properties
+7. Implement ball-paddle collision logic with appropriate reflection angles
+8. Add visual feedback for aiming direction
+9. Implement logic for when the ball is missed (falls below screen)
 
 # Test Strategy:
-1. Test collision detection accuracy
-2. Verify HP reduction works correctly
-3. Test brick destruction when HP reaches zero
-4. Validate visual feedback for hits
-5. Test score calculation
-6. Verify particle effects render correctly
-
-# Subtasks:
-## 1. Ball-Brick Collision Detection Implementation [pending]
-### Dependencies: None
-### Description: Implement a function to detect collisions between the ball and each brick, updating the ball's direction upon collision.
-### Details:
-Loop through all bricks and compare their positions with the ball's coordinates each frame. If a collision is detected, reverse the ball's vertical velocity and mark the brick for further processing (e.g., HP reduction or destruction). Test in the browser by moving the ball into bricks and verifying the collision response.
-
-## 2. Brick HP Management System [pending]
-### Dependencies: 5.1
-### Description: Add an HP property to each brick and implement logic to reduce HP upon collision.
-### Details:
-Each brick should have an HP value. When a collision is detected, decrement the brick's HP. If HP reaches zero, mark the brick for destruction. Test by checking that HP decreases with each collision and bricks are removed when HP is zero.
-
-## 3. Visual Feedback and Destruction Animations [pending]
-### Dependencies: 5.2
-### Description: Implement visual feedback for collisions and destruction animations for bricks.
-### Details:
-Add visual effects such as color changes or particle bursts when a brick is hit or destroyed. Test by verifying that animations play on collision and destruction, and that they are visible in the browser.
-
-## 4. Scoring Mechanics and Particle Effects [pending]
-### Dependencies: 5.3
-### Description: Implement a scoring system and particle effects for brick destruction.
-### Details:
-Increase the player's score when a brick is destroyed. Add particle effects (e.g., sparks or debris) upon brick destruction. Test by checking that the score increases and particles are visible when bricks are destroyed.
-
-## 5. Collision Sound and Comprehensive Browser Testing [pending]
-### Dependencies: 5.4
-### Description: Add collision sound effects and perform comprehensive browser testing for all features.
-### Details:
-Play a sound effect on each collision and brick destruction. Test all scenarios: multiple collisions, HP reduction, visual feedback, animations, scoring, and particle effects. Ensure all features work as expected in the browser.
-
+1. Verify paddle moves smoothly with mouse movement
+2. Test aim line follows mouse cursor accurately and displays correct angle
+3. Verify ball launches in the correct direction based on aim line
+4. Test ball-paddle collision behavior and reflection physics
+5. Ensure mouse controls are responsive and intuitive
+6. Verify appropriate events/handling occur when ball is missed
+7. Test overall gameplay flow from aiming to launching to ball interaction

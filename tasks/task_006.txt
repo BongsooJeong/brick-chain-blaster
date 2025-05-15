@@ -1,148 +1,24 @@
 # Task ID: 6
-# Title: Implement Game State Management
+# Title: Implement Basic Block System
 # Status: pending
-# Dependencies: 3, 4, 5
-# Priority: medium
-# Description: Create a comprehensive game state system to handle turns, waves, game over conditions, and progression.
+# Dependencies: 4
+# Priority: high
+# Description: Create the block/brick system with HP and collision detection
 # Details:
-1. Implement game state machine (ready, aiming, firing, next wave, game over)
-2. Create turn-based progression system
-3. Implement wave counter and display
-4. Add game over detection when bricks reach bottom
-5. Create score tracking system
-6. Implement game reset functionality
-
-```dart
-enum GameState {
-  ready,
-  aiming,
-  firing,
-  nextWave,
-  gameOver
-}
-
-class GameStateManager {
-  GameState currentState = GameState.ready;
-  int currentWave = 1;
-  int score = 0;
-  
-  void startAiming() {
-    if (currentState == GameState.ready) {
-      currentState = GameState.aiming;
-    }
-  }
-  
-  void startFiring(Vector2 direction) {
-    if (currentState == GameState.aiming) {
-      currentState = GameState.firing;
-      // Trigger ball firing
-    }
-  }
-  
-  void onAllBallsReturned() {
-    if (currentState == GameState.firing) {
-      currentState = GameState.nextWave;
-      advanceWave();
-    }
-  }
-  
-  void advanceWave() {
-    currentWave++;
-    // Generate new bricks
-    currentState = GameState.ready;
-  }
-  
-  void checkGameOver() {
-    if (bricksReachedBottom()) {
-      currentState = GameState.gameOver;
-    }
-  }
-}
-```
+1. Create Block class with HP property
+2. Implement visual representation of blocks with different HP levels
+3. Setup collision detection between balls and blocks
+4. Implement HP reduction on collision with visual feedback
+5. Add block destruction animation and sound effects when HP reaches zero
+6. Create basic block layout system for testing (advanced patterns will be implemented in later tasks)
+7. Implement basic score counting logic when blocks are destroyed
 
 # Test Strategy:
-1. Test state transitions through complete game cycle
-2. Verify wave progression works correctly
-3. Test game over detection with various scenarios
-4. Validate score calculation across multiple waves
-5. Test game reset functionality
-6. Verify UI updates correctly with state changes
-
-# Subtasks:
-## 1. Design the State Machine Architecture [pending]
-### Dependencies: None
-### Description: Create the core state machine architecture that will manage different game states
-### Details:
-Define a base State class with common methods like startup(), update(), get_event(), and shutdown(). Implement a StateManager class that handles state transitions and maintains the current active state. Consider using enums for cleaner state representation.
-
-## 2. Implement Core Game States [pending]
-### Dependencies: 6.1
-### Description: Create the fundamental game states required for the game flow
-### Details:
-Implement concrete state classes for MainMenu, Playing, Paused, GameOver, and Victory states. Each state should handle its specific logic, input processing, and rendering requirements. Ensure proper initialization and cleanup when entering/exiting states.
-
-## 3. Develop State Transition Logic [pending]
-### Dependencies: 6.1, 6.2
-### Description: Create a robust system for transitioning between different game states
-### Details:
-Implement methods for state transitions with proper data passing between states. Handle edge cases like rapid state changes and ensure resources are properly managed during transitions. Create a transition history for potential 'back' functionality.
-
-## 4. Design Turn Progression System [pending]
-### Dependencies: 6.2
-### Description: Create a system to manage turn-based gameplay progression
-### Details:
-Implement turn management within the Playing state, tracking current player/entity turn, turn phases, and turn counters. Create methods for advancing turns and handling turn-based events. Ensure proper state updates when turns change.
-
-## 5. Implement Wave Management [pending]
-### Dependencies: 6.4
-### Description: Develop a system to handle enemy waves or level progression
-### Details:
-Create a WaveManager component that tracks current wave, spawns enemies, and determines wave completion. Implement difficulty scaling between waves and handle transitions between waves. Integrate with the state machine for wave-complete events.
-
-## 6. Create Win/Loss Condition Monitoring [pending]
-### Dependencies: 6.2, 6.5
-### Description: Implement logic to detect and handle game win/loss conditions
-### Details:
-Create a GameConditionMonitor that continuously checks for win/loss conditions. Implement event triggers for when conditions are met. Ensure proper state transitions to Victory or GameOver states when conditions are triggered.
-
-## 7. Develop Game State Persistence [pending]
-### Dependencies: 6.2, 6.4, 6.5
-### Description: Create a system to save and load game state information
-### Details:
-Implement serialization for relevant game state data. Create save/load functionality that works with the state machine. Handle edge cases like loading during different game states and corrupted save data.
-
-## 8. Integrate UI with State System [pending]
-### Dependencies: 6.2, 6.3
-### Description: Connect the UI system with the state management system
-### Details:
-Create UI controllers for each game state that update based on state changes. Implement UI event handlers that can trigger state transitions. Ensure UI elements properly appear/disappear during state transitions.
-
-## 9. Implement Debug Tools for State Management [pending]
-### Dependencies: 6.1, 6.2, 6.3
-### Description: Create debugging tools to monitor and manipulate the state system
-### Details:
-Develop a state visualization panel showing current state and transition history. Create commands to force state transitions for testing. Implement logging for state changes and important events within states.
-
-## 10. Optimize and Test State System [pending]
-### Dependencies: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9
-### Description: Optimize performance and thoroughly test the state management system
-### Details:
-Profile state transitions and update loops to identify performance bottlenecks. Create automated tests for state transitions and edge cases. Perform integration testing with all game systems. Document the state system architecture and usage patterns.
-
-## 11. 웹 브라우저에서 게임 상태 관리 시스템 테스트 [pending]
-### Dependencies: 6.10
-### Description: 브라우저에서 구현된 게임 상태 관리 시스템을 테스트하고 턴, 웨이브, 게임 오버 조건 및 진행 과정을 검증합니다.
-### Details:
-1. 'flutter run -d chrome --web-renderer canvaskit' 명령어로 브라우저에서 앱 실행
-2. 게임 시작, 일시 정지, 재개, 종료 상태 전환 테스트
-3. 턴 기반 진행 시스템 검증
-4. 웨이브 완료 및 다음 웨이브 전환 테스트
-5. 게임 오버 조건 발생 시 상태 전환 확인
-6. 게임 상태에 따른 UI 변화 검증
-7. 게임 상태 저장 및 로드 기능 테스트
-8. 다양한 게임 상태에서의 사용자 입력 처리 확인
-9. Chrome DevTools를 사용한 상태 관리 디버깅
-10. 각 상태 전환 시 발생할 수 있는 Edge Case 테스트
-11. 각 게임 상태의 스크린샷 캡처 및 문서화
-12. 발견된 버그 또는 개선점 기록
-
+1. Verify blocks render correctly on screen
+2. Test block collision and HP reduction when hit by ball
+3. Verify visual state changes as HP decreases
+4. Confirm blocks are destroyed correctly when HP reaches zero
+5. Test destruction effects (animation, sound) play appropriately
+6. Verify ball bounces physically correct after block collision
+7. Test performance stability with multiple blocks on screen
+8. Verify score increases correctly when blocks are destroyed

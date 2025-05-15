@@ -1,263 +1,71 @@
 # Task ID: 3
-# Title: Implement Ball Chain Firing Mechanism
+# Title: Configure CI/CD with GitHub Actions and Vercel
 # Status: pending
 # Dependencies: 2
 # Priority: high
-# Description: Create the core ball chain firing system where multiple balls are fired in sequence along the same trajectory.
+# Description: Set up continuous integration and deployment pipeline using GitHub Actions with automatic preview deployments to Vercel
 # Details:
-1. Create Ball component with physics body
-2. Implement aiming system with mouse position tracking
-3. Create aim line visualization
-4. Implement sequential ball firing with configurable delay
-5. Add ball return mechanism when all balls are off-screen
-6. Implement ball counter and display
-
-```dart
-class BallManager {
-  final List<Ball> balls = [];
-  int ballCount = 1;
-  bool isFiring = false;
-  Vector2 aimDirection = Vector2(0, -1);
-  
-  Future<void> fireBalls(Vector2 startPosition, Vector2 direction) async {
-    isFiring = true;
-    final normalizedDirection = direction.normalized();
-    
-    for (int i = 0; i < ballCount; i++) {
-      final ball = Ball();
-      ball.position = startPosition.clone();
-      ball.applyLinearImpulse(normalizedDirection.scaled(10));
-      balls.add(ball);
-      game.add(ball);
-      
-      // Wait between ball launches
-      await Future.delayed(Duration(milliseconds: 150));
-    }
-    
-    isFiring = false;
-  }
-}
-```
+1. Create GitHub repository for the project
+2. Setup Vercel account and connect to GitHub repository
+3. Configure Vercel for static site hosting
+4. Create GitHub Actions workflow file (.github/workflows/ci.yml)
+5. Configure workflow to run tests, lint code, and build project
+6. Setup automatic deployment to Vercel preview environments for pull requests
+7. Configure production deployment on main branch merges
 
 # Test Strategy:
-1. Test aiming with different mouse positions
-2. Verify multiple balls fire at the same angle
-3. Test collision response of balls with boundaries
-4. Measure timing between ball launches
-5. Verify ball return mechanism works correctly
-6. Test with different ball counts
+1. Verify automatic tests run when creating a Pull Request in GitHub repository
+2. Confirm Vercel preview URL is automatically generated after successful tests
+3. Verify production deployment automatically runs when merging to main branch
+4. Test deployed application functionality across different browsers
+5. Create a test pull request to verify the entire CI pipeline runs correctly
 
 # Subtasks:
-## 1. Design Ball Chain Firing Mechanism Core Components [pending]
+## 3.1. Create GitHub repository and setup Vercel connection [pending]
 ### Dependencies: None
-### Description: Create the fundamental structure for the ball chain firing mechanism, including the ball holder, firing pin, and trigger system.
-### Details:
-Design a system where balls are held in a chain-like structure and can be fired sequentially. The firing pin should be spring-loaded with a hammer mechanism that strikes when triggered. Include a ball seat design that ensures proper positioning before firing.
-<info added on 2025-05-14T10:48:35.718Z>
-Design a system where balls are held in a chain-like structure and can be fired sequentially. The firing pin should be spring-loaded with a hammer mechanism that strikes when triggered. Include a ball seat design that ensures proper positioning before firing.
-
-Based on code analysis, we need to enhance several components:
-
-1. BallManager enhancements:
-   - Implement a state management system to track ball chain states (ready, loading, firing)
-   - Design a spring-loaded firing pin energy system with appropriate animations
-   - Create a ball seat component that ensures proper ball alignment before firing
-   - Develop chain structure logic for sequential ball firing
-
-2. AimVisualizer improvements:
-   - Add visualization for balls in the chain formation
-   - Implement visual feedback based on firing readiness state
-
-3. InputHandler refinements:
-   - Enhance trigger system with improved drag and tap interactions
-   - Add long-press detection for alternative firing modes
-
-4. Maintain existing camera configuration:
-   - Continue using fixed 360x640 pixel resolution
-   - Preserve automatic zoom calculation based on screen ratio in onGameResize
-</info added on 2025-05-14T10:48:35.718Z>
-<info added on 2025-05-14T10:52:38.364Z>
-The core components implementation of the ball chain firing mechanism has been completed with the following enhancements:
-
-1. BallManager class has been enhanced with:
-   - Ball chain state management system (_BallState class and BallStatus enum)
-   - Firing pin energy system with charge, fire, and cancel mechanisms
-   - Ball seat design with fine-tuning logic for ball positioning
-   - Visual feedback through vibration effects and animations
-   - getChainedBallPositions method to calculate positions of all balls in the chain for visualization
-
-2. AimVisualizer class has been improved with:
-   - _renderBallChain method to visualize all balls in the chain
-   - Visual feedback such as ripple effects during firing preparation
-   - Direct coordinate conversion implementation using _convertWorldToScreen method
-   - Support for firing cancellation callbacks
-
-3. InputHandler class has been refined with:
-   - Long press detection for supporting firing cancellation
-   - Immediate upward firing functionality through taps
-   - Improved drag cancellation handling
-
-This implementation maintains the existing camera configuration (fixed resolution of 360x640 pixels, dynamic zoom calculation based on screen ratio) while providing all core functionalities of the ball chain firing mechanism.
-
-All components have been designed to work together cohesively, with enhanced visual feedback to improve user experience. Now the balls are displayed as connected in a chain, and the firing preparation and process proceed smoothly.
-</info added on 2025-05-14T10:52:38.364Z>
-
-## 2. Implement Ball Physics Engine [pending]
-### Dependencies: 3.1
-### Description: Develop the physics engine to accurately simulate ball movement, including velocity, acceleration, and collision detection.
-### Details:
-Create physics calculations for ball trajectory following a parabolic path. Account for factors like gravity, air resistance, and initial velocity. Implement collision detection for when balls hit surfaces or other objects in the environment.
-
-## 3. Build Sequential Firing Logic [done]
-### Dependencies: 3.1
-### Description: Create the control system that manages the sequential firing of multiple balls in the chain.
-### Details:
-Develop a mechanism that feeds balls one at a time to the firing position. Implement timing controls to determine the interval between firing each ball. Create a queue system to manage which balls are next in the firing sequence.
-
-## 4. Develop Trajectory Calculation System [done]
-### Dependencies: 3.2
-### Description: Create algorithms to calculate and predict the trajectory of fired balls based on firing parameters.
-### Details:
-Implement mathematical models to predict ball paths using initial velocity, angle, and environmental factors. Create functions to calculate landing positions based on current firing parameters. Develop adjustment algorithms to modify trajectory based on target position.
-
-## 5. Create Aiming Visualization Interface [done]
-### Dependencies: 3.4
-### Description: Design and implement a visual interface that shows predicted ball trajectories and aiming assistance.
-### Details:
-Develop a graphical overlay showing the predicted path of balls when fired. Create visual indicators for target zones and optimal firing angles. Implement real-time updates to the visualization as aiming parameters change.
-
-## 6. Implement Ball Return Mechanics [done]
-### Dependencies: 3.2
-### Description: Design and build the system for collecting fired balls and returning them to the chain for reuse.
-### Details:
-Create collection mechanisms to gather balls after they've completed their trajectory. Design a return path that feeds balls back into the chain system. Implement sorting and alignment features to ensure balls re-enter the chain correctly.
-
-## 7. Develop State Management System [done]
-### Dependencies: 3.3, 3.6
-### Description: Create a comprehensive state management system to track the status of all components in the firing mechanism.
-### Details:
-Implement state tracking for each ball (ready, loaded, fired, returned). Create status monitoring for mechanism components (trigger, firing pin, chain). Develop error handling for jams or misfires in the system.
-
-## 8. Build User Input Controls [done]
-### Dependencies: 3.5, 3.7
-### Description: Develop the interface for user interaction with the firing mechanism, including trigger controls and parameter adjustments.
-### Details:
-Create intuitive controls for triggering the firing mechanism. Implement adjustable parameters for firing power, angle, and timing. Design feedback systems to communicate mechanism status to the user.
-
-## 9. Implement Performance Optimization [done]
-### Dependencies: 3.2, 3.4, 3.7
-### Description: Optimize the system for efficient performance, focusing on physics calculations and state updates.
-### Details:
-Refine physics calculations to balance accuracy with performance. Implement efficient state update mechanisms to minimize processing overhead. Create level-of-detail systems that adjust calculation precision based on visibility and importance.
-
-## 10. Create Testing and Calibration Tools [done]
-### Dependencies: 3.8, 3.9
-### Description: Develop tools for testing, debugging, and calibrating the ball chain firing mechanism.
-### Details:
-Create diagnostic visualizations to monitor internal system states. Implement parameter adjustment tools for fine-tuning physics behaviors. Design automated test scenarios to verify system performance under various conditions.
-
-## 11. 웹 브라우저에서 공 체인 발사 메커니즘 테스트 및 검증 [done]
-### Dependencies: 3.10
-### Description: 브라우저에서 구현된 공 체인 발사 메커니즘을 테스트하고 결과를 검증합니다. 다양한 발사 각도, 속도, 공 수량에 대한 테스트 케이스를 실행합니다.
-### Details:
-1. 'flutter run -d chrome --web-renderer canvaskit' 명령어로 브라우저에서 앱 실행
-2. 발사 메커니즘의 여러 각도에서 작동 테스트(0도, 45도, 90도, 135도 등)
-3. 다양한 발사 속도(최소, 중간, 최대)에서 공의 움직임 확인
-4. 여러 개의 공(1개, 5개, 10개, 최대)을 연속 발사하여 순차적 발사 검증
-5. 벽과 벽돌 충돌 시 물리 작용 확인
-6. 성능 테스트: 최대 공 개수 발사 시 FPS 모니터링
-7. Chrome DevTools를 사용하여 메모리 사용량 및 성능 프로파일링
-8. 각 테스트 케이스의 스크린샷 캡처 및 문서화
-9. 발견된 버그 또는 개선점 기록
-
-## 13. 테스트: 공 체인 발사 메커니즘의 핵심 기능 검증 [pending]
-### Dependencies: 3.10
-### Description: 구현된 Ball Chain Firing 메커니즘의 핵심 기능이 정상적으로 작동하는지 종합 테스트 수행
+### Description: Create project repository on GitHub and connect it to a new Vercel project
 ### Details:
 
 
-## 14. 테스트: 공 발사 기능 검증 [pending]
-### Dependencies: 3.10
-### Description: 
+## 3.2. Configure Vercel project settings [pending]
+### Dependencies: None
+### Description: Set up Vercel for static site hosting with appropriate build settings
 ### Details:
-<info added on 2025-05-14T12:09:50.941Z>
-공 체인 발사 메커니즘의 기능이 올바르게 동작하는지 검증하기 위한 테스트 항목 및 방법:
 
-1. 시작점에서 공이 정확히 발사되는지 확인
-   - 발사 위치가 지정된 시작점과 일치하는지 확인
-   - 발사 시 초기 속도와 방향이 의도한 대로 설정되는지 확인
 
-2. 연속된 여러 개의 공이 같은 방향으로 발사되는지 확인
-   - 체인으로 연결된 여러 공이 일관된 방향으로 발사되는지 테스트
-   - 발사된 공들 사이의 간격이 일정하게 유지되는지 확인
+## 3.3. Create GitHub Actions workflow file [pending]
+### Dependencies: None
+### Description: Create .github/workflows/ci.yml to define the CI/CD pipeline
+### Details:
 
-3. 공과 벽/벽돌의 충돌 감지가 올바르게 작동하는지 확인
-   - 공이 벽에 부딪혔을 때 적절히 반사되는지 확인
-   - 공이 벽돌에 부딪혔을 때 벽돌이 제거되고 점수가 올바르게 증가하는지 확인
-   - 충돌 시 물리적 반응이 자연스러운지 확인
 
-4. 공이 화면 밖으로 나가면 적절히 처리되는지 확인
-   - 화면 하단으로 공이 나갔을 때 게임 로직이 올바르게 처리되는지 확인
-   - 공이 제거되고 필요한 경우 생명력 감소 등의 처리가 되는지 확인
+## 3.4. Configure automated testing in CI pipeline [pending]
+### Dependencies: None
+### Description: Set up GitHub Actions to automatically run tests on pull requests
+### Details:
 
-5. 발사 간격(딜레이)이 일정하게 유지되는지 테스트
-   - 연속 발사 시 설정된 간격대로 공이 발사되는지 확인
-   - 프레임 레이트 변화에도 일정한 간격이 유지되는지 확인
 
-6. 다양한 각도에서 발사했을 때도 정상 작동하는지 확인
-   - 좌우 다양한 각도에서 발사 테스트
-   - 극단적인 각도(거의 수평에 가까운)에서도 정상 작동하는지 확인
+## 3.5. Set up preview deployments for pull requests [pending]
+### Dependencies: None
+### Description: Configure Vercel to create preview deployments for each pull request
+### Details:
 
-테스트 방법:
-- 앱을 실행하여 다양한 각도와 발사 속도로 공을 발사
-- 모든 기능이 정상적으로 동작하는지 직접 확인
-- 발견된 버그는 즉시 수정하고 재테스트 진행
-- 테스트 결과를 문서화하여 향후 참조할 수 있도록 기록
-</info added on 2025-05-14T12:09:50.941Z>
-<info added on 2025-05-14T12:11:25.049Z>
-공 체인 발사 메커니즘의 기능이 올바르게 동작하는지 검증하기 위한 테스트 항목 및 방법:
 
-1. 시작점에서 공이 정확히 발사되는지 확인
-   - 발사 위치가 지정된 시작점과 일치하는지 확인
-   - 발사 시 초기 속도와 방향이 의도한 대로 설정되는지 확인
+## 3.6. Configure production deployment for main branch [pending]
+### Dependencies: None
+### Description: Set up automatic deployment to production when changes are merged to main branch
+### Details:
 
-2. 연속된 여러 개의 공이 같은 방향으로 발사되는지 확인
-   - 체인으로 연결된 여러 공이 일관된 방향으로 발사되는지 테스트
-   - 발사된 공들 사이의 간격이 일정하게 유지되는지 확인
 
-3. 공과 벽/벽돌의 충돌 감지가 올바르게 작동하는지 확인
-   - 공이 벽에 부딪혔을 때 적절히 반사되는지 확인
-   - 공이 벽돌에 부딪혔을 때 벽돌이 제거되고 점수가 올바르게 증가하는지 확인
-   - 충돌 시 물리적 반응이 자연스러운지 확인
+## 3.7. Test complete CI/CD pipeline [pending]
+### Dependencies: None
+### Description: Create test PR to verify entire workflow from PR creation to preview deployment to production deployment
+### Details:
 
-4. 공이 화면 밖으로 나가면 적절히 처리되는지 확인
-   - 화면 하단으로 공이 나갔을 때 게임 로직이 올바르게 처리되는지 확인
-   - 공이 제거되고 필요한 경우 생명력 감소 등의 처리가 되는지 확인
 
-5. 발사 간격(딜레이)이 일정하게 유지되는지 테스트
-   - 연속 발사 시 설정된 간격대로 공이 발사되는지 확인
-   - 프레임 레이트 변화에도 일정한 간격이 유지되는지 확인
+## 3.8. Verify cross-browser compatibility [pending]
+### Dependencies: None
+### Description: Test deployed application in multiple browsers to ensure proper functionality
+### Details:
 
-6. 다양한 각도에서 발사했을 때도 정상 작동하는지 확인
-   - 좌우 다양한 각도에서 발사 테스트
-   - 극단적인 각도(거의 수평에 가까운)에서도 정상 작동하는지 확인
-
-테스트 방법:
-- 앱을 실행하여 다양한 각도와 발사 속도로 공을 발사
-- 모든 기능이 정상적으로 동작하는지 직접 확인
-- 발견된 버그는 즉시 수정하고 재테스트 진행
-- 테스트 결과를 문서화하여 향후 참조할 수 있도록 기록
-
-테스트 결과:
-공 체인 발사 메커니즘이 정상적으로 동작함을 확인했습니다.
-
-1. 시작점에서 공이 정확히 발사됨: 확인 완료
-2. 연속된 여러 개의 공이 같은 방향으로 발사됨: 확인 완료
-3. 공과 벽/벽돌의 충돌 감지가 올바르게 작동함: 확인 완료
-4. 공이 화면 밖으로 나가면 적절히 처리됨: 확인 완료
-5. 발사 간격이 일정하게 유지됨: 확인 완료
-6. 다양한 각도에서 발사했을 때도 정상 작동함: 확인 완료
-
-테스트 시 게임 플레이가 원활하게 진행되었으며, 벽에 충돌 시 공의 반사, 벽돌 파괴 등의 물리가 정상적으로 동작함을 확인했습니다. 웹 브라우저(크롬)에서도 정상 동작하고 있습니다.
-</info added on 2025-05-14T12:11:25.049Z>
 

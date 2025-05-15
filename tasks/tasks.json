@@ -2,785 +2,277 @@
   "tasks": [
     {
       "id": 1,
-      "title": "Setup Flutter Web Project with Flame Engine",
-      "description": "Initialize the project with Flutter Web and integrate Flame game engine with CanvasKit renderer for optimal performance.",
-      "details": "1. Create a new Flutter project with web support\n2. Add Flame and flame_forge2d dependencies to pubspec.yaml\n3. Configure CanvasKit renderer for web\n4. Setup basic project structure with game, components, and utils folders\n5. Initialize a basic Flame game class that renders a test screen\n6. Configure CI/CD pipeline for web deployment\n\nDependencies to add:\n```yaml\ndependencies:\n  flutter:\n    sdk: flutter\n  flame: ^1.28.1\n  flame_forge2d: ^0.19.0+1\n  firebase_core: ^2.32.0\n```",
-      "testStrategy": "1. Verify project builds successfully for web\n2. Confirm Flame engine initializes without errors\n3. Test basic rendering capabilities\n4. Validate CanvasKit renderer is active\n5. Ensure responsive layout works across different desktop browser sizes",
-      "priority": "high",
+      "title": "Setup Node.js and NPM Environment",
+      "description": "Initialize the development environment with Node.js and NPM for the Brick Chain Blaster game following MVP approach",
+      "status": "pending",
       "dependencies": [],
-      "status": "done",
+      "priority": "high",
+      "details": "1. Install latest LTS version of Node.js\n2. Create project directory structure (src, assets, public folders)\n3. Initialize NPM project with `npm init`\n4. Configure package.json with necessary scripts and dependencies\n5. Configure .gitignore for Node.js projects\n6. Setup ESLint and Prettier for code quality\n7. Create README.md with project overview\n8. Initialize Git repository\n9. Document all setup steps for team reference",
+      "testStrategy": "1. Verify Node and NPM versions are compatible with Phaser 3 requirements (using node -v, npm -v)\n2. Ensure package.json is correctly configured with all required dependencies and scripts\n3. Verify npm install runs without errors\n4. Confirm node_modules folder is created properly\n5. Ensure the project structure follows best practices and includes all necessary directories",
       "subtasks": [
         {
-          "id": 1,
-          "title": "Flutter 웹 프로젝트 구동 및 기본 기능 테스트",
-          "description": "Flutter 웹 프로젝트와 Flame 엔진의 기본 구동을 테스트하고, 초기 설정이 올바르게 구성되었는지 확인합니다.",
-          "details": "1. 'flutter run -d chrome --web-renderer canvaskit' 명령어로 브라우저에서 앱 실행\n2. 앱이 브라우저에서 올바르게 로드되는지 확인\n3. Flame 게임 엔진이 Canvas에 올바르게 렌더링되는지 검증\n4. 기본 게임 루프 작동 확인 (FPS 카운터 또는 디버그 정보)\n5. 다양한 브라우저 크기에서 반응형 테스트\n6. Chrome DevTools를 사용한 성능 모니터링\n7. Forge2D 물리 엔진 초기화 확인\n8. 다양한 브라우저(Chrome, Firefox, Safari)에서 호환성 테스트\n9. 디버그 모드와 릴리스 모드 간의 성능 차이 측정\n10. 초기 설정 시 발생할 수 있는 문제점 기록\n11. 추가 최적화가 필요한 영역 식별",
-          "status": "done",
-          "dependencies": [],
-          "parentTaskId": 1
+          "id": "1.1",
+          "title": "Install Node.js and initialize project",
+          "description": "Install Node.js LTS and create basic project structure",
+          "status": "pending"
+        },
+        {
+          "id": "1.2",
+          "title": "Configure package.json",
+          "description": "Set up package.json with all necessary scripts and dependencies for the game",
+          "status": "pending"
+        },
+        {
+          "id": "1.3",
+          "title": "Create project directory structure",
+          "description": "Set up src, assets, and public folders according to best practices",
+          "status": "pending"
+        },
+        {
+          "id": "1.4",
+          "title": "Set up development tools",
+          "description": "Configure Git, .gitignore, ESLint, and Prettier",
+          "status": "pending"
+        },
+        {
+          "id": "1.5",
+          "title": "Document setup process",
+          "description": "Create comprehensive documentation of the setup process in README.md",
+          "status": "pending"
         }
       ]
     },
     {
       "id": 2,
-      "title": "Implement Core Game Loop and Physics",
-      "description": "Create the foundational game loop with Forge2D physics integration for ball movement and collision detection.",
-      "details": "1. Create a main game class extending FlameGame with Forge2D\n2. Implement game world boundaries with collision walls\n3. Setup basic physics parameters (gravity, restitution, friction)\n4. Create a game tick system that handles updates at fixed intervals\n5. Implement a basic camera system\n6. Setup debug rendering for physics bodies during development\n\n```dart\nclass BrickChainGame extends Forge2DGame {\n  BrickChainGame() : super(gravity: Vector2(0, 0));\n  \n  @override\n  Future<void> onLoad() async {\n    await super.onLoad();\n    // Setup world boundaries\n    add(WorldBoundaries());\n  }\n  \n  @override\n  void update(double dt) {\n    super.update(dt);\n    // Game state updates\n  }\n}\n```",
-      "testStrategy": "1. Test physics simulation with simple objects\n2. Verify collision detection works correctly\n3. Measure frame rate to ensure smooth performance\n4. Test game loop timing consistency\n5. Validate boundary collisions work as expected",
-      "priority": "high",
+      "title": "Setup Phaser 3 with TypeScript",
+      "description": "Install and configure Phaser 3 game framework with TypeScript support using create-phaser template as part of the MVP approach",
+      "status": "pending",
       "dependencies": [
         1
       ],
-      "status": "done",
-      "subtasks": [
-        {
-          "id": 1,
-          "title": "Flame 및 flame_forge2d 버전 호환성 문제 해결",
-          "description": "Flame 버전과 flame_forge2d 버전 간의 호환성 문제를 해결하고, API 변경사항에 맞게 코드를 업데이트합니다.",
-          "details": "## 2023-05-22 업데이트\n- Flame 1.5.0 및 flame_forge2d 0.12.3 버전으로 다운그레이드하여 호환성 문제 해결\n- 최신 버전(1.28.1과 0.13.0+)은 API 변경으로 인한 충돌 발생\n  - Camera 타입 충돌\n  - World 객체 충돌 (forge2d의 World와 flame의 World)\n  - Vector2 타입 충돌\n- 수정 사항:\n  - pubspec.yaml에서 버전 고정: flame: 1.5.0, flame_forge2d: 0.12.3\n  - BrickChainGame 클래스에서 이전 버전 API에 맞게 카메라 줌 설정 방법 변경\n    - 'camera.viewfinder.zoom'에서 'camera.zoom'으로 변경\n  - 구버전에서 zoom 매개변수가 생성자에 없으므로 onLoad() 메서드에서 설정\n- 테스트 결과:\n  - Chrome에서 정상 실행 확인\n  - 벽돌, 공, 벽 컴포넌트 정상 렌더링 및 물리 작동 확인",
-          "status": "done",
-          "dependencies": [],
-          "parentTaskId": 2
-        },
-        {
-          "id": 2,
-          "title": "Flame 및 flame_forge2d 버전 호환성 문제 추가 수정",
-          "description": "NotifyingVector2 클래스의 UnmodifiableFloat64ListView 메서드 누락 오류 해결을 위해 Flame 및 flame_forge2d 버전을 업데이트합니다.",
-          "details": "## 2023-05-22 업데이트\n- Flame 버전 1.5.0에서 발생한 NotifyingVector2 클래스의 UnmodifiableFloat64ListView 메서드 누락 오류 발견\n- 이 오류는 브라우저에서 게임 실행 시 발생\n- 테스트 결과, Flame 1.1.1 및 flame_forge2d 0.10.0 버전이 현재 Flutter 버전(3.29.3)과 Dart 버전(3.7.2)에 가장 안정적 호환\n- 수정 사항:\n  - pubspec.yaml에서 버전 고정: flame: 1.1.1, flame_forge2d: 0.10.0\n  - BrickChainGame 클래스에서 카메라 설정 방식 수정\n    - viewport.camera.zoom 대신 camera.zoom 사용\n  - 이전 버전 API와 호환되는 방식으로 코드 수정\n- 테스트 결과:\n  - Chrome 브라우저에서 정상 실행 확인\n  - 게임 요소(벽, 벽돌, 공) 정상 렌더링 및 물리 작동 확인",
-          "status": "done",
-          "dependencies": [],
-          "parentTaskId": 2
-        }
-      ]
+      "priority": "high",
+      "details": "1. Install Phaser 3 using `npm install phaser`\n2. Setup TypeScript with `npm install typescript ts-loader`\n3. Configure tsconfig.json for Phaser compatibility and optimize TypeScript settings\n4. Create webpack configuration for development and production\n5. Setup development server with hot-reload\n6. Create basic game structure following Phaser 3 scene architecture\n7. Implement simple loading screen to verify setup\n8. Create skeleton structure for game scenes and objects\n9. Configure build scripts for production deployment",
+      "testStrategy": "1. Verify development server runs without errors using `npm start`\n2. Confirm basic Phaser scene renders correctly in browser\n3. Test TypeScript compilation works correctly with Phaser types\n4. Verify hot-reload functionality during development\n5. Run `tsc` command to ensure TypeScript compilation completes without errors\n6. Test production build using `npm build` command",
+      "subtasks": []
     },
     {
       "id": 3,
-      "title": "Implement Ball Chain Firing Mechanism",
-      "description": "Create the core ball chain firing system where multiple balls are fired in sequence along the same trajectory.",
-      "details": "1. Create Ball component with physics body\n2. Implement aiming system with mouse position tracking\n3. Create aim line visualization\n4. Implement sequential ball firing with configurable delay\n5. Add ball return mechanism when all balls are off-screen\n6. Implement ball counter and display\n\n```dart\nclass BallManager {\n  final List<Ball> balls = [];\n  int ballCount = 1;\n  bool isFiring = false;\n  Vector2 aimDirection = Vector2(0, -1);\n  \n  Future<void> fireBalls(Vector2 startPosition, Vector2 direction) async {\n    isFiring = true;\n    final normalizedDirection = direction.normalized();\n    \n    for (int i = 0; i < ballCount; i++) {\n      final ball = Ball();\n      ball.position = startPosition.clone();\n      ball.applyLinearImpulse(normalizedDirection.scaled(10));\n      balls.add(ball);\n      game.add(ball);\n      \n      // Wait between ball launches\n      await Future.delayed(Duration(milliseconds: 150));\n    }\n    \n    isFiring = false;\n  }\n}\n```",
-      "testStrategy": "1. Test aiming with different mouse positions\n2. Verify multiple balls fire at the same angle\n3. Test collision response of balls with boundaries\n4. Measure timing between ball launches\n5. Verify ball return mechanism works correctly\n6. Test with different ball counts",
-      "priority": "high",
+      "title": "Configure CI/CD with GitHub Actions and Vercel",
+      "description": "Set up continuous integration and deployment pipeline using GitHub Actions with automatic preview deployments to Vercel",
+      "status": "pending",
       "dependencies": [
         2
       ],
-      "status": "pending",
+      "priority": "high",
+      "details": "1. Create GitHub repository for the project\n2. Setup Vercel account and connect to GitHub repository\n3. Configure Vercel for static site hosting\n4. Create GitHub Actions workflow file (.github/workflows/ci.yml)\n5. Configure workflow to run tests, lint code, and build project\n6. Setup automatic deployment to Vercel preview environments for pull requests\n7. Configure production deployment on main branch merges",
+      "testStrategy": "1. Verify automatic tests run when creating a Pull Request in GitHub repository\n2. Confirm Vercel preview URL is automatically generated after successful tests\n3. Verify production deployment automatically runs when merging to main branch\n4. Test deployed application functionality across different browsers\n5. Create a test pull request to verify the entire CI pipeline runs correctly",
       "subtasks": [
         {
-          "id": 1,
-          "title": "Design Ball Chain Firing Mechanism Core Components",
-          "description": "Create the fundamental structure for the ball chain firing mechanism, including the ball holder, firing pin, and trigger system.",
-          "dependencies": [],
-          "details": "Design a system where balls are held in a chain-like structure and can be fired sequentially. The firing pin should be spring-loaded with a hammer mechanism that strikes when triggered. Include a ball seat design that ensures proper positioning before firing.\n<info added on 2025-05-14T10:48:35.718Z>\nDesign a system where balls are held in a chain-like structure and can be fired sequentially. The firing pin should be spring-loaded with a hammer mechanism that strikes when triggered. Include a ball seat design that ensures proper positioning before firing.\n\nBased on code analysis, we need to enhance several components:\n\n1. BallManager enhancements:\n   - Implement a state management system to track ball chain states (ready, loading, firing)\n   - Design a spring-loaded firing pin energy system with appropriate animations\n   - Create a ball seat component that ensures proper ball alignment before firing\n   - Develop chain structure logic for sequential ball firing\n\n2. AimVisualizer improvements:\n   - Add visualization for balls in the chain formation\n   - Implement visual feedback based on firing readiness state\n\n3. InputHandler refinements:\n   - Enhance trigger system with improved drag and tap interactions\n   - Add long-press detection for alternative firing modes\n\n4. Maintain existing camera configuration:\n   - Continue using fixed 360x640 pixel resolution\n   - Preserve automatic zoom calculation based on screen ratio in onGameResize\n</info added on 2025-05-14T10:48:35.718Z>\n<info added on 2025-05-14T10:52:38.364Z>\nThe core components implementation of the ball chain firing mechanism has been completed with the following enhancements:\n\n1. BallManager class has been enhanced with:\n   - Ball chain state management system (_BallState class and BallStatus enum)\n   - Firing pin energy system with charge, fire, and cancel mechanisms\n   - Ball seat design with fine-tuning logic for ball positioning\n   - Visual feedback through vibration effects and animations\n   - getChainedBallPositions method to calculate positions of all balls in the chain for visualization\n\n2. AimVisualizer class has been improved with:\n   - _renderBallChain method to visualize all balls in the chain\n   - Visual feedback such as ripple effects during firing preparation\n   - Direct coordinate conversion implementation using _convertWorldToScreen method\n   - Support for firing cancellation callbacks\n\n3. InputHandler class has been refined with:\n   - Long press detection for supporting firing cancellation\n   - Immediate upward firing functionality through taps\n   - Improved drag cancellation handling\n\nThis implementation maintains the existing camera configuration (fixed resolution of 360x640 pixels, dynamic zoom calculation based on screen ratio) while providing all core functionalities of the ball chain firing mechanism.\n\nAll components have been designed to work together cohesively, with enhanced visual feedback to improve user experience. Now the balls are displayed as connected in a chain, and the firing preparation and process proceed smoothly.\n</info added on 2025-05-14T10:52:38.364Z>",
+          "id": 3.1,
+          "title": "Create GitHub repository and setup Vercel connection",
+          "description": "Create project repository on GitHub and connect it to a new Vercel project",
           "status": "pending"
         },
         {
-          "id": 2,
-          "title": "Implement Ball Physics Engine",
-          "description": "Develop the physics engine to accurately simulate ball movement, including velocity, acceleration, and collision detection.",
-          "dependencies": [
-            1
-          ],
-          "details": "Create physics calculations for ball trajectory following a parabolic path. Account for factors like gravity, air resistance, and initial velocity. Implement collision detection for when balls hit surfaces or other objects in the environment.",
+          "id": 3.2,
+          "title": "Configure Vercel project settings",
+          "description": "Set up Vercel for static site hosting with appropriate build settings",
           "status": "pending"
         },
         {
-          "id": 3,
-          "title": "Build Sequential Firing Logic",
-          "description": "Create the control system that manages the sequential firing of multiple balls in the chain.",
-          "dependencies": [
-            1
-          ],
-          "details": "Develop a mechanism that feeds balls one at a time to the firing position. Implement timing controls to determine the interval between firing each ball. Create a queue system to manage which balls are next in the firing sequence.",
-          "status": "done"
+          "id": 3.3,
+          "title": "Create GitHub Actions workflow file",
+          "description": "Create .github/workflows/ci.yml to define the CI/CD pipeline",
+          "status": "pending"
         },
         {
-          "id": 4,
-          "title": "Develop Trajectory Calculation System",
-          "description": "Create algorithms to calculate and predict the trajectory of fired balls based on firing parameters.",
-          "dependencies": [
-            2
-          ],
-          "details": "Implement mathematical models to predict ball paths using initial velocity, angle, and environmental factors. Create functions to calculate landing positions based on current firing parameters. Develop adjustment algorithms to modify trajectory based on target position.",
-          "status": "done"
+          "id": 3.4,
+          "title": "Configure automated testing in CI pipeline",
+          "description": "Set up GitHub Actions to automatically run tests on pull requests",
+          "status": "pending"
         },
         {
-          "id": 5,
-          "title": "Create Aiming Visualization Interface",
-          "description": "Design and implement a visual interface that shows predicted ball trajectories and aiming assistance.",
-          "dependencies": [
-            4
-          ],
-          "details": "Develop a graphical overlay showing the predicted path of balls when fired. Create visual indicators for target zones and optimal firing angles. Implement real-time updates to the visualization as aiming parameters change.",
-          "status": "done"
+          "id": 3.5,
+          "title": "Set up preview deployments for pull requests",
+          "description": "Configure Vercel to create preview deployments for each pull request",
+          "status": "pending"
         },
         {
-          "id": 6,
-          "title": "Implement Ball Return Mechanics",
-          "description": "Design and build the system for collecting fired balls and returning them to the chain for reuse.",
-          "dependencies": [
-            2
-          ],
-          "details": "Create collection mechanisms to gather balls after they've completed their trajectory. Design a return path that feeds balls back into the chain system. Implement sorting and alignment features to ensure balls re-enter the chain correctly.",
-          "status": "done"
+          "id": 3.6,
+          "title": "Configure production deployment for main branch",
+          "description": "Set up automatic deployment to production when changes are merged to main branch",
+          "status": "pending"
         },
         {
-          "id": 7,
-          "title": "Develop State Management System",
-          "description": "Create a comprehensive state management system to track the status of all components in the firing mechanism.",
-          "dependencies": [
-            3,
-            6
-          ],
-          "details": "Implement state tracking for each ball (ready, loaded, fired, returned). Create status monitoring for mechanism components (trigger, firing pin, chain). Develop error handling for jams or misfires in the system.",
-          "status": "done"
+          "id": 3.7,
+          "title": "Test complete CI/CD pipeline",
+          "description": "Create test PR to verify entire workflow from PR creation to preview deployment to production deployment",
+          "status": "pending"
         },
         {
-          "id": 8,
-          "title": "Build User Input Controls",
-          "description": "Develop the interface for user interaction with the firing mechanism, including trigger controls and parameter adjustments.",
-          "dependencies": [
-            5,
-            7
-          ],
-          "details": "Create intuitive controls for triggering the firing mechanism. Implement adjustable parameters for firing power, angle, and timing. Design feedback systems to communicate mechanism status to the user.",
-          "status": "done"
-        },
-        {
-          "id": 9,
-          "title": "Implement Performance Optimization",
-          "description": "Optimize the system for efficient performance, focusing on physics calculations and state updates.",
-          "dependencies": [
-            2,
-            4,
-            7
-          ],
-          "details": "Refine physics calculations to balance accuracy with performance. Implement efficient state update mechanisms to minimize processing overhead. Create level-of-detail systems that adjust calculation precision based on visibility and importance.",
-          "status": "done"
-        },
-        {
-          "id": 10,
-          "title": "Create Testing and Calibration Tools",
-          "description": "Develop tools for testing, debugging, and calibrating the ball chain firing mechanism.",
-          "dependencies": [
-            8,
-            9
-          ],
-          "details": "Create diagnostic visualizations to monitor internal system states. Implement parameter adjustment tools for fine-tuning physics behaviors. Design automated test scenarios to verify system performance under various conditions.",
-          "status": "done"
-        },
-        {
-          "id": 11,
-          "title": "웹 브라우저에서 공 체인 발사 메커니즘 테스트 및 검증",
-          "description": "브라우저에서 구현된 공 체인 발사 메커니즘을 테스트하고 결과를 검증합니다. 다양한 발사 각도, 속도, 공 수량에 대한 테스트 케이스를 실행합니다.",
-          "details": "1. 'flutter run -d chrome --web-renderer canvaskit' 명령어로 브라우저에서 앱 실행\n2. 발사 메커니즘의 여러 각도에서 작동 테스트(0도, 45도, 90도, 135도 등)\n3. 다양한 발사 속도(최소, 중간, 최대)에서 공의 움직임 확인\n4. 여러 개의 공(1개, 5개, 10개, 최대)을 연속 발사하여 순차적 발사 검증\n5. 벽과 벽돌 충돌 시 물리 작용 확인\n6. 성능 테스트: 최대 공 개수 발사 시 FPS 모니터링\n7. Chrome DevTools를 사용하여 메모리 사용량 및 성능 프로파일링\n8. 각 테스트 케이스의 스크린샷 캡처 및 문서화\n9. 발견된 버그 또는 개선점 기록",
-          "status": "done",
-          "dependencies": [
-            10
-          ],
-          "parentTaskId": 3
-        },
-        {
-          "id": 13,
-          "title": "테스트: 공 체인 발사 메커니즘의 핵심 기능 검증",
-          "description": "구현된 Ball Chain Firing 메커니즘의 핵심 기능이 정상적으로 작동하는지 종합 테스트 수행",
-          "details": "",
-          "status": "pending",
-          "dependencies": [
-            "3.10"
-          ],
-          "parentTaskId": 3
-        },
-        {
-          "id": 14,
-          "title": "테스트: 공 발사 기능 검증",
-          "description": "",
-          "details": "<info added on 2025-05-14T12:09:50.941Z>\n공 체인 발사 메커니즘의 기능이 올바르게 동작하는지 검증하기 위한 테스트 항목 및 방법:\n\n1. 시작점에서 공이 정확히 발사되는지 확인\n   - 발사 위치가 지정된 시작점과 일치하는지 확인\n   - 발사 시 초기 속도와 방향이 의도한 대로 설정되는지 확인\n\n2. 연속된 여러 개의 공이 같은 방향으로 발사되는지 확인\n   - 체인으로 연결된 여러 공이 일관된 방향으로 발사되는지 테스트\n   - 발사된 공들 사이의 간격이 일정하게 유지되는지 확인\n\n3. 공과 벽/벽돌의 충돌 감지가 올바르게 작동하는지 확인\n   - 공이 벽에 부딪혔을 때 적절히 반사되는지 확인\n   - 공이 벽돌에 부딪혔을 때 벽돌이 제거되고 점수가 올바르게 증가하는지 확인\n   - 충돌 시 물리적 반응이 자연스러운지 확인\n\n4. 공이 화면 밖으로 나가면 적절히 처리되는지 확인\n   - 화면 하단으로 공이 나갔을 때 게임 로직이 올바르게 처리되는지 확인\n   - 공이 제거되고 필요한 경우 생명력 감소 등의 처리가 되는지 확인\n\n5. 발사 간격(딜레이)이 일정하게 유지되는지 테스트\n   - 연속 발사 시 설정된 간격대로 공이 발사되는지 확인\n   - 프레임 레이트 변화에도 일정한 간격이 유지되는지 확인\n\n6. 다양한 각도에서 발사했을 때도 정상 작동하는지 확인\n   - 좌우 다양한 각도에서 발사 테스트\n   - 극단적인 각도(거의 수평에 가까운)에서도 정상 작동하는지 확인\n\n테스트 방법:\n- 앱을 실행하여 다양한 각도와 발사 속도로 공을 발사\n- 모든 기능이 정상적으로 동작하는지 직접 확인\n- 발견된 버그는 즉시 수정하고 재테스트 진행\n- 테스트 결과를 문서화하여 향후 참조할 수 있도록 기록\n</info added on 2025-05-14T12:09:50.941Z>\n<info added on 2025-05-14T12:11:25.049Z>\n공 체인 발사 메커니즘의 기능이 올바르게 동작하는지 검증하기 위한 테스트 항목 및 방법:\n\n1. 시작점에서 공이 정확히 발사되는지 확인\n   - 발사 위치가 지정된 시작점과 일치하는지 확인\n   - 발사 시 초기 속도와 방향이 의도한 대로 설정되는지 확인\n\n2. 연속된 여러 개의 공이 같은 방향으로 발사되는지 확인\n   - 체인으로 연결된 여러 공이 일관된 방향으로 발사되는지 테스트\n   - 발사된 공들 사이의 간격이 일정하게 유지되는지 확인\n\n3. 공과 벽/벽돌의 충돌 감지가 올바르게 작동하는지 확인\n   - 공이 벽에 부딪혔을 때 적절히 반사되는지 확인\n   - 공이 벽돌에 부딪혔을 때 벽돌이 제거되고 점수가 올바르게 증가하는지 확인\n   - 충돌 시 물리적 반응이 자연스러운지 확인\n\n4. 공이 화면 밖으로 나가면 적절히 처리되는지 확인\n   - 화면 하단으로 공이 나갔을 때 게임 로직이 올바르게 처리되는지 확인\n   - 공이 제거되고 필요한 경우 생명력 감소 등의 처리가 되는지 확인\n\n5. 발사 간격(딜레이)이 일정하게 유지되는지 테스트\n   - 연속 발사 시 설정된 간격대로 공이 발사되는지 확인\n   - 프레임 레이트 변화에도 일정한 간격이 유지되는지 확인\n\n6. 다양한 각도에서 발사했을 때도 정상 작동하는지 확인\n   - 좌우 다양한 각도에서 발사 테스트\n   - 극단적인 각도(거의 수평에 가까운)에서도 정상 작동하는지 확인\n\n테스트 방법:\n- 앱을 실행하여 다양한 각도와 발사 속도로 공을 발사\n- 모든 기능이 정상적으로 동작하는지 직접 확인\n- 발견된 버그는 즉시 수정하고 재테스트 진행\n- 테스트 결과를 문서화하여 향후 참조할 수 있도록 기록\n\n테스트 결과:\n공 체인 발사 메커니즘이 정상적으로 동작함을 확인했습니다.\n\n1. 시작점에서 공이 정확히 발사됨: 확인 완료\n2. 연속된 여러 개의 공이 같은 방향으로 발사됨: 확인 완료\n3. 공과 벽/벽돌의 충돌 감지가 올바르게 작동함: 확인 완료\n4. 공이 화면 밖으로 나가면 적절히 처리됨: 확인 완료\n5. 발사 간격이 일정하게 유지됨: 확인 완료\n6. 다양한 각도에서 발사했을 때도 정상 작동함: 확인 완료\n\n테스트 시 게임 플레이가 원활하게 진행되었으며, 벽에 충돌 시 공의 반사, 벽돌 파괴 등의 물리가 정상적으로 동작함을 확인했습니다. 웹 브라우저(크롬)에서도 정상 동작하고 있습니다.\n</info added on 2025-05-14T12:11:25.049Z>",
-          "status": "pending",
-          "dependencies": [
-            "3.10"
-          ],
-          "parentTaskId": 3
+          "id": 3.8,
+          "title": "Verify cross-browser compatibility",
+          "description": "Test deployed application in multiple browsers to ensure proper functionality",
+          "status": "pending"
         }
       ]
     },
     {
       "id": 4,
-      "title": "Implement Brick Generation System",
-      "description": "Create the pattern-based brick generation system that places bricks in various formations based on wave index.",
-      "details": "1. Create Brick component with HP system\n2. Implement brick pattern library with predefined formations\n3. Create pattern selection and transformation logic\n4. Implement wave progression system\n5. Add brick movement animation (downward shift)\n6. Create HP visualization on bricks\n\n```dart\nclass BrickPattern {\n  final List<List<int>> layout;\n  final double hpMultiplier;\n  \n  BrickPattern(this.layout, {this.hpMultiplier = 1.0});\n  \n  List<Brick> generateBricks(int waveIndex) {\n    final bricks = <Brick>[];\n    final baseHP = calculateBaseHP(waveIndex);\n    \n    for (int y = 0; y < layout.length; y++) {\n      for (int x = 0; x < layout[y].length; x++) {\n        if (layout[y][x] > 0) {\n          final hp = (baseHP * layout[y][x] * hpMultiplier).round();\n          final position = Vector2(x * brickWidth, y * brickHeight);\n          bricks.add(Brick(position: position, hp: hp));\n        }\n      }\n    }\n    \n    return bricks;\n  }\n  \n  int calculateBaseHP(int waveIndex) {\n    return max(1, waveIndex);\n  }\n}\n```",
-      "testStrategy": "1. Test brick generation with different patterns\n2. Verify HP scaling with wave progression\n3. Test brick placement and alignment\n4. Verify brick downward movement animation\n5. Test pattern randomization and variation\n6. Validate HP visualization on bricks",
-      "priority": "high",
+      "title": "Implement Game Field and Physics",
+      "description": "Create the basic game field with boundaries and implement Arcade Physics for ball movement as the first implementation task for Phase 1 (Basic Breakout Game MVP)",
+      "status": "pending",
       "dependencies": [
         2
       ],
-      "status": "pending",
-      "subtasks": [
-        {
-          "id": 1,
-          "title": "Design Brick Pattern System",
-          "description": "Create a flexible pattern system that defines how bricks are arranged on the game board",
-          "dependencies": [],
-          "details": "Develop a data structure to represent different brick patterns (grid, zigzag, circular, etc.). Create a pattern library with predefined formations that can be selected randomly or sequentially. Include parameters for pattern density, symmetry options, and special brick placement rules.\n<info added on 2025-05-14T11:01:04.384Z>\nDevelop a data structure to represent different brick patterns (grid, zigzag, circular, etc.). Create a pattern library with predefined formations that can be selected randomly or sequentially. Include parameters for pattern density, symmetry options, and special brick placement rules.\n\nImplemented the BrickPattern class to define various brick arrangement patterns. Created 10 distinct pattern types: basic lines, grids, pyramids, zigzag, fortress, X-shape, arch, diagonal triangles, reinforced center, and diamond patterns. Added pattern variation capabilities including horizontal and vertical flipping. Implemented scaling difficulty where brick HP increases with wave index and the probability of special brick appearances increases in higher waves.\n</info added on 2025-05-14T11:01:04.384Z>",
-          "status": "pending"
-        },
-        {
-          "id": 2,
-          "title": "Implement Layout Algorithm",
-          "description": "Develop algorithms to procedurally generate brick layouts based on pattern definitions",
-          "dependencies": [
-            1
-          ],
-          "details": "Write functions to translate pattern definitions into actual brick positions. Implement grid-based positioning system with support for offsets. Create methods for random variations within pattern constraints. Ensure proper spacing between bricks using padding parameters.\n<info added on 2025-05-14T11:01:15.951Z>\nWrite functions to translate pattern definitions into actual brick positions. Implement grid-based positioning system with support for offsets. Create methods for random variations within pattern constraints. Ensure proper spacing between bricks using padding parameters.\n\nImplemented the layout algorithm successfully. Created a BrickPattern class with a generateBricks method that converts pattern definitions into actual brick positions. To ensure proper spacing between bricks, set brick sizes to 90% of standard size. Added logic to center patterns on screen. Implemented automatic color determination based on brick type and HP. Also developed the _selectPattern method in the BrickManager class to determine appropriate patterns based on pattern selection and wave progression.\n</info added on 2025-05-14T11:01:15.951Z>",
-          "status": "pending"
-        },
-        {
-          "id": 3,
-          "title": "Create Wave Progression System",
-          "description": "Design a system that manages level progression through increasingly difficult waves",
-          "dependencies": [],
-          "details": "Implement a wave counter and difficulty curve. Create rules for transitioning between waves. Design a system to track player progress and performance metrics. Develop logic for determining when to advance to the next wave based on brick clearance.\n<info added on 2025-05-14T11:01:29.292Z>\nImplemented a comprehensive wave progression system through the creation of a WaveManager class. This class manages different wave states including preparation, in-progress, cleared, and game over. Added wave transition functionality with a visual countdown (3,2,1) displayed before each wave begins. Implemented automatic progression to the next wave after a brief delay when the current wave is cleared. Enhanced player feedback by adding a debug overlay that displays real-time information such as current wave number, brick count, and ball count. The system successfully tracks player progress and implements the difficulty curve as waves advance, with clear rules for wave transitions based on brick clearance.\n</info added on 2025-05-14T11:01:29.292Z>",
-          "status": "done"
-        },
-        {
-          "id": 4,
-          "title": "Implement HP Scaling Mechanism",
-          "description": "Create a system that scales brick health points based on wave progression",
-          "dependencies": [
-            3
-          ],
-          "details": "Develop formulas for calculating brick HP based on current wave number. Create different brick types with base HP values. Implement visual indicators for brick health status. Design special rules for boss or reinforced bricks that appear in later waves.\n<info added on 2025-05-14T11:01:44.713Z>\nImplemented a logarithmic scaling system for brick HP based on wave progression through the _calculateBaseHP method. The system creates a gradual increase in brick durability as waves progress (Wave 1: HP 1, Wave 2: HP 2, Wave 5: HP 3-4, Wave 10: HP 4-5, etc.). Different brick types have been implemented with varying HP values and color indicators: regular bricks, reinforced bricks (blue color scheme), special bricks (purple color scheme), and boss bricks (dark purple). Higher HP bricks are more difficult to destroy, creating increasing challenge as players advance through waves. The visual color differentiation helps players identify brick types and their relative durability at a glance.\n</info added on 2025-05-14T11:01:44.713Z>",
-          "status": "done"
-        },
-        {
-          "id": 5,
-          "title": "Develop Brick Visual Representation",
-          "description": "Create visual assets and rendering system for different brick types and states",
-          "dependencies": [
-            4
-          ],
-          "details": "Design sprite sheets for different brick types. Implement color coding based on brick properties. Create visual effects for damaged bricks. Develop a system to handle brick appearance based on current HP and special properties.\n<info added on 2025-05-14T11:02:04.940Z>\nDesign sprite sheets for different brick types. Implement color coding based on brick properties. Create visual effects for damaged bricks. Develop a system to handle brick appearance based on current HP and special properties.\n\nExtended the Brick class to implement various visual effects and status indicators. Created a _getColorByType method that automatically determines colors based on brick type and HP. Added rounded corners and internal gradient effects to bricks to enhance aesthetic quality. For bricks with HP greater than 1, small white dots in the center visually indicate remaining HP. Implemented hit animation where bricks temporarily expand and brighten when struck, and a destruction animation where bricks shrink and rotate when destroyed.\n</info added on 2025-05-14T11:02:04.940Z>",
-          "status": "done"
-        },
-        {
-          "id": 6,
-          "title": "Build Brick Animation System",
-          "description": "Implement animations for brick creation, movement, and destruction",
-          "dependencies": [
-            5
-          ],
-          "details": "Create smooth animations for brick appearance when generating a new level. Implement physics-based animations for brick destruction. Design animations for special events like chain reactions. Optimize animation performance for large numbers of bricks.\n<info added on 2025-05-14T11:02:22.688Z>\nCreate smooth animations for brick appearance when generating a new level. Implement physics-based animations for brick destruction. Design animations for special events like chain reactions. Optimize animation performance for large numbers of bricks.\n\nThe animation system has been successfully implemented with the following features:\n\n1. Added animation timer and state management logic to the Brick class's update method\n2. Implemented a pulse effect for brick hits using a sine curve-based animation with the pulseAmount variable\n   - When a brick is hit, it slightly enlarges and brightens before returning to its original state\n   - Creates a natural-looking response to impacts\n\n3. Created a destruction animation sequence that plays over 0.5 seconds when a brick is destroyed\n   - Gradually reduces the brick's size\n   - Adds rotation to the brick as it disappears\n   - Fades out the brick by decreasing opacity\n\n4. Utilized various Canvas transformation techniques including scale, rotate, and opacity adjustments to create visually appealing animation effects\n5. Ensured all animations are optimized for performance when many bricks are on screen simultaneously\n</info added on 2025-05-14T11:02:22.688Z>",
-          "status": "done"
-        },
-        {
-          "id": 7,
-          "title": "Implement Brick Group Management",
-          "description": "Create a system to manage collections of bricks as cohesive units",
-          "dependencies": [
-            2
-          ],
-          "details": "Develop a brick container class to manage brick collections. Implement methods for adding, removing, and updating bricks. Create functions to check game state based on remaining bricks. Design efficient data structures for brick lookup and collision detection.\n<info added on 2025-05-14T11:02:36.753Z>\nDevelop a brick container class to manage brick collections. Implement methods for adding, removing, and updating bricks. Create functions to check game state based on remaining bricks. Design efficient data structures for brick lookup and collision detection.\n\nImplementation completed with the creation of the BrickManager class to handle brick collections. The class includes functionality for adding, removing, and querying bricks in the collection. An automatic cleanup mechanism was added to the update method to remove deactivated bricks from the list. The areAllBricksCleared method was implemented to check if all bricks have been cleared, and a clearBricks method was added to remove all bricks in the current wave. Additionally, collision detection and handling functionality was integrated into the game class to ensure smooth interaction between bricks and balls.\n</info added on 2025-05-14T11:02:36.753Z>",
-          "status": "done"
-        },
-        {
-          "id": 8,
-          "title": "Create Special Brick Types",
-          "description": "Implement various special brick types with unique behaviors and effects",
-          "dependencies": [
-            4,
-            5
-          ],
-          "details": "Design and implement explosive bricks that affect neighboring bricks. Create power-up bricks that drop bonuses when destroyed. Implement indestructible or moving bricks for advanced levels. Develop boss bricks with complex behavior patterns.",
-          "status": "in-progress"
-        },
-        {
-          "id": 9,
-          "title": "Optimize and Test Brick Generation System",
-          "description": "Perform optimization and testing to ensure the brick generation system works efficiently",
-          "dependencies": [
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8
-          ],
-          "details": "Conduct performance testing with large numbers of bricks. Implement optimizations for rendering and updating brick states. Test various pattern combinations and difficulty progressions. Debug and fix any issues with brick collision detection or animation.",
-          "status": "pending"
-        },
-        {
-          "id": 10,
-          "title": "웹 브라우저에서 벽돌 생성 시스템 테스트 및 검증",
-          "description": "브라우저에서 구현된 벽돌 생성 시스템을 테스트하고 다양한 패턴, 웨이브, HP 스케일링 등의 기능을 검증합니다.",
-          "details": "1. 'flutter run -d chrome --web-renderer canvaskit' 명령어로 브라우저에서 앱 실행\n2. 다양한 벽돌 패턴이 올바르게 생성되는지 확인\n3. 웨이브 진행에 따른 패턴 변화 테스트\n4. 웨이브에 따른 벽돌 HP 스케일링 검증\n5. 다양한 브라우저 창 크기에서 반응형 레이아웃 테스트\n6. 특수 벽돌 타입의 시각적 표현 및 작동 확인\n7. 벽돌 그룹 관리 시스템 테스트\n8. 벽돌 애니메이션(생성, 이동, 파괴) 확인\n9. 성능 테스트: 최대 벽돌 개수 생성 시 FPS 모니터링\n10. Chrome DevTools를 사용하여 메모리 사용량 및 성능 프로파일링\n11. 각 테스트 케이스의 스크린샷 캡처 및 문서화\n12. 발견된 버그 또는 개선점 기록",
-          "status": "pending",
-          "dependencies": [
-            9
-          ],
-          "parentTaskId": 4
-        }
-      ]
+      "priority": "high",
+      "details": "1. Create a new game scene with proper dimensions for desktop\n2. Setup Arcade Physics in the scene\n3. Implement game boundaries with collision detection\n4. Create world bounds that reflect the ball\n5. Implement physics properties for the ball's movement and collisions\n6. Add debug visualization for physics bodies and collision points during development\n7. Ensure consistent physics behavior across different frame rates\n8. Set up the basic screen layout and background for the game\n9. Add FPS counter and performance metrics for debugging\n10. Ensure the game field scales appropriately across different resolutions",
+      "testStrategy": "1. Verify ball correctly bounces off screen boundaries\n2. Confirm physics system operates reliably at consistent FPS\n3. Test game field scaling across various resolutions\n4. Verify all collision events are properly detected\n5. Test ball collision with boundaries\n6. Verify physics properties like bounce and velocity behave as expected\n7. Test at different frame rates to ensure consistent behavior",
+      "subtasks": []
     },
     {
       "id": 5,
-      "title": "Implement Ball-Brick Collision and HP System",
-      "description": "Create the collision detection system between balls and bricks, with HP reduction and brick destruction mechanics.",
-      "details": "1. Implement collision detection between balls and bricks\n2. Create HP reduction system for bricks\n3. Add visual feedback for brick hits (flash, shake)\n4. Implement brick destruction animation\n5. Create score calculation based on brick destruction\n6. Add particle effects for enhanced visual feedback\n\n```dart\nclass Brick extends BodyComponent with ContactCallbacks {\n  int hp;\n  final Vector2 position;\n  \n  Brick({required this.position, required this.hp});\n  \n  @override\n  Body createBody() {\n    final bodyDef = BodyDef()\n      ..type = BodyType.static\n      ..position = position;\n    \n    final shape = PolygonShape()\n      ..setAsBox(brickWidth / 2, brickHeight / 2);\n    \n    final fixtureDef = FixtureDef(shape)\n      ..density = 1.0\n      ..friction = 0.3\n      ..restitution = 0.5;\n    \n    return world.createBody(bodyDef)..createFixture(fixtureDef);\n  }\n  \n  @override\n  void beginContact(Object other, Contact contact) {\n    if (other is Ball) {\n      hp--;\n      showHitAnimation();\n      if (hp <= 0) {\n        destroy();\n      }\n    }\n  }\n  \n  void destroy() {\n    showDestroyAnimation();\n    removeFromParent();\n  }\n}\n```",
-      "testStrategy": "1. Test collision detection accuracy\n2. Verify HP reduction works correctly\n3. Test brick destruction when HP reaches zero\n4. Validate visual feedback for hits\n5. Test score calculation\n6. Verify particle effects render correctly",
-      "priority": "high",
+      "title": "Implement Paddle and Ball Control",
+      "description": "Create the player-controlled paddle and implement mouse-based aiming and ball launching mechanics for Phase 1 MVP",
+      "status": "pending",
       "dependencies": [
-        3,
         4
       ],
-      "status": "pending",
-      "subtasks": [
-        {
-          "id": 1,
-          "title": "Ball-Brick Collision Detection Implementation",
-          "description": "Implement a function to detect collisions between the ball and each brick, updating the ball's direction upon collision.",
-          "dependencies": [],
-          "details": "Loop through all bricks and compare their positions with the ball's coordinates each frame. If a collision is detected, reverse the ball's vertical velocity and mark the brick for further processing (e.g., HP reduction or destruction). Test in the browser by moving the ball into bricks and verifying the collision response.",
-          "status": "pending"
-        },
-        {
-          "id": 2,
-          "title": "Brick HP Management System",
-          "description": "Add an HP property to each brick and implement logic to reduce HP upon collision.",
-          "dependencies": [
-            1
-          ],
-          "details": "Each brick should have an HP value. When a collision is detected, decrement the brick's HP. If HP reaches zero, mark the brick for destruction. Test by checking that HP decreases with each collision and bricks are removed when HP is zero.",
-          "status": "pending"
-        },
-        {
-          "id": 3,
-          "title": "Visual Feedback and Destruction Animations",
-          "description": "Implement visual feedback for collisions and destruction animations for bricks.",
-          "dependencies": [
-            2
-          ],
-          "details": "Add visual effects such as color changes or particle bursts when a brick is hit or destroyed. Test by verifying that animations play on collision and destruction, and that they are visible in the browser.",
-          "status": "pending"
-        },
-        {
-          "id": 4,
-          "title": "Scoring Mechanics and Particle Effects",
-          "description": "Implement a scoring system and particle effects for brick destruction.",
-          "dependencies": [
-            3
-          ],
-          "details": "Increase the player's score when a brick is destroyed. Add particle effects (e.g., sparks or debris) upon brick destruction. Test by checking that the score increases and particles are visible when bricks are destroyed.",
-          "status": "pending"
-        },
-        {
-          "id": 5,
-          "title": "Collision Sound and Comprehensive Browser Testing",
-          "description": "Add collision sound effects and perform comprehensive browser testing for all features.",
-          "dependencies": [
-            4
-          ],
-          "details": "Play a sound effect on each collision and brick destruction. Test all scenarios: multiple collisions, HP reduction, visual feedback, animations, scoring, and particle effects. Ensure all features work as expected in the browser.",
-          "status": "pending"
-        }
-      ]
+      "priority": "high",
+      "details": "1. Create paddle sprite at bottom of screen\n2. Implement mouse control for paddle movement\n3. Implement mouse-over aim line visualization\n4. Calculate angle between paddle and mouse position\n5. Implement click-to-launch single ball mechanics (multiple balls will be in Phase 2)\n6. Add physics body to ball with proper collision properties\n7. Implement ball-paddle collision logic with appropriate reflection angles\n8. Add visual feedback for aiming direction\n9. Implement logic for when the ball is missed (falls below screen)",
+      "testStrategy": "1. Verify paddle moves smoothly with mouse movement\n2. Test aim line follows mouse cursor accurately and displays correct angle\n3. Verify ball launches in the correct direction based on aim line\n4. Test ball-paddle collision behavior and reflection physics\n5. Ensure mouse controls are responsive and intuitive\n6. Verify appropriate events/handling occur when ball is missed\n7. Test overall gameplay flow from aiming to launching to ball interaction",
+      "subtasks": []
     },
     {
       "id": 6,
-      "title": "Implement Game State Management",
-      "description": "Create a comprehensive game state system to handle turns, waves, game over conditions, and progression.",
-      "details": "1. Implement game state machine (ready, aiming, firing, next wave, game over)\n2. Create turn-based progression system\n3. Implement wave counter and display\n4. Add game over detection when bricks reach bottom\n5. Create score tracking system\n6. Implement game reset functionality\n\n```dart\nenum GameState {\n  ready,\n  aiming,\n  firing,\n  nextWave,\n  gameOver\n}\n\nclass GameStateManager {\n  GameState currentState = GameState.ready;\n  int currentWave = 1;\n  int score = 0;\n  \n  void startAiming() {\n    if (currentState == GameState.ready) {\n      currentState = GameState.aiming;\n    }\n  }\n  \n  void startFiring(Vector2 direction) {\n    if (currentState == GameState.aiming) {\n      currentState = GameState.firing;\n      // Trigger ball firing\n    }\n  }\n  \n  void onAllBallsReturned() {\n    if (currentState == GameState.firing) {\n      currentState = GameState.nextWave;\n      advanceWave();\n    }\n  }\n  \n  void advanceWave() {\n    currentWave++;\n    // Generate new bricks\n    currentState = GameState.ready;\n  }\n  \n  void checkGameOver() {\n    if (bricksReachedBottom()) {\n      currentState = GameState.gameOver;\n    }\n  }\n}\n```",
-      "testStrategy": "1. Test state transitions through complete game cycle\n2. Verify wave progression works correctly\n3. Test game over detection with various scenarios\n4. Validate score calculation across multiple waves\n5. Test game reset functionality\n6. Verify UI updates correctly with state changes",
-      "priority": "medium",
-      "dependencies": [
-        3,
-        4,
-        5
-      ],
+      "title": "Implement Basic Block System",
+      "description": "Create the block/brick system with HP and collision detection",
       "status": "pending",
-      "subtasks": [
-        {
-          "id": 1,
-          "title": "Design the State Machine Architecture",
-          "description": "Create the core state machine architecture that will manage different game states",
-          "dependencies": [],
-          "details": "Define a base State class with common methods like startup(), update(), get_event(), and shutdown(). Implement a StateManager class that handles state transitions and maintains the current active state. Consider using enums for cleaner state representation.",
-          "status": "pending"
-        },
-        {
-          "id": 2,
-          "title": "Implement Core Game States",
-          "description": "Create the fundamental game states required for the game flow",
-          "dependencies": [
-            1
-          ],
-          "details": "Implement concrete state classes for MainMenu, Playing, Paused, GameOver, and Victory states. Each state should handle its specific logic, input processing, and rendering requirements. Ensure proper initialization and cleanup when entering/exiting states.",
-          "status": "pending"
-        },
-        {
-          "id": 3,
-          "title": "Develop State Transition Logic",
-          "description": "Create a robust system for transitioning between different game states",
-          "dependencies": [
-            1,
-            2
-          ],
-          "details": "Implement methods for state transitions with proper data passing between states. Handle edge cases like rapid state changes and ensure resources are properly managed during transitions. Create a transition history for potential 'back' functionality.",
-          "status": "pending"
-        },
-        {
-          "id": 4,
-          "title": "Design Turn Progression System",
-          "description": "Create a system to manage turn-based gameplay progression",
-          "dependencies": [
-            2
-          ],
-          "details": "Implement turn management within the Playing state, tracking current player/entity turn, turn phases, and turn counters. Create methods for advancing turns and handling turn-based events. Ensure proper state updates when turns change.",
-          "status": "pending"
-        },
-        {
-          "id": 5,
-          "title": "Implement Wave Management",
-          "description": "Develop a system to handle enemy waves or level progression",
-          "dependencies": [
-            4
-          ],
-          "details": "Create a WaveManager component that tracks current wave, spawns enemies, and determines wave completion. Implement difficulty scaling between waves and handle transitions between waves. Integrate with the state machine for wave-complete events.",
-          "status": "pending"
-        },
-        {
-          "id": 6,
-          "title": "Create Win/Loss Condition Monitoring",
-          "description": "Implement logic to detect and handle game win/loss conditions",
-          "dependencies": [
-            2,
-            5
-          ],
-          "details": "Create a GameConditionMonitor that continuously checks for win/loss conditions. Implement event triggers for when conditions are met. Ensure proper state transitions to Victory or GameOver states when conditions are triggered.",
-          "status": "pending"
-        },
-        {
-          "id": 7,
-          "title": "Develop Game State Persistence",
-          "description": "Create a system to save and load game state information",
-          "dependencies": [
-            2,
-            4,
-            5
-          ],
-          "details": "Implement serialization for relevant game state data. Create save/load functionality that works with the state machine. Handle edge cases like loading during different game states and corrupted save data.",
-          "status": "pending"
-        },
-        {
-          "id": 8,
-          "title": "Integrate UI with State System",
-          "description": "Connect the UI system with the state management system",
-          "dependencies": [
-            2,
-            3
-          ],
-          "details": "Create UI controllers for each game state that update based on state changes. Implement UI event handlers that can trigger state transitions. Ensure UI elements properly appear/disappear during state transitions.",
-          "status": "pending"
-        },
-        {
-          "id": 9,
-          "title": "Implement Debug Tools for State Management",
-          "description": "Create debugging tools to monitor and manipulate the state system",
-          "dependencies": [
-            1,
-            2,
-            3
-          ],
-          "details": "Develop a state visualization panel showing current state and transition history. Create commands to force state transitions for testing. Implement logging for state changes and important events within states.",
-          "status": "pending"
-        },
-        {
-          "id": 10,
-          "title": "Optimize and Test State System",
-          "description": "Optimize performance and thoroughly test the state management system",
-          "dependencies": [
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9
-          ],
-          "details": "Profile state transitions and update loops to identify performance bottlenecks. Create automated tests for state transitions and edge cases. Perform integration testing with all game systems. Document the state system architecture and usage patterns.",
-          "status": "pending"
-        },
-        {
-          "id": 11,
-          "title": "웹 브라우저에서 게임 상태 관리 시스템 테스트",
-          "description": "브라우저에서 구현된 게임 상태 관리 시스템을 테스트하고 턴, 웨이브, 게임 오버 조건 및 진행 과정을 검증합니다.",
-          "details": "1. 'flutter run -d chrome --web-renderer canvaskit' 명령어로 브라우저에서 앱 실행\n2. 게임 시작, 일시 정지, 재개, 종료 상태 전환 테스트\n3. 턴 기반 진행 시스템 검증\n4. 웨이브 완료 및 다음 웨이브 전환 테스트\n5. 게임 오버 조건 발생 시 상태 전환 확인\n6. 게임 상태에 따른 UI 변화 검증\n7. 게임 상태 저장 및 로드 기능 테스트\n8. 다양한 게임 상태에서의 사용자 입력 처리 확인\n9. Chrome DevTools를 사용한 상태 관리 디버깅\n10. 각 상태 전환 시 발생할 수 있는 Edge Case 테스트\n11. 각 게임 상태의 스크린샷 캡처 및 문서화\n12. 발견된 버그 또는 개선점 기록",
-          "status": "pending",
-          "dependencies": [
-            10
-          ],
-          "parentTaskId": 6
-        }
-      ]
+      "dependencies": [
+        4
+      ],
+      "priority": "high",
+      "details": "1. Create Block class with HP property\n2. Implement visual representation of blocks with different HP levels\n3. Setup collision detection between balls and blocks\n4. Implement HP reduction on collision with visual feedback\n5. Add block destruction animation and sound effects when HP reaches zero\n6. Create basic block layout system for testing (advanced patterns will be implemented in later tasks)\n7. Implement basic score counting logic when blocks are destroyed",
+      "testStrategy": "1. Verify blocks render correctly on screen\n2. Test block collision and HP reduction when hit by ball\n3. Verify visual state changes as HP decreases\n4. Confirm blocks are destroyed correctly when HP reaches zero\n5. Test destruction effects (animation, sound) play appropriately\n6. Verify ball bounces physically correct after block collision\n7. Test performance stability with multiple blocks on screen\n8. Verify score increases correctly when blocks are destroyed",
+      "subtasks": []
     },
     {
       "id": 7,
-      "title": "Implement Ball Animation and Fast-Forward Feature",
-      "description": "Create smooth ball animations with the ability to fast-forward gameplay or skip to results.",
-      "details": "1. Implement high-frame-rate ball animations\n2. Create fast-forward system with multiple speed options (1x, 2x, 4x)\n3. Add skip-to-result functionality\n4. Implement progress bar for remaining balls\n5. Create visual effects for ball trails at high speeds\n6. Separate game logic from animation for consistent physics\n\n```dart\nclass GameSpeedController {\n  double speedMultiplier = 1.0;\n  bool isSkipping = false;\n  \n  void setSpeed(double multiplier) {\n    speedMultiplier = multiplier;\n    // Update animation speeds\n  }\n  \n  void skipToResult() {\n    isSkipping = true;\n    // Run physics simulation without rendering intermediate frames\n    // Then render final state\n  }\n  \n  double getAdjustedDeltaTime(double dt) {\n    return dt * speedMultiplier;\n  }\n}\n\nclass ProgressBar extends PositionComponent {\n  final int totalBalls;\n  int returnedBalls = 0;\n  \n  ProgressBar({required this.totalBalls});\n  \n  @override\n  void render(Canvas canvas) {\n    final progress = returnedBalls / totalBalls;\n    // Draw progress bar\n  }\n}\n```",
-      "testStrategy": "1. Test animation smoothness at different frame rates\n2. Verify fast-forward speeds work correctly\n3. Test skip-to-result functionality\n4. Validate progress bar accuracy\n5. Test physics consistency at different speeds\n6. Verify visual effects scale appropriately with speed",
-      "priority": "medium",
-      "dependencies": [
-        3,
-        6
-      ],
+      "title": "Implement HUD and Score System",
+      "description": "Create the heads-up display showing score, wave number, and remaining balls for the MVP version of the block-breaking game",
       "status": "pending",
-      "subtasks": [
-        {
-          "id": 1,
-          "title": "Implement Basic Ball Animation",
-          "description": "Create a basic ball animation system using canvas or a game engine.",
-          "dependencies": [],
-          "details": "Use JavaScript or a game engine like Unity to create a simple ball animation.",
-          "status": "pending"
-        },
-        {
-          "id": 2,
-          "title": "Integrate Physics Simulation",
-          "description": "Add physics to the ball animation to simulate realistic movement.",
-          "dependencies": [
-            1
-          ],
-          "details": "Use physics engines like Box2D or Unity Physics to simulate gravity and collisions.",
-          "status": "pending"
-        },
-        {
-          "id": 3,
-          "title": "Separate Physics from Animation",
-          "description": "Decouple physics simulation from visual animation to allow for speed adjustments.",
-          "dependencies": [
-            2
-          ],
-          "details": "Use separate loops or threads for physics and rendering to maintain consistent physics.",
-          "status": "pending"
-        },
-        {
-          "id": 4,
-          "title": "Implement Speed Control",
-          "description": "Add functionality to control the visual speed of the animation.",
-          "dependencies": [
-            3
-          ],
-          "details": "Use variables to adjust the frame rate or animation speed without affecting physics.",
-          "status": "pending"
-        },
-        {
-          "id": 5,
-          "title": "Add Fast-Forward Functionality",
-          "description": "Allow users to fast-forward the animation while maintaining physics integrity.",
-          "dependencies": [
-            4
-          ],
-          "details": "Use a multiplier to increase the animation speed while keeping physics updates consistent.",
-          "status": "pending"
-        },
-        {
-          "id": 6,
-          "title": "Optimize Animation Performance",
-          "description": "Improve the efficiency of the animation system for smoother rendering.",
-          "dependencies": [
-            5
-          ],
-          "details": "Use caching, reduce unnecessary computations, and optimize rendering loops.",
-          "status": "pending"
-        },
-        {
-          "id": 7,
-          "title": "Integrate Visual Effects",
-          "description": "Add visual effects like trails, shadows, or lighting to enhance the animation.",
-          "dependencies": [
-            6
-          ],
-          "details": "Use graphics libraries or built-in effects in game engines to add visual enhancements.",
-          "status": "pending"
-        },
-        {
-          "id": 8,
-          "title": "Implement Progress Tracking",
-          "description": "Track the progress of the animation and provide feedback to users.",
-          "dependencies": [
-            7
-          ],
-          "details": "Use metrics like time elapsed or distance traveled to display progress indicators.",
-          "status": "pending"
-        },
-        {
-          "id": 9,
-          "title": "웹 브라우저에서 공 애니메이션 및 빠른 앞으로 기능 테스트",
-          "description": "브라우저에서 구현된 공 애니메이션 및 빠른 앞으로 기능을 테스트하고 검증합니다. 다양한 속도 설정과 결과 스킵 기능이 올바르게 작동하는지 확인합니다.",
-          "details": "1. 'flutter run -d chrome --web-renderer canvaskit' 명령어로 브라우저에서 앱 실행\n2. 기본 애니메이션 속도(1x)에서 공의 부드러운 움직임 확인\n3. 다양한 속도 설정(2x, 4x) 테스트 및 움직임 자연스러움 검증\n4. 빠른 앞으로 버튼 UI 작동 확인\n5. 결과 스킵 기능 테스트 및 최종 결과의 정확성 검증\n6. 공 애니메이션 트레일 효과 시각적 확인\n7. 진행 상태 표시줄 정확성 테스트\n8. 다양한 플레이 상황(많은 공/벽돌, 복잡한 충돌)에서 성능 측정\n9. 속도 변경 시 물리 시뮬레이션 일관성 확인\n10. Chrome DevTools Performance 탭을 사용한 프레임 레이트 모니터링\n11. 다양한 브라우저(Chrome, Firefox, Safari)에서 호환성 테스트\n12. 각 테스트 케이스의 스크린샷 캡처 및 문서화\n13. 발견된 버그 또는 개선점 기록",
-          "status": "pending",
-          "dependencies": [
-            8
-          ],
-          "parentTaskId": 7
-        }
-      ]
-    },
-    {
-      "id": 8,
-      "title": "Implement Item System",
-      "description": "Create the item system where players can collect and use power-ups during gameplay.",
-      "details": "1. Create Item component with different types (multi-ball, laser, etc.)\n2. Implement item collection through ball collision\n3. Create item inventory display\n4. Implement item activation system\n5. Add visual effects for active items\n6. Create item duration tracking\n\n```dart\nenum ItemType {\n  multiBall,\n  laser,\n  bomb,\n  extraLife\n}\n\nclass Item extends BodyComponent with ContactCallbacks {\n  final ItemType type;\n  \n  Item({required this.type, required Vector2 position});\n  \n  @override\n  Body createBody() {\n    // Create physics body for item\n  }\n  \n  @override\n  void beginContact(Object other, Contact contact) {\n    if (other is Ball) {\n      collect();\n    }\n  }\n  \n  void collect() {\n    game.itemInventory.addItem(type);\n    removeFromParent();\n  }\n}\n\nclass ItemInventory {\n  final Map<ItemType, int> items = {};\n  \n  void addItem(ItemType type) {\n    items[type] = (items[type] ?? 0) + 1;\n  }\n  \n  bool useItem(ItemType type) {\n    if ((items[type] ?? 0) > 0) {\n      items[type] = items[type]! - 1;\n      applyItemEffect(type);\n      return true;\n    }\n    return false;\n  }\n  \n  void applyItemEffect(ItemType type) {\n    switch (type) {\n      case ItemType.multiBall:\n        // Double current balls for this turn\n        break;\n      // Handle other item types\n    }\n  }\n}\n```",
-      "testStrategy": "1. Test item generation and placement\n2. Verify item collection through ball collision\n3. Test inventory display updates\n4. Validate item activation and effects\n5. Test item duration and expiration\n6. Verify visual effects for active items",
-      "priority": "medium",
       "dependencies": [
         5,
         6
       ],
+      "priority": "medium",
+      "details": "1. Design HUD layout with score, wave counter, and ball count\n2. Implement score calculation based on block destruction\n3. Create wave/level counter and progression logic\n4. Display remaining ball count (MVP supports single ball only)\n5. Design visually clear and intuitive UI elements\n6. Ensure UI elements are positioned to not interfere with gameplay\n7. Implement real-time score updates as blocks are destroyed\n8. Create visual indicators for wave/level progression",
+      "testStrategy": "1. Verify score updates accurately in real-time during gameplay\n2. Confirm wave/level display changes correctly as game progresses\n3. Test ball count display updates correctly\n4. Verify HUD visibility and readability across different resolutions\n5. Ensure UI element placement is intuitive and doesn't interfere with gameplay\n6. Test visual consistency of all UI elements",
+      "subtasks": []
+    },
+    {
+      "id": 8,
+      "title": "Implement Game Over and Restart",
+      "description": "Create game over condition, screen, and restart functionality to complete the game cycle for the MVP",
       "status": "pending",
+      "dependencies": [
+        7
+      ],
+      "priority": "medium",
+      "details": "1. Implement game over conditions and logic:\n   - When player loses all balls\n   - When blocks fill the screen/reach bottom boundary\n2. Create game over screen with final score display\n3. Implement score saving functionality using local storage\n4. Implement restart button functionality that fully resets the game state\n5. Implement win condition and screen when all blocks are destroyed\n6. Create smooth transitions between game states (play → game over/win → restart)",
+      "testStrategy": "1. Verify game over triggers correctly when player loses all balls\n2. Verify game over triggers when blocks reach the bottom boundary\n3. Confirm game over screen displays properly with accurate final score\n4. Test that high scores are correctly saved to and retrieved from local storage\n5. Verify restart button properly resets all game elements and state\n6. Confirm win screen appears when all blocks are destroyed\n7. Test that state transitions (play → game over/win → restart) work smoothly",
       "subtasks": []
     },
     {
       "id": 9,
-      "title": "Implement Ball Count Increase Mechanism",
-      "description": "Create the system where destroying a certain number of bricks permanently increases the ball count.",
-      "details": "1. Implement brick destruction counter\n2. Create threshold system for ball count increases\n3. Add visual feedback when ball count increases\n4. Implement persistent ball count storage\n5. Create UI element showing progress to next ball\n6. Balance thresholds for game progression\n\n```dart\nclass BallProgressionSystem {\n  int destroyedBricks = 0;\n  int ballCount = 1;\n  int nextThreshold = 10; // Initial threshold\n  \n  void onBrickDestroyed() {\n    destroyedBricks++;\n    checkForBallIncrease();\n  }\n  \n  \n  void checkForBallIncrease() {\n    if (destroyedBricks >= nextThreshold) {\n      increaseBallCount();\n      calculateNextThreshold();\n    }\n  }\n  \n  void increaseBallCount() {\n    ballCount++;\n    showBallIncreaseAnimation();\n  }\n  \n  void calculateNextThreshold() {\n    // Exponential or linear increase in threshold\n    nextThreshold = (nextThreshold * 1.5).round();\n  }\n  \n  double getProgressToNextBall() {\n    return destroyedBricks / nextThreshold;\n  }\n}\n```",
-      "testStrategy": "1. Test brick destruction counting\n2. Verify ball count increases at correct thresholds\n3. Test progression through multiple increases\n4. Validate visual feedback\n5. Test persistence between game sessions\n6. Verify progress indicator accuracy",
-      "priority": "medium",
-      "dependencies": [
-        5,
-        6
-      ],
+      "title": "Create PWA Configuration",
+      "description": "Configure the game as a Progressive Web App for desktop browsers as part of Phase 1 MVP deployment",
       "status": "pending",
+      "dependencies": [
+        3,
+        8
+      ],
+      "priority": "medium",
+      "details": "1. Create manifest.json with app information including icons and color scheme\n2. Generate app icons in various sizes for different devices and contexts\n3. Implement service worker for offline gameplay capability\n4. Configure caching strategies for game assets to ensure fast loading\n5. Add install prompt for desktop browsers\n6. Optimize web performance for stable deployment\n7. Ensure PWA meets Lighthouse score of 90+ for PWA criteria",
+      "testStrategy": "1. Test PWA installation on all major browsers (Chrome, Firefox, Safari, Edge)\n2. Verify game loads and plays correctly in offline mode\n3. Confirm service worker registration and cache mechanisms function properly\n4. Check that PWA icons and splash screens display correctly\n5. Verify install prompt appears appropriately\n6. Run Lighthouse audit to ensure PWA compliance and performance score\n7. Test the complete user journey from installation to offline gameplay",
       "subtasks": []
     },
     {
       "id": 10,
-      "title": "Implement UI/UX for Desktop",
-      "description": "Create the user interface for desktop web browsers with mouse-based controls and responsive design.",
-      "details": "1. Implement mouse-based aiming system\n2. Create responsive layout for different screen sizes\n3. Implement game HUD (score, wave, ball count)\n4. Add menu system (pause, restart, settings)\n5. Create Modern Cool theme with dark background and neon lines\n6. Implement mouse wheel scrolling for UI navigation\n\n```dart\nclass DesktopControls extends Component with HasGameRef {\n  Vector2 aimDirection = Vector2(0, -1);\n  bool isAiming = false;\n  \n  @override\n  bool onMouseMove(PointerHoverInfo info) {\n    if (gameRef.gameState == GameState.aiming) {\n      final worldPosition = gameRef.camera.screenToWorld(info.eventPosition.game);\n      aimDirection = (worldPosition - launchPosition).normalized();\n      return true;\n    }\n    return false;\n  }\n  \n  @override\n  bool onMouseDown(PointerDownInfo info) {\n    if (gameRef.gameState == GameState.aiming) {\n      gameRef.startFiring(aimDirection);\n      return true;\n    }\n    return false;\n  }\n}\n\nclass GameHUD extends PositionComponent with HasGameRef {\n  TextComponent scoreText = TextComponent();\n  TextComponent waveText = TextComponent();\n  TextComponent ballCountText = TextComponent();\n  \n  @override\n  Future<void> onLoad() async {\n    // Setup HUD components with Modern Cool theme\n    final textStyle = TextStyle(color: Colors.cyanAccent, fontSize: 24);\n    \n    scoreText = TextComponent(textRenderer: TextPaint(style: textStyle));\n    waveText = TextComponent(textRenderer: TextPaint(style: textStyle));\n    ballCountText = TextComponent(textRenderer: TextPaint(style: textStyle));\n    \n    add(scoreText);\n    add(waveText);\n    add(ballCountText);\n  }\n  \n  @override\n  void update(double dt) {\n    scoreText.text = 'Score: ${gameRef.score}';\n    waveText.text = 'Wave: ${gameRef.currentWave}';\n    ballCountText.text = 'Balls: ${gameRef.ballCount}';\n  }\n}\n```",
-      "testStrategy": "1. Test aiming system with different mouse positions\n2. Verify responsive layout at various screen sizes\n3. Test HUD updates with game state changes\n4. Validate menu functionality\n5. Test theme consistency across all UI elements\n6. Verify mouse wheel scrolling in menus",
-      "priority": "high",
-      "dependencies": [
-        6
-      ],
+      "title": "Implement Multi-Ball Chain System",
+      "description": "Extend the single ball system to support multiple balls fired in sequence as part of Phase 2 (Multi-Launch Mechanism) implementation",
       "status": "pending",
+      "dependencies": [
+        8
+      ],
+      "priority": "high",
+      "details": "1. Modify ball launch system to support multiple balls fired sequentially with a single aim\n2. Implement sequential firing with configurable delay between balls\n3. Create ball pool for efficient object reuse and optimize multi-ball physics handling\n4. Add visual indicators for total ball count, remaining balls, and firing angle in UI\n5. Implement consistent timing control system for ball launch intervals\n6. Ensure all balls follow the same initial trajectory based on the single aiming action\n7. Optimize performance for handling multiple balls simultaneously on screen",
+      "testStrategy": "1. Verify balls are fired sequentially with the configured intervals\n2. Confirm all balls follow the exact same initial trajectory based on aim\n3. Test performance with various ball counts to ensure no degradation\n4. Verify ball count and firing information are accurately displayed in UI\n5. Confirm each ball maintains proper individual physics interactions\n6. Test multi-ball firing with different ball counts and intervals\n7. Measure performance with large numbers of balls on screen simultaneously",
       "subtasks": [
         {
           "id": 1,
-          "title": "User Research and Requirements Analysis",
-          "description": "Conduct comprehensive research to understand user needs and define project requirements for the desktop UI/UX implementation.",
+          "title": "구현: 다중 볼 발사 시스템 설계",
+          "description": "단일 조준으로 다수의 볼을 순차적으로 발사하는 시스템 기본 구조 설계",
+          "details": "1. 볼 발사 메커니즘을 단일 볼에서 다중 볼로 확장할 수 있는 구조 설계\\n2. 조준 각도 및 발사 명령을 모든 볼에 일관되게 적용하는 방식 구현\\n3. 볼 간 발사 간격과 타이밍 제어를 위한 로직 설계\\n4. 디버그 모드에서 발사 시스템을 테스트할 수 있는 기능 추가",
+          "status": "pending",
           "dependencies": [],
-          "details": "Interview stakeholders across departments to identify business goals. Create user personas and user stories to guide the design process. Analyze user behavior patterns specific to desktop applications. Document accessibility requirements and technical constraints.",
-          "status": "pending"
+          "parentTaskId": 10
         },
         {
           "id": 2,
-          "title": "Mouse Control System Design",
-          "description": "Design and document the mouse interaction patterns for the desktop application.",
-          "dependencies": [
-            1
-          ],
-          "details": "Define hover states, click behaviors, and cursor feedback. Design drag-and-drop functionality where applicable. Create specifications for right-click context menus. Implement scroll behaviors and multi-select capabilities. Document mouse acceleration and precision requirements.",
-          "status": "pending"
+          "title": "구현: 볼 풀링 시스템",
+          "description": "다수의 볼을 효율적으로 관리하기 위한 객체 풀링 시스템 구현",
+          "details": "1. Phaser에 최적화된 볼 객체 풀 생성\\n2. 볼 재사용 메커니즘 구현으로 메모리 사용 최적화\\n3. 풀링된 볼 객체의 속성 재설정 로직 구현\\n4. 동시에 표시되는 볼 수에 따른 성능 테스트 및 최적화",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 10
         },
         {
           "id": 3,
-          "title": "Responsive Layout Framework",
-          "description": "Develop a responsive grid system that adapts to different desktop screen resolutions and window sizes.",
-          "dependencies": [
-            1
-          ],
-          "details": "Create wireframes showing layout at different breakpoints. Define fluid vs. fixed elements. Establish content prioritization for different screen sizes. Document minimum and maximum supported resolutions. Design window resizing behaviors and element reflow rules.",
-          "status": "pending"
+          "title": "구현: 순차적 타이밍 컨트롤",
+          "description": "볼 발사 간격과 타이밍을 일정하게 제어하는 시스템 구현",
+          "details": "1. 볼 발사 간격 타이머 구현\\n2. 발사 상태 관리 및 대기열 시스템 구현\\n3. 게임 일시정지/재개 시 타이밍 시스템 동기화\\n4. 여러 속도 설정에서의 일관된 타이밍 유지 테스트",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 10
         },
         {
           "id": 4,
-          "title": "HUD Component Library Design",
-          "description": "Design the core HUD (Heads-Up Display) components that will appear throughout the application.",
-          "dependencies": [
-            1,
-            3
-          ],
-          "details": "Create visual designs for notifications, alerts, and status indicators. Design progress bars and loading states. Develop tooltips and help overlays. Define information hierarchy for dashboard elements. Document component behaviors and states.",
-          "status": "pending"
+          "title": "구현: 다중 볼 UI 표시",
+          "description": "총 볼 개수, 남은 볼 개수, 발사 각도를 UI에 표시",
+          "details": "1. HUD에 총 볼 개수 표시 요소 추가\\n2. 발사된/남은 볼 수 실시간 업데이트 UI 구현\\n3. 발사 각도 및 조준선 시각화 개선\\n4. 다중 볼 발사 진행 상태 표시기 구현",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 10
         },
         {
           "id": 5,
-          "title": "Menu System Architecture",
-          "description": "Design the complete menu system architecture including main navigation, submenus, and contextual menus.",
-          "dependencies": [
-            1,
-            2
-          ],
-          "details": "Create sitemap showing menu hierarchy. Design main navigation bar with dropdown capabilities. Develop keyboard shortcuts for menu navigation. Define menu animations and transitions. Document menu accessibility considerations.",
-          "status": "pending"
+          "title": "구현: 궤적 일관성 확보",
+          "description": "모든 볼이 동일한 초기 궤적으로 발사되도록 구현",
+          "details": "1. 조준 각도 계산 및 저장 시스템 구현\\n2. 모든 볼에 동일한 초기 속도와 방향 적용\\n3. 물리 시스템에서 일관된 초기 궤적 유지 확인\\n4. 다양한 발사 각도에서의 일관성 테스트",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 10
         },
         {
           "id": 6,
-          "title": "Visual Theme Implementation",
-          "description": "Develop the visual design system including color schemes, typography, and visual elements.",
-          "dependencies": [
-            3,
-            4,
-            5
-          ],
-          "details": "Create a comprehensive style guide with color palette, typography, and spacing rules. Design iconography system for consistent visual language. Develop light and dark theme variations. Document visual hierarchy principles. Create visual microinteractions for enhanced user experience.",
-          "status": "pending"
-        },
-        {
-          "id": 7,
-          "title": "Accessibility Implementation",
-          "description": "Ensure the UI/UX design meets accessibility standards for diverse user needs.",
-          "dependencies": [
-            2,
-            3,
-            4,
-            5,
-            6
-          ],
-          "details": "Implement keyboard navigation alternatives to mouse controls. Ensure color contrast meets WCAG guidelines. Add screen reader support with proper ARIA attributes. Design focus states for keyboard navigation. Test with assistive technologies and document compliance.",
-          "status": "pending"
-        },
-        {
-          "id": 8,
-          "title": "Prototype Development and Testing",
-          "description": "Create interactive prototypes and conduct usability testing with target users.",
-          "dependencies": [
-            2,
-            3,
-            4,
-            5,
-            6,
-            7
-          ],
-          "details": "Develop high-fidelity interactive prototypes in Figma or similar tool. Create test scenarios covering key user flows. Conduct usability testing sessions with representative users. Document findings and identify areas for improvement. Validate accessibility implementation with diverse users.",
-          "status": "pending"
-        },
-        {
-          "id": 9,
-          "title": "Design Handoff and Implementation Support",
-          "description": "Prepare design assets and documentation for development team and provide ongoing implementation support.",
-          "dependencies": [
-            8
-          ],
-          "details": "Export all design assets in appropriate formats. Create detailed design specifications including measurements and behaviors. Document component states and interactions. Collaborate with developers during implementation. Conduct design QA reviews during development process.",
-          "status": "pending"
+          "title": "최적화: 다중 볼 성능 향상",
+          "description": "대량의 볼이 화면에 존재할 때 성능 최적화",
+          "details": "1. 볼 개체수에 따른 성능 측정 및 병목 지점 식별\\n2. 충돌 감지 최적화\\n3. 화면 밖 볼 객체의 효율적 관리\\n4. 디버그 모드에서 FPS 모니터링 및 최적화 효과 측정",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 10
         }
       ]
     },
     {
       "id": 11,
-      "title": "Implement Tutorial and First-Time User Experience",
-      "description": "Create an interactive tutorial for first-time users to learn game mechanics.",
-      "details": "1. Create step-by-step tutorial flow\n2. Implement guided interactions (aim here, click to fire)\n3. Add tutorial skip option for experienced players\n4. Create highlight animations for tutorial elements\n5. Implement progress tracking for tutorial completion\n6. Add persistent flag to show tutorial only on first run\n\n```dart\nclass TutorialSystem extends Component with HasGameRef {\n  int currentStep = 0;\n  bool tutorialActive = false;\n  final List<String> tutorialSteps = [\n    'Welcome to Brick Chain Blaster!',\n    'Move your mouse to aim',\n    'Click to fire balls',\n    'Destroy bricks to progress',\n    'Collect items for power-ups',\n    'Good luck!'\n  ];\n  \n  void startTutorial() {\n    tutorialActive = true;\n    currentStep = 0;\n    showCurrentStep();\n  }\n  \n  void nextStep() {\n    currentStep++;\n    if (currentStep >= tutorialSteps.length) {\n      completeTutorial();\n    } else {\n      showCurrentStep();\n    }\n  }\n  \n  void showCurrentStep() {\n    // Show current tutorial message and highlight relevant elements\n  }\n  \n  void completeTutorial() {\n    tutorialActive = false;\n    // Save completion to persistent storage\n  }\n}\n```",
-      "testStrategy": "1. Test tutorial flow from start to finish\n2. Verify guided interactions work correctly\n3. Test tutorial skip functionality\n4. Validate highlight animations\n5. Test persistence of tutorial completion\n6. Verify tutorial only shows for first-time users",
+      "title": "Implement Fast-Forward Feature",
+      "description": "Add fast-forward functionality to speed up gameplay with visual indicators",
+      "details": "1. Separate game logic from animation rendering\n2. Implement speed multiplier system (1x, 2x, 4x)\n3. Create fast-forward button with visual state\n4. Add progress bar to show remaining balls/time\n5. Implement instant completion option\n6. Ensure physics calculations remain accurate at higher speeds\n7. Add visual effects to indicate fast-forward state",
+      "testStrategy": "Test different speed settings for consistency in physics. Verify progress bar accurately reflects remaining time. Test instant completion functionality. Ensure game state remains consistent regardless of speed.",
       "priority": "medium",
       "dependencies": [
-        6,
         10
       ],
       "status": "pending",
@@ -788,26 +280,26 @@
     },
     {
       "id": 12,
-      "title": "Implement Firebase Integration",
-      "description": "Integrate Firebase services for analytics, remote config, and user authentication.",
-      "details": "1. Setup Firebase project and add web configuration\n2. Implement Firebase Analytics for event tracking\n3. Add Remote Config for game parameters\n4. Implement user authentication (optional/anonymous)\n5. Create cloud functions for server-side logic\n6. Add crash reporting\n\n```dart\nclass FirebaseService {\n  Future<void> initialize() async {\n    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);\n    await setupRemoteConfig();\n  }\n  \n  Future<void> setupRemoteConfig() async {\n    final remoteConfig = FirebaseRemoteConfig.instance;\n    await remoteConfig.setConfigSettings(RemoteConfigSettings(\n      fetchTimeout: const Duration(minutes: 1),\n      minimumFetchInterval: const Duration(hours: 1),\n    ));\n    \n    await remoteConfig.setDefaults({\n      'initial_ball_count': 1,\n      'brick_hp_multiplier': 1.0,\n      'ball_speed': 10.0,\n    });\n    \n    await remoteConfig.fetchAndActivate();\n  }\n  \n  void logGameStart() {\n    FirebaseAnalytics.instance.logEvent(name: 'game_start');\n  }\n  \n  void logWaveCompleted(int wave, int score) {\n    FirebaseAnalytics.instance.logEvent(\n      name: 'wave_completed',\n      parameters: {\n        'wave': wave,\n        'score': score,\n      },\n    );\n  }\n  \n  void logGameOver(int wave, int score) {\n    FirebaseAnalytics.instance.logEvent(\n      name: 'game_over',\n      parameters: {\n        'wave': wave,\n        'score': score,\n      },\n    );\n  }\n}\n```",
-      "testStrategy": "1. Test Firebase initialization\n2. Verify analytics events are logged correctly\n3. Test remote config parameter fetching\n4. Validate user authentication flow\n5. Test cloud functions integration\n6. Verify crash reporting works correctly",
-      "priority": "medium",
+      "title": "Implement Pattern-Based Block Generation",
+      "description": "Create a system for generating blocks in predefined patterns with increasing difficulty",
+      "details": "1. Design pattern library data structure\n2. Create several basic block patterns\n3. Implement pattern selection and placement logic\n4. Add wave-based difficulty progression\n5. Implement HP scaling based on wave number\n6. Create pattern variations through rotation and mirroring\n7. Add random element to pattern selection",
+      "testStrategy": "Test pattern generation for visual correctness. Verify HP scaling works correctly with wave progression. Test random pattern selection for good distribution. Ensure patterns fit correctly within game boundaries.",
+      "priority": "high",
       "dependencies": [
-        1
+        6
       ],
       "status": "pending",
       "subtasks": []
     },
     {
       "id": 13,
-      "title": "Implement Score and Progression System",
-      "description": "Create a comprehensive scoring system with persistent high scores and progression tracking.",
-      "details": "1. Implement score calculation based on brick destruction\n2. Create high score tracking and display\n3. Implement wave progression difficulty scaling\n4. Add persistent storage for player progress\n5. Create score multiplier system\n6. Implement achievement tracking\n\n```dart\nclass ScoreSystem {\n  int currentScore = 0;\n  int highScore = 0;\n  double multiplier = 1.0;\n  \n  void addScore(int basePoints, int waveIndex) {\n    final points = (basePoints * multiplier * (1 + waveIndex * 0.1)).round();\n    currentScore += points;\n    \n    if (currentScore > highScore) {\n      highScore = currentScore;\n      saveHighScore();\n    }\n  }\n  \n  void increaseMultiplier() {\n    multiplier = min(multiplier + 0.1, 3.0);\n  }\n  \n  void resetMultiplier() {\n    multiplier = 1.0;\n  }\n  \n  Future<void> loadHighScore() async {\n    final prefs = await SharedPreferences.getInstance();\n    highScore = prefs.getInt('highScore') ?? 0;\n  }\n  \n  Future<void> saveHighScore() async {\n    final prefs = await SharedPreferences.getInstance();\n    await prefs.setInt('highScore', highScore);\n  }\n}\n```",
-      "testStrategy": "1. Test score calculation with different scenarios\n2. Verify high score updates and persistence\n3. Test difficulty scaling with wave progression\n4. Validate persistence of player progress\n5. Test multiplier system\n6. Verify achievement tracking and unlocks",
+      "title": "Implement Ball Count Increase Mechanism",
+      "description": "Create system to increase ball count based on blocks destroyed",
+      "details": "1. Implement block destruction counter\n2. Define threshold for ball count increase\n3. Create visual feedback when threshold is reached\n4. Update ball count in HUD\n5. Implement persistent ball count between turns\n6. Add animation for ball count increase\n7. Balance threshold values for game progression",
+      "testStrategy": "Test block counter increments correctly. Verify ball count increases at the correct threshold. Test persistence between turns. Ensure visual feedback is clear to the player.",
       "priority": "medium",
       "dependencies": [
-        6,
+        10,
         12
       ],
       "status": "pending",
@@ -815,200 +307,209 @@
     },
     {
       "id": 14,
-      "title": "Implement Audio System",
-      "description": "Create a comprehensive audio system with sound effects and background music.",
-      "details": "1. Implement audio manager with Flame Audio\n2. Add sound effects for ball hits, brick destruction, etc.\n3. Implement background music with looping\n4. Add audio settings (volume, mute)\n5. Implement audio pooling for performance\n6. Add haptic feedback for mobile (future-proofing)\n\n```dart\nclass AudioManager {\n  final Map<String, List<FlameAudio>> _pools = {};\n  bool soundEnabled = true;\n  bool musicEnabled = true;\n  double soundVolume = 1.0;\n  double musicVolume = 0.5;\n  \n  Future<void> initialize() async {\n    await FlameAudio.audioCache.loadAll([\n      'hit.wav',\n      'break.wav',\n      'powerup.wav',\n      'gameover.wav',\n      'background.mp3',\n    ]);\n    \n    // Create audio pools for frequently used sounds\n    createPool('hit', 10);\n    createPool('break', 5);\n  }\n  \n  void createPool(String sound, int size) {\n    _pools[sound] = List.generate(size, (_) => FlameAudio());\n  }\n  \n  void playSound(String sound) {\n    if (!soundEnabled) return;\n    \n    if (_pools.containsKey(sound)) {\n      final pool = _pools[sound]!;\n      final available = pool.firstWhere(\n        (audio) => !audio.isPlaying,\n        orElse: () => pool.first,\n      );\n      available.play('$sound.wav', volume: soundVolume);\n    } else {\n      FlameAudio.play('$sound.wav', volume: soundVolume);\n    }\n  }\n  \n  void playMusic() {\n    if (musicEnabled) {\n      FlameAudio.bgm.play('background.mp3', volume: musicVolume);\n    }\n  }\n  \n  void stopMusic() {\n    FlameAudio.bgm.stop();\n  }\n  \n  void toggleSound() {\n    soundEnabled = !soundEnabled;\n  }\n  \n  void toggleMusic() {\n    musicEnabled = !musicEnabled;\n    if (musicEnabled) {\n      playMusic();\n    } else {\n      stopMusic();\n    }\n  }\n}\n```",
-      "testStrategy": "1. Test sound effects for all game events\n2. Verify background music looping\n3. Test audio settings persistence\n4. Validate audio pooling performance\n5. Test mute functionality\n6. Verify volume control works correctly",
-      "priority": "low",
+      "title": "Implement Firebase Authentication",
+      "description": "Integrate Firebase Authentication for user accounts and cloud save functionality",
+      "details": "1. Setup Firebase project and configure web app\n2. Install Firebase SDK via npm\n3. Implement authentication UI (login/register)\n4. Create anonymous authentication for new users\n5. Add account linking options\n6. Implement auth state persistence\n7. Create user profile management",
+      "testStrategy": "Test authentication flow with different methods. Verify anonymous accounts can be upgraded. Test auth persistence between sessions. Ensure error handling for auth failures.",
+      "priority": "medium",
       "dependencies": [
-        1
+        9
       ],
       "status": "pending",
       "subtasks": []
     },
     {
       "id": 15,
-      "title": "Implement Mobile-Ready Responsive Design",
-      "description": "Prepare the game for future mobile expansion with responsive design and touch controls.",
-      "details": "1. Implement responsive layout detection\n2. Create touch-based control system\n3. Add virtual HUD buttons for mobile\n4. Implement device orientation handling\n5. Create adaptive UI sizing based on device\n6. Add platform-specific optimizations\n\n```dart\nclass PlatformResponsiveGame extends BrickChainGame {\n  bool get isMobile => Platform.isAndroid || Platform.isIOS;\n  \n  @override\n  Future<void> onLoad() async {\n    await super.onLoad();\n    \n    if (isMobile) {\n      add(TouchControls());\n    } else {\n      add(DesktopControls());\n    }\n    \n    // Adjust UI scale based on screen size\n    final screenSize = size;\n    final uiScale = min(screenSize.x / 1920, screenSize.y / 1080);\n    uiCamera.zoom = uiScale;\n  }\n}\n\nclass TouchControls extends Component with HasGameRef {\n  Vector2 aimDirection = Vector2(0, -1);\n  bool isDragging = false;\n  \n  @override\n  bool onDragStart(DragStartInfo info) {\n    if (gameRef.gameState == GameState.aiming) {\n      isDragging = true;\n      updateAimDirection(info.eventPosition.game);\n      return true;\n    }\n    return false;\n  }\n  \n  @override\n  bool onDragUpdate(DragUpdateInfo info) {\n    if (isDragging) {\n      updateAimDirection(info.eventPosition.game);\n      return true;\n    }\n    return false;\n  }\n  \n  @override\n  bool onDragEnd(DragEndInfo info) {\n    if (isDragging) {\n      isDragging = false;\n      gameRef.startFiring(aimDirection);\n      return true;\n    }\n    return false;\n  }\n  \n  void updateAimDirection(Vector2 position) {\n    final worldPosition = gameRef.camera.screenToWorld(position);\n    aimDirection = (worldPosition - launchPosition).normalized();\n  }\n}\n```",
-      "testStrategy": "1. Test responsive layout on different screen sizes\n2. Verify touch controls work correctly\n3. Test virtual HUD buttons functionality\n4. Validate orientation changes handling\n5. Test UI scaling on different devices\n6. Verify platform-specific optimizations",
-      "priority": "low",
+      "title": "Implement Cloud Save with Firestore",
+      "description": "Create cloud save functionality using Firestore to persist player progress",
+      "details": "1. Design Firestore data structure for player saves\n2. Implement save/load functionality\n3. Create automatic save points during gameplay\n4. Add manual save option\n5. Implement conflict resolution for offline play\n6. Add data migration strategy for updates\n7. Implement save data encryption for sensitive information",
+      "testStrategy": "Test save/load functionality with different account states. Verify offline play and synchronization. Test data migration with mock legacy data. Ensure performance impact of save operations is minimal.",
+      "priority": "medium",
       "dependencies": [
-        10
+        14
       ],
       "status": "pending",
       "subtasks": [
         {
           "id": 1,
-          "title": "Implement responsive layout using ConstraintLayout",
-          "description": "Create a flexible layout system that adapts to different screen sizes using ConstraintLayout as the base for UI elements",
+          "title": "설계: Firestore 데이터 구조",
+          "description": "클라우드 세이브를 위한 Firestore 데이터베이스 구조 설계",
+          "details": "1. 사용자 프로필 및 게임 진행 상태를 저장할 데이터 모델 설계\\n2. 각 데이터 필드의 타입 및 제약 조건 정의\\n3. 인덱싱 전략 및 쿼리 효율성 계획\\n4. 데이터 접근 패턴 최적화",
+          "status": "pending",
           "dependencies": [],
-          "details": "Use ConstraintLayout to specify position and size of views according to spatial relationships with other views. Set up proper anchoring of UI elements to different corners of the screen using RectTransform components. Implement flexible grids that resize dynamically based on available screen space.",
-          "status": "pending"
+          "parentTaskId": 15
         },
         {
           "id": 2,
-          "title": "Design for minimum viable screen width",
-          "description": "Start designing with a 300px width in mind to ensure compatibility with smallest mobile devices",
-          "dependencies": [
-            1
-          ],
-          "details": "Rather than starting with desktop dimensions (1200px+) and scaling down, begin with the smallest supported screen size and scale up. Create layouts that work well at 300px width, then adapt for larger screens. Test on various device sizes to verify proper scaling.",
-          "status": "pending"
+          "title": "구현: 저장/로드 기능",
+          "description": "게임 데이터를 Firestore에 저장하고 불러오는 기능 구현",
+          "details": "1. Firestore 연결 및 초기화 로직 구현\\n2. 게임 데이터 저장 함수 구현\\n3. 저장된 데이터 로드 함수 구현\\n4. 에러 처리 및 재시도 메커니즘 구현",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 15
         },
         {
           "id": 3,
-          "title": "Implement touch controls system",
-          "description": "Develop intuitive touch input handling to replace mouse/keyboard interactions",
-          "dependencies": [
-            1
-          ],
-          "details": "Create a touch input manager that detects taps, swipes, pinches and other common mobile gestures. Ensure touch targets are appropriately sized (minimum 44x44 points) for finger interaction. Implement proper touch feedback through animations or visual cues.",
-          "status": "pending"
+          "title": "구현: 자동 저장 시스템",
+          "description": "게임 진행 중 자동으로 데이터를 저장하는 시스템 구현",
+          "details": "1. 자동 저장 트리거 포인트 정의 (웨이브 완료, 아이템 획득 등)\\n2. 저장 빈도 조절 및 최적화\\n3. 백그라운드 저장 프로세스 구현\\n4. 자동 저장 상태 표시기 구현",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 15
         },
         {
           "id": 4,
-          "title": "Design virtual buttons and on-screen controls",
-          "description": "Create on-screen UI controls that provide necessary input functionality while minimizing screen space usage",
-          "dependencies": [
-            2,
-            3
-          ],
-          "details": "Design virtual joysticks, buttons, and other controls that are responsive to touch input. Ensure controls are positioned to avoid obscuring important game elements. Implement opacity adjustments to reduce visual clutter when controls aren't being used.",
-          "status": "pending"
+          "title": "구현: 오프라인 지원 및 동기화",
+          "description": "오프라인 플레이 지원 및 온라인 연결 시 데이터 동기화 구현",
+          "details": "1. 로컬 스토리지를 활용한 오프라인 데이터 저장\\n2. 온라인 연결 감지 시스템 구현\\n3. 온라인 복귀 시 데이터 동기화 로직\\n4. 충돌 해결 알고리즘 구현 (로컬 vs 클라우드 데이터)",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 15
         },
         {
           "id": 5,
-          "title": "Implement orientation handling",
-          "description": "Add support for both portrait and landscape orientations with appropriate UI adjustments",
-          "dependencies": [
-            1,
-            2
-          ],
-          "details": "Create separate layouts for portrait and landscape orientations. Implement smooth transitions between orientations. Ensure game elements and UI components reposition appropriately when device orientation changes. Consider locking orientation for gameplay sections if necessary.",
-          "status": "pending"
+          "title": "구현: 데이터 마이그레이션 전략",
+          "description": "게임 업데이트 시 데이터 구조 변경을 처리하는 마이그레이션 시스템 구현",
+          "details": "1. 데이터 스키마 버전 관리 시스템 설계\\n2. 버전 간 마이그레이션 함수 구현\\n3. 마이그레이션 오류 복구 전략 구현\\n4. 마이그레이션 테스트 및 검증 시스템",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 15
         },
         {
           "id": 6,
-          "title": "Develop dynamic UI scaling system",
-          "description": "Create a system that automatically scales UI elements based on screen resolution and density",
-          "dependencies": [
-            1,
-            2
-          ],
-          "details": "Implement media queries or programmatic scaling to adjust UI element sizes based on device characteristics. Use relative units rather than fixed pixel values. Create a consistent visual hierarchy that works across different screen sizes and densities.",
-          "status": "pending"
-        },
-        {
-          "id": 7,
-          "title": "Optimize for platform-specific features",
-          "description": "Implement platform-specific optimizations for iOS and Android",
-          "dependencies": [
-            3,
-            4,
-            5,
-            6
-          ],
-          "details": "Adapt UI to follow platform-specific design guidelines (Material Design for Android, Human Interface Guidelines for iOS). Implement platform-specific features like haptic feedback, native sharing, and notifications. Account for platform differences in navigation patterns and user expectations.",
-          "status": "pending"
-        },
-        {
-          "id": 8,
-          "title": "Implement performance optimizations for mobile",
-          "description": "Optimize game performance for less powerful mobile hardware",
-          "dependencies": [
-            6,
-            7
-          ],
-          "details": "Reduce polygon counts and texture sizes for mobile rendering. Implement level-of-detail systems that scale complexity based on device capabilities. Optimize memory usage and reduce battery consumption through efficient resource management. Implement frame rate limiting when appropriate.",
-          "status": "pending"
-        },
-        {
-          "id": 9,
-          "title": "Create comprehensive testing plan",
-          "description": "Develop a testing strategy covering various devices, screen sizes, and orientations",
-          "dependencies": [
-            5,
-            7,
-            8
-          ],
-          "details": "Create a device testing matrix covering different screen sizes, resolutions, and hardware capabilities. Implement automated UI tests to verify layout adaptation. Develop performance benchmarks to ensure acceptable performance across target devices. Plan for user testing sessions with different device types.",
-          "status": "pending"
-        },
-        {
-          "id": 10,
-          "title": "Implement user feedback collection system",
-          "description": "Create mechanisms to gather and analyze user feedback about the mobile experience",
-          "dependencies": [
-            9
-          ],
-          "details": "Implement in-app feedback forms for reporting issues with specific devices or screen sizes. Create analytics to track user interactions with responsive elements. Develop a system for categorizing and prioritizing user-reported issues related to responsive design. Plan for iterative improvements based on collected feedback.",
-          "status": "pending"
+          "title": "구현: 보안 및 권한 관리",
+          "description": "Firestore 보안 규칙 및 사용자 데이터 접근 제어 구현",
+          "details": "1. Firestore 보안 규칙 설계 및 구현\\n2. 사용자별 데이터 접근 제한 구현\\n3. 데이터 유효성 검사 규칙 설정\\n4. 보안 규칙 테스트 및 검증",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 15
         }
       ]
     },
     {
       "id": 16,
-      "title": "Establish Web Browser Testing and Debugging Workflow for Flutter Web",
-      "description": "Create a systematic workflow for testing and debugging in web browsers after each major implementation phase, enabling immediate feedback and documentation of test results.",
-      "details": "This task involves setting up a repeatable process where, after each significant code change or feature implementation, the Flutter web application is built and run in a browser for live testing and debugging. The workflow should include the following steps:\n\n1. **Flutter Web Build Command**: Use the standard Flutter web build command (`flutter build web`) to generate the latest version of the application for web deployment.\n2. **Browser Execution**: Launch the built application in a supported web browser (e.g., Chrome, Firefox) to verify functionality and UI behavior.\n3. **Immediate Testing**: After each build, perform manual and automated tests to check for regressions or new issues.\n4. **Debugging Tools**: Utilize browser developer tools (e.g., Chrome DevTools) for inspecting elements, monitoring network activity, and debugging JavaScript/Dart code.\n5. **Test Documentation**: Document test results, including any issues found, steps to reproduce, and screenshots of both expected and unexpected behaviors.\n6. **Test Checklist**: For each major task (Tasks 1-15), create a checklist of test cases to ensure all critical features are covered. This checklist should be updated as new features are added.\n7. **Screenshot Capture**: Implement a process for capturing screenshots during testing, either manually or using automated tools, to visually document the state of the application at key points.\n8. **Integration with CI/CD**: Optionally, integrate this workflow into a CI/CD pipeline to automate builds, tests, and documentation for every code push.\n\nThis workflow ensures that developers receive immediate feedback on their changes, can quickly identify and fix issues, and maintain a comprehensive record of testing activities.",
-      "testStrategy": "To verify the completion and effectiveness of this task, perform the following checks:\n\n- **Build and Run**: Confirm that the Flutter web build command (`flutter build web`) successfully generates the application and that it can be launched in a browser.\n- **Test Execution**: After each build, run both manual and automated tests (using `flutter test` for unit/widget tests and `flutter drive` for integration tests) to ensure all features work as expected[1][2].\n- **Debugging**: Use browser developer tools to inspect elements, debug code, and monitor network requests. Ensure that any issues can be identified and resolved efficiently.\n- **Documentation**: Review the test documentation to ensure it includes detailed descriptions of test cases, results, and screenshots for each major task.\n- **Checklist and Screenshots**: Verify that a test checklist exists for each major task (Tasks 1-15) and that screenshots are captured and stored for key test scenarios.\n- **Automation**: If integrated with CI/CD, confirm that builds, tests, and documentation are triggered automatically on code changes.\n\nThis strategy ensures a robust, repeatable, and well-documented testing and debugging process for Flutter web development.",
-      "status": "pending",
+      "title": "Implement Global Leaderboard",
+      "description": "Create a global leaderboard system using Firebase to track high scores",
+      "details": "1. Design leaderboard data structure in Firestore\n2. Implement score submission logic\n3. Create leaderboard UI with pagination\n4. Add filters for different time periods (daily, weekly, all-time)\n5. Implement friend leaderboards\n6. Add anti-cheat measures for score validation\n7. Create leaderboard refresh mechanism",
+      "testStrategy": "Test score submission and retrieval. Verify leaderboard updates in real-time. Test pagination and filtering. Ensure leaderboard performance with large numbers of entries.",
+      "priority": "low",
       "dependencies": [
-        1
+        15
       ],
-      "priority": "high",
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 17,
+      "title": "Implement Item System",
+      "description": "Create the item system with collectible power-ups and inventory",
+      "details": "1. Design item types and effects\n2. Create item spawn logic during gameplay\n3. Implement item collection via ball collision\n4. Create inventory UI on right side of screen\n5. Implement item activation mechanics\n6. Add visual effects for active items\n7. Balance item spawn rates and effects",
+      "testStrategy": "Test item spawning and collection. Verify inventory updates correctly. Test item activation and effects. Ensure visual feedback is clear for item states.",
+      "priority": "medium",
+      "dependencies": [
+        10,
+        12
+      ],
+      "status": "pending",
       "subtasks": [
         {
           "id": 1,
-          "title": "Set Up Flutter Web Build Process",
-          "description": "Configure and standardize the Flutter web build command to generate the latest web application version after each major implementation phase.",
+          "title": "설계: 아이템 타입 및 효과 시스템",
+          "description": "게임 내 다양한 아이템 유형과 효과를 설계하고 구현",
+          "details": "1. 아이템 타입별 클래스 구조 설계 (파워업, 특수 효과 등)\\n2. 각 아이템 효과의 구현 방식 설계\\n3. 아이템 효과 지속 시간 및 중첩 규칙 정의\\n4. 아이템 효과 테스트 시스템 구축",
+          "status": "pending",
           "dependencies": [],
-          "details": "Use the `flutter build web` command to compile the Flutter application for web deployment, ensuring the build process is repeatable and integrated into the workflow.",
-          "status": "pending"
+          "parentTaskId": 17
         },
         {
           "id": 2,
-          "title": "Implement Browser Execution and Immediate Testing",
-          "description": "Launch the built Flutter web application in supported browsers and perform immediate manual and automated testing to verify functionality and UI behavior.",
-          "dependencies": [
-            1
-          ],
-          "details": "Run the built app in browsers like Chrome or Firefox, then execute predefined test cases and exploratory tests to detect regressions or new issues promptly.",
-          "status": "pending"
+          "title": "구현: 아이템 스폰 및 필드 배치",
+          "description": "게임 필드에 아이템이 생성되고 배치되는 로직 구현",
+          "details": "1. 블록 파괴 시 아이템 드롭 확률 시스템 구현\\n2. 아이템 스폰 위치 계산 로직\\n3. 아이템 이동 패턴 및 물리 설정\\n4. 아이템 스폰 밸런싱 및 테스트",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 17
         },
         {
           "id": 3,
-          "title": "Integrate Browser Debugging Tools",
-          "description": "Utilize browser developer tools such as Chrome DevTools to inspect elements, monitor network activity, and debug JavaScript/Dart code during testing.",
-          "dependencies": [
-            2
-          ],
-          "details": "Leverage features like element inspection, console debugging, and network monitoring to identify and resolve issues efficiently during the testing phase.",
-          "status": "pending"
+          "title": "구현: 아이템 수집 메커니즘",
+          "description": "볼이 아이템과 충돌하여 수집하는 메커니즘 구현",
+          "details": "1. 볼-아이템 충돌 감지 구현\\n2. 아이템 수집 시 시각/청각적 피드백\\n3. 수집된 아이템을 인벤토리로 이동시키는 로직\\n4. 아이템 수집 이벤트 시스템 구현",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 17
         },
         {
           "id": 4,
-          "title": "Develop Test Documentation and Checklist",
-          "description": "Create and maintain comprehensive documentation of test results, including issues found, reproduction steps, screenshots, and a checklist of test cases for each major task.",
-          "dependencies": [
-            2
-          ],
-          "details": "Document all testing outcomes systematically and update the test checklist to cover critical features and new additions, ensuring traceability and quality control.",
-          "status": "pending"
+          "title": "구현: 인벤토리 UI 시스템",
+          "description": "수집된 아이템을 표시하고 관리하는 인벤토리 UI 구현",
+          "details": "1. 우측 인벤토리 UI 레이아웃 설계 및 구현\\n2. 인벤토리 슬롯 시스템 구현\\n3. 아이템 아이콘 및 시각적 표현 구현\\n4. 아이템 선택 및 포커스 메커니즘 구현",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 17
         },
         {
           "id": 5,
-          "title": "Establish Screenshot Capture and CI/CD Integration",
-          "description": "Implement a process for capturing screenshots during testing and optionally integrate the entire testing and debugging workflow into a CI/CD pipeline for automation.",
-          "dependencies": [
-            3,
-            4
-          ],
-          "details": "Use manual or automated tools to capture visual evidence of application states and configure CI/CD tools to automate builds, tests, and documentation generation for continuous feedback.",
-          "status": "pending"
+          "title": "구현: 아이템 활성화 시스템",
+          "description": "아이템 사용 및 효과 적용 메커니즘 구현",
+          "details": "1. 아이템 클릭/터치로 활성화하는 입력 처리\\n2. 활성화된 아이템 효과 적용 로직\\n3. 효과 지속 시간 관리 시스템\\n4. 턴당 하나의 아이템만 사용 가능하도록 제한",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 17
+        },
+        {
+          "id": 6,
+          "title": "구현: 시각 효과 및 피드백",
+          "description": "아이템 효과에 대한 시각적 및 청각적 피드백 구현",
+          "details": "1. 아이템 효과별 파티클 및 시각 효과 구현\\n2. 효과 활성화/비활성화 애니메이션\\n3. 아이템 관련 사운드 효과 구현\\n4. 효과 지속 시간 표시기 구현",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 17
         }
       ]
+    },
+    {
+      "id": 18,
+      "title": "Implement Remote Config Integration",
+      "description": "Integrate Firebase Remote Config for server-controlled game parameters",
+      "details": "1. Setup Remote Config in Firebase console\n2. Define default values for configurable parameters\n3. Implement config fetching on game start\n4. Create fallback for offline mode\n5. Add config caching for performance\n6. Implement hot reloading of config changes\n7. Create admin panel for config management",
+      "testStrategy": "Test config fetching and application. Verify fallback to defaults works correctly. Test config updates during gameplay. Ensure performance impact of config fetching is minimal.",
+      "priority": "low",
+      "dependencies": [
+        15,
+        17
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 19,
+      "title": "Implement Ad Reward System",
+      "description": "Integrate video ad rewards for gameplay benefits",
+      "details": "1. Research and select ad provider compatible with web/mobile\n2. Implement ad SDK integration\n3. Create reward options (extra balls, items, continues)\n4. Implement ad viewing flow\n5. Add reward distribution after successful ad view\n6. Create fallback for ad failures\n7. Implement ad frequency capping",
+      "testStrategy": "Test ad loading and display. Verify rewards are correctly distributed after ad viewing. Test error handling for ad failures. Ensure ad integration doesn't negatively impact game performance.",
+      "priority": "low",
+      "dependencies": [
+        8,
+        17
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 20,
+      "title": "Prepare for Mobile Adaptation",
+      "description": "Modify the game architecture to support future mobile deployment",
+      "details": "1. Implement responsive design for different screen sizes\n2. Create touch input system alongside mouse controls\n3. Optimize asset loading for mobile bandwidth\n4. Implement device detection for platform-specific features\n5. Create mobile-friendly UI layouts\n6. Research Capacitor/Cordova requirements\n7. Document mobile adaptation plan for Phase 5",
+      "testStrategy": "Test responsive design on different screen sizes. Verify touch controls work correctly in mobile browsers. Test performance on lower-end devices. Ensure UI is usable on smaller screens.",
+      "priority": "low",
+      "dependencies": [
+        9,
+        11,
+        17
+      ],
+      "status": "pending",
+      "subtasks": []
     }
   ]
 }

@@ -1,0 +1,55 @@
+# Task ID: 17
+# Title: Implement Item System
+# Status: pending
+# Dependencies: 10, 12
+# Priority: medium
+# Description: Create the item system with collectible power-ups and inventory
+# Details:
+1. Design item types and effects
+2. Create item spawn logic during gameplay
+3. Implement item collection via ball collision
+4. Create inventory UI on right side of screen
+5. Implement item activation mechanics
+6. Add visual effects for active items
+7. Balance item spawn rates and effects
+
+# Test Strategy:
+Test item spawning and collection. Verify inventory updates correctly. Test item activation and effects. Ensure visual feedback is clear for item states.
+
+# Subtasks:
+## 1. 설계: 아이템 타입 및 효과 시스템 [pending]
+### Dependencies: None
+### Description: 게임 내 다양한 아이템 유형과 효과를 설계하고 구현
+### Details:
+1. 아이템 타입별 클래스 구조 설계 (파워업, 특수 효과 등)\n2. 각 아이템 효과의 구현 방식 설계\n3. 아이템 효과 지속 시간 및 중첩 규칙 정의\n4. 아이템 효과 테스트 시스템 구축
+
+## 2. 구현: 아이템 스폰 및 필드 배치 [pending]
+### Dependencies: None
+### Description: 게임 필드에 아이템이 생성되고 배치되는 로직 구현
+### Details:
+1. 블록 파괴 시 아이템 드롭 확률 시스템 구현\n2. 아이템 스폰 위치 계산 로직\n3. 아이템 이동 패턴 및 물리 설정\n4. 아이템 스폰 밸런싱 및 테스트
+
+## 3. 구현: 아이템 수집 메커니즘 [pending]
+### Dependencies: None
+### Description: 볼이 아이템과 충돌하여 수집하는 메커니즘 구현
+### Details:
+1. 볼-아이템 충돌 감지 구현\n2. 아이템 수집 시 시각/청각적 피드백\n3. 수집된 아이템을 인벤토리로 이동시키는 로직\n4. 아이템 수집 이벤트 시스템 구현
+
+## 4. 구현: 인벤토리 UI 시스템 [pending]
+### Dependencies: None
+### Description: 수집된 아이템을 표시하고 관리하는 인벤토리 UI 구현
+### Details:
+1. 우측 인벤토리 UI 레이아웃 설계 및 구현\n2. 인벤토리 슬롯 시스템 구현\n3. 아이템 아이콘 및 시각적 표현 구현\n4. 아이템 선택 및 포커스 메커니즘 구현
+
+## 5. 구현: 아이템 활성화 시스템 [pending]
+### Dependencies: None
+### Description: 아이템 사용 및 효과 적용 메커니즘 구현
+### Details:
+1. 아이템 클릭/터치로 활성화하는 입력 처리\n2. 활성화된 아이템 효과 적용 로직\n3. 효과 지속 시간 관리 시스템\n4. 턴당 하나의 아이템만 사용 가능하도록 제한
+
+## 6. 구현: 시각 효과 및 피드백 [pending]
+### Dependencies: None
+### Description: 아이템 효과에 대한 시각적 및 청각적 피드백 구현
+### Details:
+1. 아이템 효과별 파티클 및 시각 효과 구현\n2. 효과 활성화/비활성화 애니메이션\n3. 아이템 관련 사운드 효과 구현\n4. 효과 지속 시간 표시기 구현
+
