@@ -190,28 +190,76 @@ export class GameScene extends Phaser.Scene {
     ball: Phaser.Physics.Arcade.Sprite,
     brick: Phaser.Physics.Arcade.Sprite
   ): void {
+    // ball.body가 null이 아닌지 확인
+    if (!ball.body) return;
+    
+    // 공의 현재 속도를 벽돌 제거 전에 저장
+    const velocityX = ball.body.velocity.x;
+    const velocityY = ball.body.velocity.y;
+    
+    // 벽돌 제거
     brick.destroy();
     this.sound.play('break');
     
-    // 공의 현재 속도를 가져와서 약간 증가시킴
-    const velocity = ball.body?.velocity;
-    if (velocity) {
-      // 현재 방향은 유지하면서 속도를 살짝 증가 (5%)
-      const speed = 1.05;
-      ball.setVelocity(velocity.x * speed, velocity.y * speed);
+    // 충돌 방향 분석을 위한 계산
+    const brickCenter = brick.getCenter();
+    const ballCenter = ball.getCenter();
+    
+    // 벽돌 중심과 공 중심의 위치 차이 계산
+    const dx = ballCenter.x - brickCenter.x;
+    const dy = ballCenter.y - brickCenter.y;
+    
+    // 충돌 위치 분석 (공이 벽돌의 어느 면에 부딪혔는지 결정)
+    // 이 값이 클수록 수평면 충돌, 작을수록 수직면 충돌
+    const absDX = Math.abs(dx);
+    const absDY = Math.abs(dy);
+    
+    // 충돌 후 공의 속도 계산
+    let newVelocityX = velocityX;
+    let newVelocityY = velocityY;
+    
+    // 좌우측면 충돌인 경우 (수평 방향 충돌이 더 강함)
+    if (absDX >= absDY) {
+      // X축 방향으로 튕김
+      newVelocityX = -velocityX * 1.05; // 약간 빨라지게
       
-      // 속도가 너무 느리면 최소 속도 보장
-      const minSpeed = 100;
-      const currentSpeed = Math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-      if (currentSpeed < minSpeed) {
-        const angle = Math.atan2(velocity.y, velocity.x);
-        ball.setVelocity(
-          Math.cos(angle) * minSpeed,
-          Math.sin(angle) * minSpeed
-        );
+      // 공이 너무 수직으로 움직이면 각도 조정
+      if (Math.abs(newVelocityY) < 60) {
+        newVelocityY = newVelocityY < 0 ? -60 : 60;
+      }
+    } 
+    // 상하측면 충돌인 경우 (수직 방향 충돌이 더 강함)
+    else {
+      // Y축 방향으로 튕김
+      newVelocityY = -velocityY * 1.05; // 약간 빨라지게
+      
+      // 공이 너무 수평으로 움직이면 각도 조정
+      if (Math.abs(newVelocityX) < 60) {
+        newVelocityX = newVelocityX < 0 ? -60 : 60;
       }
     }
     
+    // 최소 속도 보장
+    const minSpeed = 100;
+    const currentSpeed = Math.sqrt(newVelocityX * newVelocityX + newVelocityY * newVelocityY);
+    if (currentSpeed < minSpeed) {
+      const angle = Math.atan2(newVelocityY, newVelocityX);
+      newVelocityX = Math.cos(angle) * minSpeed;
+      newVelocityY = Math.sin(angle) * minSpeed;
+    }
+    
+    // 최대 속도 제한
+    const maxSpeed = 600;
+    if (currentSpeed > maxSpeed) {
+      const ratio = maxSpeed / currentSpeed;
+      newVelocityX *= ratio;
+      newVelocityY *= ratio;
+    }
+    
+    // 공 속도 설정
+    ball.setVelocity(newVelocityX, newVelocityY);
+    
+    // 점수 추가
     this.score += 10;
     this.scoreText.setText(`점수: ${this.score}`);
     
