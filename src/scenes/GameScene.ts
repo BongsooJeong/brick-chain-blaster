@@ -167,6 +167,8 @@ export class GameScene extends Phaser.Scene {
     const brickHeight = 32;
     const rows = 5;
     const cols = 10;
+    
+    // 벽돌 레이아웃을 위한 캔버스 중앙 정렬
     const offsetX = (this.cameras.main.width - (cols * brickWidth)) / 2;
     const offsetY = 80;
 
@@ -184,6 +186,12 @@ export class GameScene extends Phaser.Scene {
         this.bricks.add(brick);
       }
     }
+    
+    // 왼쪽 오른쪽 벽 경계 시각화 (옵션)
+    const leftWall = this.add.rectangle(0, 0, 2, this.cameras.main.height, 0x666666);
+    leftWall.setOrigin(0, 0);
+    const rightWall = this.add.rectangle(this.cameras.main.width - 2, 0, 2, this.cameras.main.height, 0x666666);
+    rightWall.setOrigin(0, 0);
   }
 
   private hitBrick(
