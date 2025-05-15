@@ -59,6 +59,14 @@ export class GameScene extends Phaser.Scene {
     );
     this.ball.setCollideWorldBounds(true);
     this.ball.setBounce(1);
+    
+    // 추가 공 속성 설정 (선택적)
+    if (this.ball.body) {
+      // 공의 질량을 조절하여 더 예측 가능한 움직임
+      this.ball.body.bounce.set(1);
+      // 중력 영향 없음
+      this.ball.body.gravity.set(0, 0);
+    }
 
     // 벽돌 그룹 생성
     this.bricks = this.physics.add.group();
@@ -131,18 +139,18 @@ export class GameScene extends Phaser.Scene {
         this.ball.x = this.paddle.x;
       }
     });
-
+    
     this.input.on('pointerdown', () => {
       if (!this.gameStarted) {
         this.gameStarted = true;
-        this.ball.setVelocity(-75, -300);
+        this.ball.setVelocity(-150, -300); // 초기 x 속도를 높게 설정
       }
     });
   }
 
   update(): void {
-    // 공이 화면 하단으로 떨어지면 생명 감소 또는 게임 오버
-    if (this.ball.y > this.cameras.main.height) {
+    // 공이 undefined가 아닌지 확인 후 처리
+    if (this.ball && this.ball.y > this.cameras.main.height) {
       this.lives--;
       this.livesText.setText(`생명: ${this.lives}`);
 
@@ -179,11 +187,30 @@ export class GameScene extends Phaser.Scene {
   }
 
   private hitBrick(
-    _ball: Phaser.Physics.Arcade.Sprite,
+    ball: Phaser.Physics.Arcade.Sprite,
     brick: Phaser.Physics.Arcade.Sprite
   ): void {
     brick.destroy();
     this.sound.play('break');
+    
+    // 공의 현재 속도를 가져와서 약간 증가시킴
+    const velocity = ball.body?.velocity;
+    if (velocity) {
+      // 현재 방향은 유지하면서 속도를 살짝 증가 (5%)
+      const speed = 1.05;
+      ball.setVelocity(velocity.x * speed, velocity.y * speed);
+      
+      // 속도가 너무 느리면 최소 속도 보장
+      const minSpeed = 100;
+      const currentSpeed = Math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
+      if (currentSpeed < minSpeed) {
+        const angle = Math.atan2(velocity.y, velocity.x);
+        ball.setVelocity(
+          Math.cos(angle) * minSpeed,
+          Math.sin(angle) * minSpeed
+        );
+      }
+    }
     
     this.score += 10;
     this.scoreText.setText(`점수: ${this.score}`);

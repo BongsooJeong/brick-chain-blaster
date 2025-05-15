@@ -33,13 +33,8 @@ export class LoadingScene extends Phaser.Scene {
       this.scene.start('MainMenuScene');
     });
 
-    // 임시 에셋 로딩 (실제 게임 개발시 이미지 로드)
+    // 게임에 필요한 모든 에셋 로드
     this.loadAssets();
-    
-    // 로딩 시간 시뮬레이션 (실제 게임에서는 제거)
-    for (let i = 0; i < 100; i++) {
-      this.load.image(`temp${i}`, 'about:blank');
-    }
   }
 
   private createLoadingGraphics(): void {
@@ -67,34 +62,19 @@ export class LoadingScene extends Phaser.Scene {
   }
 
   private loadAssets(): void {
-    this.createTemporaryImages();
-    
+    // 이미지 에셋 로드
     this.load.image('background', 'assets/images/background.png');
     this.load.image('ball', 'assets/images/ball.png');
     this.load.image('paddle', 'assets/images/paddle.png');
     this.load.image('brick1', 'assets/images/brick1.png');
     this.load.image('brick2', 'assets/images/brick2.png');
     this.load.image('brick3', 'assets/images/brick3.png');
+    this.load.image('button', 'assets/images/button.png');
+    this.load.image('title', 'assets/images/title.png');
     
+    // 오디오 에셋 로드
     this.load.audio('bounce', 'assets/audio/bounce.wav');
     this.load.audio('break', 'assets/audio/break.wav');
     this.load.audio('gameover', 'assets/audio/gameover.wav');
-  }
-
-  private createTemporaryImages(): void {
-    const createTempImage = (name: string, width: number, height: number, color: number) => {
-      const graphics = this.make.graphics({ x: 0, y: 0 });
-      graphics.fillStyle(color);
-      graphics.fillRect(0, 0, width, height);
-      graphics.generateTexture(name, width, height);
-      graphics.destroy();
-    };
-    
-    createTempImage('background', 800, 600, 0x000033);
-    createTempImage('ball', 16, 16, 0xffffff);
-    createTempImage('paddle', 128, 16, 0x0088ff);
-    createTempImage('brick1', 64, 32, 0xff0000);
-    createTempImage('brick2', 64, 32, 0x00ff00);
-    createTempImage('brick3', 64, 32, 0x0000ff);
   }
 } 
