@@ -1,6 +1,6 @@
 # Task ID: 3
 # Title: Configure CI/CD with GitHub Actions and Vercel
-# Status: pending
+# Status: in-progress
 # Dependencies: 2
 # Priority: high
 # Description: Set up continuous integration and deployment pipeline using GitHub Actions with automatic preview deployments to Vercel

@@ -1,0 +1,9 @@
+이 디렉토리에는 다음 이미지 파일이 필요합니다:
+- paddle.png: 플레이어가 제어하는 패들 이미지
+- ball.png: 게임에서 사용되는 공 이미지
+- brick1.png, brick2.png, brick3.png: 여러 종류의 벽돌 이미지
+- background.png: 게임 배경 이미지
+- button.png: UI 버튼 이미지
+- title.png: 게임 타이틀 이미지
+
+프로젝트 진행 중에 실제 이미지로 대체하세요. 

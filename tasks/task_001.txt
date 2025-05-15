@@ -1,6 +1,6 @@
 # Task ID: 1
 # Title: Setup Node.js and NPM Environment
-# Status: pending
+# Status: done
 # Dependencies: None
 # Priority: high
 # Description: Initialize the development environment with Node.js and NPM for the Brick Chain Blaster game following MVP approach
@@ -23,31 +23,31 @@
 5. Ensure the project structure follows best practices and includes all necessary directories
 
 # Subtasks:
-## 1.1. Install Node.js and initialize project [pending]
+## 1.1. Install Node.js and initialize project [done]
 ### Dependencies: None
 ### Description: Install Node.js LTS and create basic project structure
 ### Details:
 
 
-## 1.2. Configure package.json [pending]
+## 1.2. Configure package.json [done]
 ### Dependencies: None
 ### Description: Set up package.json with all necessary scripts and dependencies for the game
 ### Details:
 
 
-## 1.3. Create project directory structure [pending]
+## 1.3. Create project directory structure [done]
 ### Dependencies: None
 ### Description: Set up src, assets, and public folders according to best practices
 ### Details:
 
 
-## 1.4. Set up development tools [pending]
+## 1.4. Set up development tools [done]
 ### Dependencies: None
 ### Description: Configure Git, .gitignore, ESLint, and Prettier
 ### Details:
 
 
-## 1.5. Document setup process [pending]
+## 1.5. Document setup process [done]
 ### Dependencies: None
 ### Description: Create comprehensive documentation of the setup process in README.md
 ### Details:

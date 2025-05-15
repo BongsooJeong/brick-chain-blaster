@@ -4,7 +4,7 @@
       "id": 1,
       "title": "Setup Node.js and NPM Environment",
       "description": "Initialize the development environment with Node.js and NPM for the Brick Chain Blaster game following MVP approach",
-      "status": "pending",
+      "status": "done",
       "dependencies": [],
       "priority": "high",
       "details": "1. Install latest LTS version of Node.js\n2. Create project directory structure (src, assets, public folders)\n3. Initialize NPM project with `npm init`\n4. Configure package.json with necessary scripts and dependencies\n5. Configure .gitignore for Node.js projects\n6. Setup ESLint and Prettier for code quality\n7. Create README.md with project overview\n8. Initialize Git repository\n9. Document all setup steps for team reference",
@@ -14,31 +14,31 @@
           "id": "1.1",
           "title": "Install Node.js and initialize project",
           "description": "Install Node.js LTS and create basic project structure",
-          "status": "pending"
+          "status": "done"
         },
         {
           "id": "1.2",
           "title": "Configure package.json",
           "description": "Set up package.json with all necessary scripts and dependencies for the game",
-          "status": "pending"
+          "status": "done"
         },
         {
           "id": "1.3",
           "title": "Create project directory structure",
           "description": "Set up src, assets, and public folders according to best practices",
-          "status": "pending"
+          "status": "done"
         },
         {
           "id": "1.4",
           "title": "Set up development tools",
           "description": "Configure Git, .gitignore, ESLint, and Prettier",
-          "status": "pending"
+          "status": "done"
         },
         {
           "id": "1.5",
           "title": "Document setup process",
           "description": "Create comprehensive documentation of the setup process in README.md",
-          "status": "pending"
+          "status": "done"
         }
       ]
     },
@@ -46,7 +46,7 @@
       "id": 2,
       "title": "Setup Phaser 3 with TypeScript",
       "description": "Install and configure Phaser 3 game framework with TypeScript support using create-phaser template as part of the MVP approach",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         1
       ],
@@ -59,7 +59,7 @@
       "id": 3,
       "title": "Configure CI/CD with GitHub Actions and Vercel",
       "description": "Set up continuous integration and deployment pipeline using GitHub Actions with automatic preview deployments to Vercel",
-      "status": "pending",
+      "status": "in-progress",
       "dependencies": [
         2
       ],
