@@ -71,19 +71,19 @@
           "id": 3.1,
           "title": "Create GitHub repository and setup Vercel connection",
           "description": "Create project repository on GitHub and connect it to a new Vercel project",
-          "status": "pending"
+          "status": "done"
         },
         {
           "id": 3.2,
           "title": "Configure Vercel project settings",
           "description": "Set up Vercel for static site hosting with appropriate build settings",
-          "status": "pending"
+          "status": "in-progress"
         },
         {
           "id": 3.3,
           "title": "Create GitHub Actions workflow file",
           "description": "Create .github/workflows/ci.yml to define the CI/CD pipeline",
-          "status": "pending"
+          "status": "done"
         },
         {
           "id": 3.4,
