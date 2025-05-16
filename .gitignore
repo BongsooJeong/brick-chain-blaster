@@ -203,4 +203,9 @@ Thumbs.db
 *.tgz
 *.lock
 yarn.lock
-package-lock.json 
+package-lock.json
+
+# Added by Claude Task Master
+# Environment variables
+tasks.json
+tasks/ 
