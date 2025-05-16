@@ -76,5 +76,6 @@ export class LoadingScene extends Phaser.Scene {
     this.load.audio('bounce', 'assets/audio/bounce.wav');
     this.load.audio('break', 'assets/audio/break.wav');
     this.load.audio('gameover', 'assets/audio/gameover.wav');
+    this.load.audio('fall', 'assets/audio/fall.wav');  // 공이 떨어졌을 때 효과음
   }
 } 

@@ -121,14 +121,60 @@
       "id": 4,
       "title": "Implement Game Field and Physics",
       "description": "Create the basic game field with boundaries and implement Arcade Physics for ball movement as the first implementation task for Phase 1 (Basic Breakout Game MVP)",
-      "status": "pending",
+      "status": "in-progress",
       "dependencies": [
         2
       ],
       "priority": "high",
       "details": "1. Create a new game scene with proper dimensions for desktop\n2. Setup Arcade Physics in the scene\n3. Implement game boundaries with collision detection\n4. Create world bounds that reflect the ball\n5. Implement physics properties for the ball's movement and collisions\n6. Add debug visualization for physics bodies and collision points during development\n7. Ensure consistent physics behavior across different frame rates\n8. Set up the basic screen layout and background for the game\n9. Add FPS counter and performance metrics for debugging\n10. Ensure the game field scales appropriately across different resolutions",
       "testStrategy": "1. Verify ball correctly bounces off screen boundaries\n2. Confirm physics system operates reliably at consistent FPS\n3. Test game field scaling across various resolutions\n4. Verify all collision events are properly detected\n5. Test ball collision with boundaries\n6. Verify physics properties like bounce and velocity behave as expected\n7. Test at different frame rates to ensure consistent behavior",
-      "subtasks": []
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "게임 필드 크기 및 아케이드 물리 시스템 설정",
+          "description": "고정된 게임 필드를 생성하고 Phaser의 아케이드 물리 시스템을 설정합니다.",
+          "details": "1. 게임 필드의 너비와 높이를 설정 (800x600)\n2. 아케이드 물리 시스템 초기화\n3. 물리 세계 경계 설정\n4. 기본 물리 속성 구성 (중력, 충돌 등)\n5. 디버그 모드 설정 (개발 중 충돌 확인용)\n<info added on 2025-05-16T23:08:52.681Z>\n1. 게임 필드의 너비와 높이를 설정 (800x600)\\n2. 아케이드 물리 시스템 초기화\\n3. 물리 세계 경계 설정\\n4. 기본 물리 속성 구성 (중력, 충돌 등)\\n5. 디버그 모드 설정 (개발 중 충돌 확인용)\\n\\n현재 구현 상태:\\n- index.ts에서 게임 필드 크기 800x600 설정 완료\\n- index.ts에서 아케이드 물리 시스템 초기화 완료\\n- GameScene.ts에서 공과 패들에 setCollideWorldBounds(true) 설정 완료\\n- index.ts에서 기본 물리 속성(중력, 디버그 모드) 설정 완료\\n- 왼쪽/오른쪽 벽이 createBricks 함수에서 시각적으로 구현됨\\n\\n남은 작업:\\n1. 상단 벽 충돌 경계 추가 및 시각화 구현\\n2. 모든 경계(상하좌우)가 올바르게 설정되었는지 검증\\n3. 디버그 모드를 게임 내에서 토글할 수 있는 기능 구현 (키 입력 또는 UI 버튼)\\n4. 물리 디버깅을 위한 헬퍼 요소 추가 (충돌 경계 표시, 속도 벡터 시각화 등)\n</info added on 2025-05-16T23:08:52.681Z>\n<info added on 2025-05-16T23:10:32.596Z>\n1. 게임 필드의 너비와 높이를 설정 (800x600)\n2. 아케이드 물리 시스템 초기화\n3. 물리 세계 경계 설정\n4. 기본 물리 속성 구성 (중력, 충돌 등)\n5. 디버그 모드 설정 (개발 중 충돌 확인용)\n\n구현 완료 사항:\n- GameScene.ts에 상단 벽 경계 및 시각화 요소 추가 완료\n- 세 개의 벽 요소(상단, 좌측, 우측)를 정적 물리 바디 그룹으로 구현하여 공과의 충돌 처리 구현\n- 디버그 모드 토글 기능 추가 (D 키를 눌러 활성화/비활성화)\n- 디버그 정보 표시를 위한 UI 요소 추가:\n  * FPS 카운터\n  * 공의 속도 및 위치 정보 표시\n  * 디버그 모드 활성화 안내 텍스트\n- 물리 디버그 그래픽 토글 기능 추가\n\n최종 결과:\n- 게임 필드 크기 800x600 정확히 설정됨\n- 물리 세계 경계가 시각적으로 표시됨\n- 공 및 패들이 모든 경계(상하좌우)와 정확하게 충돌함\n- 디버그 모드를 통해 게임 개발 중 물리 시스템의 동작을 쉽게 검증 가능\n</info added on 2025-05-16T23:10:32.596Z>",
+          "status": "done",
+          "dependencies": [],
+          "parentTaskId": 4
+        },
+        {
+          "id": 2,
+          "title": "게임 경계 및 벽 충돌 구현",
+          "description": "게임 영역의 경계와 벽에 대한 충돌 처리를 구현합니다.",
+          "details": "1. 화면 경계를 시각적으로 표시 (테두리 또는 실제 벽 요소로)\n2. 상단, 좌측, 우측 벽 생성 및 물리 속성 설정\n3. 벽과 공의 충돌 로직 구현\n4. 플레이어가 놓친 공의 하단 경계 통과 감지\n5. 벽 충돌 시 사운드 효과 추가\n6. 다양한 충돌 각도에서 올바른 반사 확인\n<info added on 2025-05-16T23:11:03.803Z>\n1. 화면 경계를 시각적으로 표시 (테두리 또는 실제 벽 요소로)\\n2. 상단, 좌측, 우측 벽 생성 및 물리 속성 설정\\n3. 벽과 공의 충돌 로직 구현\\n4. 플레이어가 놓친 공의 하단 경계 통과 감지\\n5. 벽 충돌 시 사운드 효과 추가\\n6. 다양한 충돌 각도에서 올바른 반사 확인\\n\\n현재 구현 상황:\\n- 화면 경계 시각적 표시 완료 (상단, 좌측, 우측 벽 요소)\\n- 상단, 좌측, 우측 벽 생성 및 물리 속성 설정 완료\\n- 벽과 공의 기본 충돌 로직 구현 완료 (물리 충돌)\\n- 기본적인 벽 충돌 사운드 효과 추가 완료 (간단한 bounce 사운드)\\n\\n남은 작업:\\n1. 하단 경계 통과 감지 개선\\n   - 현재 기본 구현을 넘어 더 정확한 감지 로직 구현\\n   - 하단 경계 통과 시 게임 상태 변경 로직 연결\\n   - 디버깅 모드에서 하단 경계 통과 시각화 추가\\n\\n2. 충돌 각도 반사 검증 및 개선\\n   - 다양한 각도에서의 충돌 테스트 케이스 작성\\n   - 비정상적인 반사각 발생 시 보정 로직 추가\\n   - 속도에 따른 반사 정확도 검증\\n\\n3. 향상된 사운드 효과 시스템\\n   - 충돌 위치에 따라 다른 사운드 재생 (상단, 좌측, 우측 벽 구분)\\n   - 충돌 강도에 따른 사운드 볼륨/피치 조절\\n   - 사운드 풀링 시스템 구현으로 성능 최적화\n</info added on 2025-05-16T23:11:03.803Z>\n<info added on 2025-05-16T23:17:13.973Z>\n1. 화면 경계를 시각적으로 표시 (테두리 또는 실제 벽 요소로)\n2. 상단, 좌측, 우측 벽 생성 및 물리 속성 설정\n3. 벽과 공의 충돌 로직 구현\n4. 플레이어가 놓친 공의 하단 경계 통과 감지\n5. 벽 충돌 시 사운드 효과 추가\n6. 다양한 충돌 각도에서 올바른 반사 확인\n\n구현 완료 사항:\n1. 화면 경계를 시각적으로 표시하는 벽 요소(상단, 좌측, 우측) 구현 완료\n2. 각 벽에 개별적인 물리 충돌 속성 설정 완료\n   - 객체 생성 후 충돌 설정하는 순서로 런타임 오류 해결\n   - 각 벽에 올바른 물리 속성 적용\n3. 벽과 공의 충돌 처리 개선 완료\n   - 각 벽마다 다른 사운드 효과 적용 (상단 벽은 음조 변경)\n   - 디버그 모드에서 충돌 정보 시각화 구현\n4. 하단 경계 통과 감지 개선 완료\n   - 새로운 'fall' 사운드 효과 추가\n   - 화면에 빨간색 플래시 효과 표시\n   - 사운드 미존재 시 대체 사운드 설정 구현\n5. 다양한 충돌 각도에서 공이 예상대로 반사되도록 물리 시스템 조정 완료\n\n모든 작업이 완료되어 게임 필드의 경계가 명확히 시각화되고, 공과 벽 사이의 충돌이 올바르게 처리됩니다. 다양한 충돌 각도에서 공이 예상대로 반사되며, 하단 경계 통과 시 시각/청각적 피드백이 제공됩니다.\n</info added on 2025-05-16T23:17:13.973Z>",
+          "status": "done",
+          "dependencies": [],
+          "parentTaskId": 4
+        },
+        {
+          "id": 3,
+          "title": "공 물리 속성 및 움직임 구현",
+          "description": "공의 물리적 속성과 움직임 로직을 구현합니다.",
+          "details": "1. 공 스프라이트 생성 및 물리 속성 설정\n2. 공의 속도, 가속도, 반발력 설정\n3. 공의 최대/최소 속도 제한 설정\n4. 공의 중력 영향 제거 (수평 게임 플레이를 위함)\n5. 일관된 속도 계산을 위한 프레임 레이트 독립적 이동 구현\n6. 물리 연산 최적화 설정\n<info added on 2025-05-16T23:18:06.509Z>\n1. 공 스프라이트 생성 및 물리 속성 설정\n2. 공의 속도, 가속도, 반발력 설정\n3. 공의 최대/최소 속도 제한 설정\n4. 공의 중력 영향 제거 (수평 게임 플레이를 위함)\n5. 일관된 속도 계산을 위한 프레임 레이트 독립적 이동 구현\n6. 물리 연산 최적화 설정\n\nGameScene.ts 파일 분석 결과에 따른 개선 계획:\n\n1. 물리 상수 정의 및 구현:\n   - BALL_INITIAL_VELOCITY: 공의 초기 속도 벡터 설정\n   - BALL_MAX_VELOCITY: 공의 최대 속도 제한값 설정\n   - BALL_MIN_VELOCITY: 공의 최소 속도 제한값 설정\n   - BALL_ACCELERATION: 시간에 따른 공의 가속도 설정\n   - BALL_RESTITUTION: 벽과 충돌 시 반발력 계수 설정\n\n2. 속도 제한 로직 구현:\n   - Phaser의 setMaxVelocity() 메서드 활용\n   - 속도가 최소값 이하로 떨어질 경우 보정하는 로직 추가\n   - 각 축별(X, Y) 속도 제한 로직 분리 구현\n\n3. 프레임 레이트 독립적 움직임:\n   - delta 시간을 활용한 속도 계산 로직 구현\n   - update() 메서드 내에서 deltaTime을 고려한 이동 처리\n   - 일관된 물리 시뮬레이션을 위한 fixedUpdate 패턴 적용\n\n4. 물리 연산 최적화:\n   - 불필요한 물리 계산 최소화\n   - 공이 정지 상태일 때 물리 연산 일시 중지\n   - 화면 밖 객체에 대한 물리 연산 최적화\n   - 충돌 감지 최적화를 위한 그룹화 적용\n</info added on 2025-05-16T23:18:06.509Z>",
+          "status": "done",
+          "dependencies": [],
+          "parentTaskId": 4
+        },
+        {
+          "id": 4,
+          "title": "물리 디버그 및 성능 모니터링 추가",
+          "description": "게임의 물리 요소를 디버깅하고 성능을 모니터링하는 도구를 추가합니다.",
+          "details": "1. 물리 바디 시각화 기능 추가 (디버그 모드)\n2. 충돌 지점 및 반사 각도 시각적 표시\n3. FPS 카운터 및 성능 메트릭 추가\n4. 물리 연산 최적화 설정 (스텝 레이트 등)\n5. 다양한 해상도 및 디바이스에서 성능 테스트\n6. 프레임 레이트 일관성 확인을 위한 디버그 도구",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 4
+        },
+        {
+          "id": 5,
+          "title": "게임 배경 및 시각적 요소 구현",
+          "description": "게임 배경 및 시각적 요소를 구현하여 게임 필드를 완성합니다.",
+          "details": "1. 게임 배경 디자인 및 구현\n2. 격자 또는 가이드 라인 추가 (선택 사항)\n3. 경계선과 벽의 시각적 디자인\n4. 게임 영역 내부와 외부의 시각적 구분\n5. 다양한 해상도에서 일관된 시각적 표현\n6. UI 요소 배치를 위한 영역 확보",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 4
+        }
+      ]
     },
     {
       "id": 5,
