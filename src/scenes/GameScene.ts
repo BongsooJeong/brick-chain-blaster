@@ -178,6 +178,17 @@ export class GameScene extends Phaser.Scene {
           const detune = index === 0 ? -200 : 0; // 상단 벽은 다른 음조
           this.sound.play('bounce', { volume: 0.5, detune });
           
+          // 충돌 위치 및 속도 기록 (디버그 시각화용)
+          const ballSprite = this.ball.getSprite();
+          if (ballSprite.body) {
+            this.debugManager.recordCollision(
+              ballSprite.x,
+              ballSprite.y,
+              ballSprite.body.velocity.x,
+              ballSprite.body.velocity.y
+            );
+          }
+          
           // 디버그 모드일 때 충돌 정보 표시
           if (this.debugManager.isDebugEnabled()) {
             console.log(`벽 충돌: ${wallNames[index]}`);
@@ -193,6 +204,17 @@ export class GameScene extends Phaser.Scene {
       () => {
         this.sound.play('bounce');
         this.ball.hitPaddle(this.paddle.getSprite());
+        
+        // 충돌 위치 및 속도 기록 (디버그 시각화용)
+        const ballSprite = this.ball.getSprite();
+        if (ballSprite.body) {
+          this.debugManager.recordCollision(
+            ballSprite.x,
+            ballSprite.y,
+            ballSprite.body.velocity.x,
+            ballSprite.body.velocity.y
+          );
+        }
       },
       undefined,
       this
@@ -203,6 +225,17 @@ export class GameScene extends Phaser.Scene {
       this.ball.getSprite(),
       this.brickManager.getGroup(),
       (ball, brick) => {
+        // 충돌 위치 및 속도 기록 (디버그 시각화용)
+        const ballSprite = ball as Phaser.Physics.Arcade.Sprite;
+        if (ballSprite.body) {
+          this.debugManager.recordCollision(
+            ballSprite.x,
+            ballSprite.y,
+            ballSprite.body.velocity.x,
+            ballSprite.body.velocity.y
+          );
+        }
+        
         // 공과 벽돌 충돌 처리
         this.ball.hitBrick(brick as Phaser.Physics.Arcade.Sprite);
         
@@ -235,8 +268,8 @@ export class GameScene extends Phaser.Scene {
       this.ball.updatePhysics(delta);
     }
     
-    // 디버그 정보 업데이트
-    this.debugManager.updateDebugInfo(this.ball.getSprite());
+    // 디버그 정보 업데이트 (time과 delta 전달)
+    this.debugManager.updateDebugInfo(this.ball.getSprite(), time, delta);
   }
   
   private onWorldBounds(body: Phaser.Physics.Arcade.Body, up: boolean, down: boolean, left: boolean, right: boolean): void {
@@ -249,6 +282,17 @@ export class GameScene extends Phaser.Scene {
       let detune = 0;
       if (up) detune = -200;
       this.sound.play('bounce', { volume: 0.5, detune });
+      
+      // 충돌 위치 및 속도 기록 (디버그 시각화용)
+      const ballSprite = this.ball.getSprite();
+      if (ballSprite.body) {
+        this.debugManager.recordCollision(
+          ballSprite.x,
+          ballSprite.y,
+          ballSprite.body.velocity.x,
+          ballSprite.body.velocity.y
+        );
+      }
     }
     
     // 디버그 모드에서 추가 정보 표시
