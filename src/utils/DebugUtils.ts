@@ -112,7 +112,11 @@ export class DebugManager {
     
     // 물리 디버그 토글
     this.scene.physics.world.drawDebug = this.isDebugMode;
-    this.scene.physics.world.debugGraphic.clear();
+    
+    // debugGraphic이 존재할 때만 clear 호출
+    if (this.scene.physics.world.debugGraphic) {
+      this.scene.physics.world.debugGraphic.clear();
+    }
     
     // 디버그 UI 요소 가시성 토글
     this.debugText.setVisible(this.isDebugMode);
@@ -146,6 +150,9 @@ export class DebugManager {
   
   // 충돌 벡터 그리기
   private drawCollisionVector(x: number, y: number, vx: number, vy: number): void {
+    // 충돌 그래픽이 존재하지 않으면 반환
+    if (!this.collisionGraphics || !this.isDebugMode) return;
+    
     // 입사 벡터(빨간색)과 예상 반사 벡터(녹색) 그리기
     this.collisionGraphics.clear();
     
@@ -245,7 +252,7 @@ export class DebugManager {
   
   // 속도 벡터 그리기
   private drawVelocityVector(ball: Phaser.Physics.Arcade.Sprite): void {
-    if (!ball.body) return;
+    if (!ball.body || !this.velocityVectors || !this.isDebugMode) return;
     
     this.velocityVectors.clear();
     
@@ -283,6 +290,8 @@ export class DebugManager {
   
   // 충돌 포인트 시각화 업데이트
   private updateCollisionPoints(): void {
+    if (!this.collisionGraphics || !this.isDebugMode) return;
+    
     this.collisionGraphics.clear();
     
     // 각 충돌 포인트 표시

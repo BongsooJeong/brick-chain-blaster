@@ -105,6 +105,12 @@ export class GameScene extends Phaser.Scene {
     // 벽 생성
     this.walls = new Walls(this);
     
+    // 물리 디버그 설정 초기화
+    // 시작 시에 디버그 그래픽을 명시적으로 설정
+    if (!this.physics.world.debugGraphic) {
+      this.physics.world.createDebugGraphic();
+    }
+    
     // 디버그 설정
     this.debugManager = new DebugManager(this);
     
