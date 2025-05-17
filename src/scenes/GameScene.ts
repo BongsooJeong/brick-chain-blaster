@@ -5,6 +5,7 @@ import { Paddle } from '../game-objects/Paddle';
 import { BrickManager } from '../game-objects/Brick';
 import { Walls } from '../game-objects/Walls';
 import { DebugManager } from '../utils/DebugUtils';
+import { BackgroundManager } from '../utils/BackgroundManager';
 
 export class GameScene extends Phaser.Scene {
   // 게임 객체
@@ -12,6 +13,7 @@ export class GameScene extends Phaser.Scene {
   private ball!: Ball;
   private brickManager!: BrickManager;
   private walls!: Walls;
+  private backgroundManager!: BackgroundManager;
   
   // UI 요소
   private scoreText!: Phaser.GameObjects.Text;
@@ -32,10 +34,8 @@ export class GameScene extends Phaser.Scene {
   }
 
   create(): void {
-    // 배경 이미지 추가
-    this.add.image(0, 0, 'background')
-      .setOrigin(0)
-      .setDisplaySize(this.cameras.main.width, this.cameras.main.height);
+    // 배경 매니저 초기화
+    this.backgroundManager = new BackgroundManager(this);
     
     // 게임 객체 초기화
     this.initGameObjects();
@@ -171,99 +171,174 @@ export class GameScene extends Phaser.Scene {
   
   // 충돌 설정
   private setupCollisions(): void {
-    // 벽과 공 사이의 충돌
-    const walls = this.walls.getWalls();
-    const wallNames = this.walls.getWallNames();
-    
-    walls.forEach((wall, index) => {
-      this.physics.add.collider(
-        this.ball.getSprite(), 
-        wall, 
-        () => {
-          // 충돌 사운드 재생 (벽에 따라 다른 효과)
-          const detune = index === 0 ? -200 : 0; // 상단 벽은 다른 음조
-          this.sound.play('bounce', { volume: 0.5, detune });
-          
-          // 충돌 위치 및 속도 기록 (디버그 시각화용)
-          const ballSprite = this.ball.getSprite();
-          if (ballSprite.body) {
-            this.debugManager.recordCollision(
-              ballSprite.x,
-              ballSprite.y,
-              ballSprite.body.velocity.x,
-              ballSprite.body.velocity.y
-            );
-          }
-          
-          // 디버그 모드일 때 충돌 정보 표시
-          if (this.debugManager.isDebugEnabled()) {
-            console.log(`벽 충돌: ${wallNames[index]}`);
-          }
-        }
-      );
-    });
-    
-    // 공과 패들 사이의 충돌
+    // 공과 패들 간 충돌
     this.physics.add.collider(
       this.ball.getSprite(),
       this.paddle.getSprite(),
-      () => {
-        this.sound.play('bounce');
-        this.ball.hitPaddle(this.paddle.getSprite());
-        
-        // 충돌 위치 및 속도 기록 (디버그 시각화용)
-        const ballSprite = this.ball.getSprite();
-        if (ballSprite.body) {
-          this.debugManager.recordCollision(
-            ballSprite.x,
-            ballSprite.y,
-            ballSprite.body.velocity.x,
-            ballSprite.body.velocity.y
-          );
-        }
-      },
+      this.onBallHitPaddle as Phaser.Types.Physics.Arcade.ArcadePhysicsCallback,
       undefined,
       this
     );
     
-    // 공과 벽돌 사이의 충돌
+    // 공과 벽돌 간 충돌
     this.physics.add.collider(
       this.ball.getSprite(),
       this.brickManager.getGroup(),
-      (ball, brick) => {
-        // 충돌 위치 및 속도 기록 (디버그 시각화용)
-        const ballSprite = ball as Phaser.Physics.Arcade.Sprite;
-        if (ballSprite.body) {
-          this.debugManager.recordCollision(
-            ballSprite.x,
-            ballSprite.y,
-            ballSprite.body.velocity.x,
-            ballSprite.body.velocity.y
-          );
-        }
-        
-        // 공과 벽돌 충돌 처리
-        this.ball.hitBrick(brick as Phaser.Physics.Arcade.Sprite);
-        
-        // 벽돌 제거
-        (brick as Phaser.Physics.Arcade.Sprite).destroy();
-        this.sound.play('break');
-        
-        // 점수 추가
-        this.score += 10;
-        this.scoreText.setText(`점수: ${this.score}`);
-        
-        // 모든 벽돌이 제거되면 게임 클리어
-        if (this.brickManager.getActiveCount() === 0) {
-          this.gameWin();
-        }
-      },
+      this.onBallHitBrick as Phaser.Types.Physics.Arcade.ArcadePhysicsCallback,
       undefined,
       this
     );
+    
+    // 공과 월드 경계 충돌 이벤트
+    const ballSprite = this.ball.getSprite();
+    ballSprite.setCollideWorldBounds(true, undefined, undefined, true);
+    
+    // 벽 충돌 설정 (충돌 및 겹침 설정)
+    this.walls.getWalls().forEach(wall => {
+      this.physics.add.collider(
+        this.ball.getSprite(),
+        wall,
+        this.onBallHitWall as Phaser.Types.Physics.Arcade.ArcadePhysicsCallback,
+        undefined,
+        this
+      );
+    });
+  }
+
+  // 공과 패들 충돌 처리
+  private onBallHitPaddle(
+    _ball: Phaser.Types.Physics.Arcade.GameObjectWithBody | Phaser.Tilemaps.Tile,
+    _paddle: Phaser.Types.Physics.Arcade.GameObjectWithBody | Phaser.Tilemaps.Tile
+  ): void {
+    // 공의 패들 충돌 물리 처리
+    this.ball.hitPaddle(this.paddle.getSprite());
+    
+    // 패들 히트 애니메이션 재생
+    this.paddle.playHitAnimation();
+    
+    // 패들 히트 사운드 재생
+    this.sound.play('paddleHit');
+    
+    // 히트 시 점수 증가
+    this.score += 5;
+    this.scoreText.setText(`점수: ${this.score}`);
+  }
+  
+  // 공과 벽돌 충돌 처리
+  private onBallHitBrick(
+    _ball: Phaser.Types.Physics.Arcade.GameObjectWithBody | Phaser.Tilemaps.Tile,
+    _brick: Phaser.Types.Physics.Arcade.GameObjectWithBody | Phaser.Tilemaps.Tile
+  ): void {
+    // 벽돌을 비활성화하고 화면에서 숨김
+    const brick = _brick as Phaser.Physics.Arcade.Sprite;
+    brick.disableBody(true, true);
+    
+    // 충돌 히트 이펙트 생성
+    this.createBrickHitEffect(brick.x, brick.y, brick.width, brick.height);
+    
+    // 점수 증가
+    this.score += 10;
+    this.scoreText.setText(`점수: ${this.score}`);
+    
+    // 벽돌 파괴 사운드 재생
+    this.sound.play('brickDestroy');
+    
+    // 남은 벽돌 수 체크
+    const activeCount = this.brickManager.getActiveCount();
+    if (activeCount === 0) {
+      this.gameWin();
+    }
+  }
+
+  // 공과 벽 충돌 처리
+  private onBallHitWall(
+    _ball: Phaser.Types.Physics.Arcade.GameObjectWithBody | Phaser.Tilemaps.Tile,
+    _wall: Phaser.Types.Physics.Arcade.GameObjectWithBody | Phaser.Tilemaps.Tile
+  ): void {
+    // 벽 충돌 시 사운드 재생
+    this.sound.play('bounce', { volume: 0.3 });
+  }
+  
+  // 게임 승리 처리
+  private gameWin(): void {
+    this.gameStarted = false;
+    
+    // 승리 메시지 표시
+    const winText = this.add.text(
+      this.cameras.main.width / 2, 
+      this.cameras.main.height / 2 - 50,
+      '레벨 클리어!',
+      {
+        fontSize: '32px',
+        fontFamily: 'Arial',
+        color: '#ffff00',
+        stroke: '#000000',
+        strokeThickness: 4
+      }
+    ).setOrigin(0.5);
+    
+    // 성공 효과 생성
+    this.createWinEffect();
+    
+    // 공 재설정
+    this.ball.reset(
+      this.paddle.getX(),
+      this.cameras.main.height - 80
+    );
+    
+    // 다음 레벨/재시작 버튼
+    this.restartButton.setText('다음 레벨');
+    this.restartButton.setVisible(true);
+  }
+  
+  // 승리 효과 생성
+  private createWinEffect(): void {
+    // 화면 전체에 빛나는 효과
+    const shine = this.add.rectangle(
+      this.cameras.main.width / 2,
+      this.cameras.main.height / 2,
+      this.cameras.main.width,
+      this.cameras.main.height,
+      0xffff00,
+      0.2
+    );
+    
+    shine.setBlendMode(Phaser.BlendModes.ADD);
+    
+    // 반짝이는 애니메이션
+    this.tweens.add({
+      targets: shine,
+      alpha: 0,
+      duration: 1000,
+      ease: 'Sine.easeOut'
+    });
+    
+    // 축하 파티클 효과 (상단에서 떨어지는)
+    if (this.textures.exists('particle')) {
+      const confetti = this.add.particles(0, 0, 'particle', {
+        x: { min: 0, max: this.cameras.main.width },
+        y: -10,
+        speedY: { min: 100, max: 200 },
+        speedX: { min: -20, max: 20 },
+        scale: { start: 0.5, end: 0.1 },
+        lifespan: 2000,
+        tint: [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff],
+        frequency: 50,
+        quantity: 5,
+        blendMode: Phaser.BlendModes.ADD
+      });
+      
+      // 3초 후에 파티클 효과 제거
+      this.time.delayedCall(3000, () => {
+        if (confetti) confetti.destroy();
+      });
+    }
   }
 
   update(time: number, delta: number): void {
+    // 배경 업데이트
+    this.backgroundManager.update(time, delta);
+    
     // 공이 하단 경계 아래로 떨어졌는지 확인 (공이 유효하고 활성화된 경우만)
     if (this.ball.getSprite().active && this.ball.getSprite().y > this.cameras.main.height) {
       this.handleBallFall();
@@ -361,24 +436,53 @@ export class GameScene extends Phaser.Scene {
     this.restartButton.setVisible(true);
   }
 
-  private gameWin(): void {
-    this.ball.getSprite().setVelocity(0, 0);
-    this.gameStarted = false;
+  // 벽돌 파괴 이펙트 생성
+  private createBrickHitEffect(x: number, y: number, width: number, height: number): void {
+    // 벽돌 위치에 파티클 생성
+    const particles = this.add.particles(x, y, 'particle', {
+      speed: { min: 50, max: 150 },
+      angle: { min: 0, max: 360 },
+      scale: { start: 0.6, end: 0.1 },
+      lifespan: { min: 600, max: 800 },
+      blendMode: Phaser.BlendModes.ADD,
+      tint: [0xffff00, 0xff8800, 0xff4400],
+      quantity: 15,
+      gravityY: 300
+    });
     
-    this.add.text(
-      this.cameras.main.width / 2,
-      this.cameras.main.height / 2,
-      '축하합니다!\n클리어하셨습니다!',
-      {
-        fontFamily: 'Arial',
-        fontSize: '48px',
-        color: '#00ff00',
-        stroke: '#000',
-        strokeThickness: 6,
-        align: 'center'
+    // 파티클 이미지가 없는 경우에 대비한 텍스처 생성
+    if (!this.textures.exists('particle')) {
+      this.createParticleTexture();
+    }
+    
+    // 잠시 후 파티클 시스템 제거
+    this.time.delayedCall(800, () => {
+      if (particles) particles.destroy();
+    });
+    
+    // 추가 시각 효과: 벽돌 위치에 원형 펄스 이펙트
+    const pulse = this.add.circle(x, y, width / 2, 0xffffff, 0.7);
+    pulse.setBlendMode(Phaser.BlendModes.ADD);
+    
+    // 펄스 애니메이션
+    this.tweens.add({
+      targets: pulse,
+      alpha: 0,
+      scale: 2,
+      duration: 300,
+      ease: 'Cubic.easeOut',
+      onComplete: () => {
+        pulse.destroy();
       }
-    ).setOrigin(0.5);
-    
-    this.restartButton.setVisible(true);
+    });
+  }
+  
+  // 파티클 텍스처 생성 (재사용 가능하도록 별도 메서드로)
+  private createParticleTexture(): void {
+    const graphics = this.make.graphics({ x: 0, y: 0 });
+    graphics.fillStyle(0xffffff, 1);
+    graphics.fillCircle(8, 8, 8);
+    graphics.generateTexture('particle', 16, 16);
+    graphics.destroy();
   }
 } 
